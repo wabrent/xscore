@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: cryptocv
+    env: docker
+    repo: https://github.com/wabrent/xscore
+    branch: master
+    healthCheckPath: /health
+    envVars:
+      - key: TWITTER_API_KEY
+        sync: false
+      - key: TWITTER_API_SECRET
+        sync: false
+      - key: TWITTER_ACCESS_TOKEN
+        sync: false
+      - key: TWITTER_ACCESS_TOKEN_SECRET
+        sync: false
+      - key: TWITTER_BEARER_TOKEN
+        sync: false

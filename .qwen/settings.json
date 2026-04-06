@@ -8,7 +8,9 @@
       "Bash(git push *)",
       "Bash(rm *)",
       "Bash(del *)",
-      "Bash(rmdir *)"
+      "Bash(rmdir *)",
+      "Bash(docker-compose *)",
+      "Bash(docker compose up *)"
     ]
   },
   "$version": 3
