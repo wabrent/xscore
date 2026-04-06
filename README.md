@@ -42,13 +42,32 @@
 
 ## Установка
 
-### 1. Клонирование репозитория
+### Вариант А: Docker (рекомендуется)
+
+```bash
+# Клонирование репозитория
+git clone https://github.com/wabrent/xscore.git
+cd xscore
+
+# Создание .env файла с Twitter API ключами
+cp backend/.env.example .env
+# Заполните .env вашими ключами
+
+# Сборка и запуск
+docker-compose up -d
+```
+
+Приложение будет доступно на http://localhost:8000
+
+### Вариант Б: Локальная установка
+
+### 2.1. Клонирование репозитория
 
 ```bash
 cd c:\Users\waabrent\Documents\trae_projects\twitter
 ```
 
-### 2. Настройка Backend
+### 2.2. Настройка Backend
 
 ```bash
 cd backend
@@ -75,7 +94,7 @@ copy .env.example .env  # Windows
 
 Получить их можно на: https://developer.twitter.com/
 
-### 3. Настройка Frontend
+### 2.3. Настройка Frontend
 
 ```bash
 cd frontend
@@ -86,7 +105,15 @@ npm install
 
 ## Запуск
 
-### Запуск Backend
+### Вариант А: Docker
+
+```bash
+docker-compose up -d
+```
+
+### Вариант Б: Локальный запуск
+
+### 3.1. Запуск Backend
 
 ```bash
 cd backend
@@ -97,7 +124,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 Backend будет доступен по адресу: http://localhost:8000
 API документация: http://localhost:8000/docs
 
-### Запуск Frontend
+### 3.2. Запуск Frontend
 
 ```bash
 cd frontend
