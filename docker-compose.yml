@@ -1,17 +1,12 @@
 version: '3.8'
 
 services:
-  app:
+  backend:
     build: .
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=sqlite:///./data/crypto_twitter.db
-      - TWITTER_API_KEY=${TWITTER_API_KEY}
-      - TWITTER_API_SECRET=${TWITTER_API_SECRET}
-      - TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN}
-      - TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
-      - TWITTER_BEARER_TOKEN=${TWITTER_BEARER_TOKEN}
+    env_file:
+      - .env
     volumes:
       - ./data:/app/data
     restart: unless-stopped
