@@ -6,14 +6,17 @@
     <title>XSCORE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0A0A0A;
-            --text: #FFFFFF;
-            --amber: #FFC107;
-            --text-dim: #444444;
-            --border: #222222;
+            --bg: #080808;
+            --text: #ffffff;
+            --text-dim: #666666;
+            --text-muted: #aaaaaa;
+            --text-dark: #555555;
+            --gold: #f5c518;
+            --border: #333333;
+            --border-dark: #222222;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,668 +24,361 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Space Mono', monospace;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
+            line-height: 1.8;
         }
         
-        /* Film grain */
-        .grain {
+        /* Abstract sphere blob */
+        .blob {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 80vw;
+            max-width: 600px;
+            max-height: 600px;
+            background: radial-gradient(circle at 30% 40%, #111111 0%, #080808 60%, transparent 100%);
+            border-radius: 50%;
+            opacity: 0.6;
             pointer-events: none;
-            z-index: 9999;
-            opacity: 0.04;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            z-index: -1;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 40px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* Hero with crystal rock */
-        .hero {
+            padding: 80px 40px;
             display: grid;
-            grid-template-columns: 1fr 300px;
+            grid-template-columns: 100px 1fr 100px;
             gap: 40px;
+            min-height: 100vh;
+        }
+        
+        /* Left sidebar */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-top: 120px;
+        }
+        
+        .welcome {
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            color: var(--text-dim);
+            line-height: 2.2;
+        }
+        
+        .welcome span {
+            display: block;
+        }
+        
+        /* Center main */
+        .main-col {
+            text-align: center;
+        }
+        
+        /* Hero title */
+        .hero {
             margin-bottom: 80px;
-            position: relative;
         }
         
-        .hero-text {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(60px, 15vw, 160px);
+            line-height: 0.9;
+            color: var(--text);
+            letter-spacing: -0.02em;
         }
         
-        .main-title {
-            display: flex;
-            flex-direction: column;
-            line-height: 0.85;
+        .hero-line {
+            display: block;
         }
         
-        .main-title span {
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            font-size: 120px;
-            letter-spacing: -4px;
-        }
-        
-        .main-title .line {
-            display: flex;
-            align-items: baseline;
-        }
-        
-        .main-title .dash {
+        .hero-dash {
+            color: var(--gold);
             font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            color: var(--amber);
-            margin-right: 20px;
             font-weight: 400;
         }
         
-        .hero-image {
-            position: relative;
-            height: 400px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #151515 100%);
-            overflow: hidden;
+        /* Divider */
+        .divider {
+            width: 1px;
+            height: 60px;
+            background: var(--border-dark);
+            margin: 40px auto;
         }
         
-        /* Crystal facets */
-        .crystal {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.03) 45%, transparent 45%),
-                linear-gradient(165deg, transparent 60%, rgba(30,30,30,0.8) 60%, rgba(30,30,30,0.8) 65%, transparent 65%),
-                linear-gradient(45deg, transparent 30%, rgba(40,40,40,0.6) 30%, rgba(40,40,40,0.6) 50%, transparent 50%),
-                linear-gradient(80deg, transparent 50%, rgba(25,25,25,0.9) 50%);
-        }
-        
-        .crystal::before {
-            content: '';
-            position: absolute;
-            top: 10%;
-            right: 20%;
-            width: 60%;
-            height: 80%;
-            background: linear-gradient(160deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
-            transform: skewX(-5deg);
-            clip-path: polygon(30% 0%, 100% 20%, 100% 100%, 0% 80%);
-        }
-        
-        .crystal::after {
-            content: '';
-            position: absolute;
-            top: 20%;
-            left: 10%;
-            width: 40%;
-            height: 60%;
-            background: linear-gradient(60deg, rgba(255,193,7,0.05) 0%, transparent 100%);
-            clip-path: polygon(0% 10%, 80% 0%, 100% 100%, 20% 90%);
-        }
-        
-        /* Vertical dates on right */
+        /* Date section */
         .dates {
-            position: fixed;
-            right: 40px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-90deg);
-            display: flex;
-            gap: 16px;
-            font-family: 'Space Mono', monospace;
+            margin-bottom: 60px;
+        }
+        
+        .dates-label {
             font-size: 11px;
-            color: var(--text-dim);
-            letter-spacing: 2px;
-        }
-        
-        /* Main content */
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 60px;
-            flex: 1;
-        }
-        
-        .main-col {
-            padding-right: 40px;
-        }
-        
-        .section { display: none; }
-        .section.active { display: block; }
-        
-        .description {
-            font-family: 'Space Mono', monospace;
-            font-size: 12px;
-            line-height: 2;
-            text-align: justify;
-            color: var(--text-dim);
-            margin-bottom: 40px;
-        }
-        
-        .input-group {
-            margin-bottom: 24px;
-        }
-        
-        .input-group label {
-            display: block;
-            font-family: 'Space Mono', monospace;
-            font-size: 10px;
-            color: var(--text-dim);
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-        }
-        
-        .input-group input,
-        .input-group textarea {
-            width: 100%;
-            padding: 16px;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        
-        .input-group input:focus,
-        .input-group textarea:focus {
-            border-color: var(--amber);
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 18px;
-            background: transparent;
-            border: 1px solid var(--amber);
-            color: var(--amber);
-            font-family: 'Space Mono', monospace;
-            font-size: 12px;
-            letter-spacing: 3px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn:hover {
-            background: var(--amber);
-            color: var(--bg);
-        }
-        
-        /* Results */
-        .result-card {
-            margin-top: 32px;
-            padding: 24px;
-            border: 1px solid var(--border);
-        }
-        
-        .result-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+            color: var(--text-muted);
+            letter-spacing: 0.3em;
             margin-bottom: 20px;
         }
         
-        .avatar {
-            width: 48px;
-            height: 48px;
-            border: 1px solid var(--amber);
-            object-fit: cover;
-        }
-        
-        .user-name {
-            font-family: 'Inter', sans-serif;
+        .dates-numbers {
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 18px;
-        }
-        
-        .user-handle {
-            font-family: 'Space Mono', monospace;
-            font-size: 12px;
-            color: var(--text-dim);
-        }
-        
-        .stats-row {
-            display: flex;
-            gap: 24px;
-            margin-top: 16px;
-        }
-        
-        .stat-item {
-            font-family: 'Space Mono', monospace;
-            font-size: 11px;
-        }
-        
-        .stat-item .value {
+            font-size: clamp(48px, 10vw, 100px);
             color: var(--text);
-            font-weight: 700;
-        }
-        
-        .stat-item .label {
-            color: var(--text-dim);
-            margin-left: 6px;
-        }
-        
-        /* Sidebar data */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        
-        .data-block {
-            font-family: 'Space Mono', monospace;
-            font-size: 10px;
-            color: var(--text-dim);
-        }
-        
-        .data-block .value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 4px;
-        }
-        
-        .data-block .label {
-            letter-spacing: 2px;
-            color: var(--text-dim);
-        }
-        
-        .data-block.highlight .value {
-            color: var(--amber);
-        }
-        
-        /* Compare */
-        .compare-grid {
-            display: grid;
-            grid-template-columns: 1fr 40px 1fr;
-            gap: 20px;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        
-        .compare-vs {
-            text-align: center;
-            font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            color: var(--amber);
-        }
-        
-        .compare-user {
-            padding: 16px;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-        
-        .compare-user img {
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--border);
-            margin-bottom: 8px;
-        }
-        
-        .compare-user .name {
-            font-family: 'Space Mono', monospace;
-            font-size: 12px;
-        }
-        
-        /* Score */
-        .score-display {
-            text-align: center;
-            padding: 48px;
-            margin-top: 24px;
-            border: 1px solid var(--border);
-        }
-        
-        .score-value {
-            font-size: 72px;
-            font-weight: 900;
-            color: var(--amber);
             line-height: 1;
         }
         
-        .score-label {
-            font-family: 'Space Mono', monospace;
+        .dates-number {
+            display: inline-block;
+            margin: 0 8px;
+        }
+        
+        .dates-number::after {
+            content: '/';
+            color: var(--text-dim);
+            margin-left: 12px;
+            opacity: 0.5;
+        }
+        
+        .dates-number:last-child::after {
+            display: none;
+        }
+        
+        /* CTA */
+        .cta {
+            display: inline-block;
+            padding: 14px 32px;
+            border: 1px solid var(--text);
+            border-radius: 2px;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            background: transparent;
+        }
+        
+        .cta:hover {
+            background: var(--text);
+            color: var(--bg);
+        }
+        
+        /* Body text */
+        .body-text {
+            margin-top: 80px;
+            font-size: 12px;
+            color: var(--text-dark);
+            line-height: 2;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .body-text p {
+            margin-bottom: 20px;
+        }
+        
+        .body-text .highlight {
+            color: var(--text-dim);
+        }
+        
+        .body-text a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: color 0.4s ease;
+        }
+        
+        .body-text a:hover {
+            color: var(--text);
+        }
+        
+        /* Right sidebar */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-top: 120px;
+            text-align: right;
+        }
+        
+        .star {
+            font-size: 24px;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+        
+        .event-info {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 2;
+        }
+        
+        .event-info .rule {
+            width: 100%;
+            height: 1px;
+            background: var(--border-dark);
+            margin: 20px 0;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
             font-size: 10px;
             color: var(--text-dim);
-            letter-spacing: 2px;
-            margin-top: 12px;
+        }
+        
+        footer a {
+            color: var(--text-dark);
+            text-decoration: none;
         }
         
         /* Nav */
         .nav {
             position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 0;
+            left: 0;
+            right: 0;
             display: flex;
-            gap: 8px;
-            padding: 12px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
             background: var(--bg);
-            border: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-dark);
+            z-index: 100;
         }
         
-        .nav-item {
-            padding: 10px 20px;
-            font-family: 'Space Mono', monospace;
+        .nav-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.1em;
+        }
+        
+        .nav-cta {
             font-size: 11px;
+            letter-spacing: 0.2em;
             color: var(--text-dim);
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid var(--text-dim);
+            border-radius: 2px;
+            transition: all 0.4s ease;
         }
         
-        .nav-item:hover, .nav-item.active {
+        .nav-cta:hover {
+            border-color: var(--text);
             color: var(--text);
-            border-color: var(--amber);
         }
         
-        .loading { display: none; }
-        .loading.active { display: block; text-align: center; padding: 32px; }
-        
-        .spinner {
-            width: 24px; height: 24px;
-            border: 1px solid var(--border);
-            border-top-color: var(--amber);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px;
-        }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        @media (max-width: 800px) {
-            .hero { grid-template-columns: 1fr; }
-            .hero-image { display: none; }
-            .content { grid-template-columns: 1fr; }
-            .dates { display: none; }
-            .main-title span { font-size: 64px; }
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 120px 24px 40px;
+            }
+            
+            .left-col {
+                order: 1;
+                padding-top: 0;
+                text-align: center;
+            }
+            
+            .main-col {
+                order: 2;
+            }
+            
+            .right-col {
+                order: 3;
+                padding-top: 40px;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: clamp(48px, 18vw, 100px);
+            }
+            
+            .welcome span {
+                display: inline;
+            }
+            
+            .nav {
+                padding: 16px 24px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="grain"></div>
-    
-    <div class="container">
-        <div class="hero">
-            <div class="hero-text">
-                <div class="main-title">
-                    <div class="line">
-                        <span class="dash">XSC-</span>
-                        <span>ORE</span>
-                    </div>
-                    <div class="line">
-                        <span class="dash">AN-</span>
-                        <span>ALYZE</span>
-                    </div>
-                    <div class="line">
-                        <span class="dash">PRE-</span>
-                        <span>DICT</span>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="crystal"></div>
-            </div>
-        </div>
-        
-        <div class="dates">
-            <span>01</span>
-            <span>02</span>
-            <span>03</span>
-        </div>
-        
-        <div class="content">
-            <div class="main-col">
-                <p class="description">
-                    XSCORE IS A REAL-TIME ANALYTICS ENGINE FOR TWITTER PROFILES. 
-                    IT TRACKS ENGAGEMENT METRICS, VIRAL POTENTIAL, AND AUDIENCE QUALITY. 
-                    ENTER ANY USERNAME TO RETRIEVE INSTANT INSIGHTS ABOUT THEIR SOCIAL PRESENCE.
-                </p>
-                
-                <!-- Analyze -->
-                <div class="section active" id="analyze">
-                    <div class="input-group">
-                        <label>>> USERNAME</label>
-                        <input type="text" id="username" placeholder="@handle">
-                    </div>
-                    <button class="btn" id="analyzeBtn">ANALYZE</button>
-                    
-                    <div class="loading" id="loading">
-                        <div class="spinner"></div>
-                    </div>
-                    
-                    <div class="result-card" id="result" style="display: none;">
-                        <div class="result-header">
-                            <img class="avatar" id="avatar" src="">
-                            <div>
-                                <div class="user-name" id="name"></div>
-                                <div class="user-handle">@<span id="handle"></span></div>
-                            </div>
-                        </div>
-                        <div class="stats-row">
-                            <div class="stat-item">
-                                <span class="value" id="followers">0</span>
-                                <span class="label">FOLLOWERS</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="value" id="engagement">0%</span>
-                                <span class="label">ENG</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="value" id="viralScore">0</span>
-                                <span class="label">INDEX</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Compare -->
-                <div class="section" id="compare">
-                    <div class="compare-grid">
-                        <div class="input-group">
-                            <label>>> USER A</label>
-                            <input type="text" id="user1" placeholder="@you">
-                        </div>
-                        <div class="compare-vs">VS</div>
-                        <div class="input-group">
-                            <label>>> USER B</label>
-                            <input type="text" id="user2" placeholder="@them">
-                        </div>
-                    </div>
-                    <button class="btn" id="compareBtn">COMPARE</button>
-                    
-                    <div class="result-card" id="compareResult" style="display: none; margin-top: 24px;">
-                        <div class="compare-grid">
-                            <div class="compare-user">
-                                <img id="avatar1" src="">
-                                <div class="name" id="name1"></div>
-                            </div>
-                            <div class="compare-vs">VS</div>
-                            <div class="compare-user">
-                                <img id="avatar2" src="">
-                                <div class="name" id="name2"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Predict -->
-                <div class="section" id="predict">
-                    <div class="input-group">
-                        <label>>> OPERATOR</label>
-                        <input type="text" id="predictUser" placeholder="@username">
-                    </div>
-                    <div class="input-group">
-                        <label>>> PAYLOAD</label>
-                        <textarea id="tweetText" placeholder="content..." rows="3"></textarea>
-                    </div>
-                    <button class="btn" id="predictBtn">PREDICT</button>
-                    
-                    <div class="score-display" id="predictResult" style="display: none;">
-                        <div class="score-value" id="predictScore">0</div>
-                        <div class="score-label">VIRAL POTENTIAL</div>
-                    </div>
-                </div>
-            </div>
-            
-            <aside class="sidebar">
-                <div class="data-block highlight">
-                    <div class="value" id="sidebarFollowers">0</div>
-                    <div class="label">FOLLOWERS</div>
-                </div>
-                
-                <div class="data-block">
-                    <div class="value" id="sidebarViral">0</div>
-                    <div class="label">VIRAL INDEX</div>
-                </div>
-                
-                <div class="data-block">
-                    <div class="value" id="sidebarEng">0%</div>
-                    <div class="label">ENGAGEMENT</div>
-                </div>
-                
-                <div class="data-block">
-                    <div class="value" id="sidebarQuality">0%</div>
-                    <div class="label">QUALITY</div>
-                </div>
-            </aside>
-        </div>
-    </div>
+    <div class="blob"></div>
     
     <nav class="nav">
-        <div class="nav-item active" data-tab="analyze">ANALYZE</div>
-        <div class="nav-item" data-tab="compare">COMPARE</div>
-        <div class="nav-item" data-tab="predict">PREDICT</div>
+        <div class="nav-name">XSCORE</div>
+        <a href="#" class="nav-cta">ANALYZE</a>
     </nav>
     
-    <script>
-        const navItems = document.querySelectorAll('.nav-item');
-        const sections = document.querySelectorAll('.section');
+    <div class="container">
+        <aside class="left-col">
+            <div class="welcome">
+                <span>WEL-</span>
+                <span>COME</span>
+                <span>TO</span>
+                <span>THE</span>
+                <span>UNKNOWN</span>
+            </div>
+        </aside>
         
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                navItems.forEach(n => n.classList.remove('active'));
-                sections.forEach(s => s.classList.remove('active'));
-                item.classList.add('active');
-                document.getElementById(item.dataset.tab).classList.add('active');
-            });
-        });
+        <main class="main-col">
+            <section class="hero">
+                <h1 class="hero-title">
+                    <span class="hero-line">XS<span class="hero-dash">-</span>C</span>
+                    <span class="hero-line"><span class="hero-dash">-</span>OR</span>
+                    <span class="hero-line">E<span class="hero-dash">-</span></span>
+                </h1>
+            </section>
+            
+            <div class="dates">
+                <div class="dates-label">SEPTEMBER</div>
+                <div class="dates-numbers">
+                    <span class="dates-number">22</span>
+                    <span class="dates-number">23</span>
+                    <span class="dates-number">24</span>
+                </div>
+                <div class="dates-label" style="margin-top: 12px; color: var(--text-dim);">tickets available</div>
+            </div>
+            
+            <a href="#" class="cta">GET TICKETS</a>
+            
+            <div class="body-text">
+                <p>What if you could predict the future of your content?</p>
+                <p><span class="highlight">Searching the unknown.</span></p>
+                <p><a href="#">Explore your viral potential →</a></p>
+                <p><a href="#">Compare with competitors →</a></p>
+                <p><a href="#">Predict your reach →</a></p>
+            </div>
+        </main>
         
-        function fmt(n) {
-            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
-            return String(n);
-        }
-        
-        async function analyze() {
-            const username = document.getElementById('username').value.trim().replace('@', '');
-            if (!username) return;
+        <aside class="right-col">
+            <div class="star">★</div>
             
-            document.getElementById('loading').classList.add('active');
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('analyzeBtn').disabled = true;
-            
-            try {
-                const res = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username })
-                });
-                
-                if (!res.ok) throw new Error('NOT_FOUND');
-                const d = await res.json();
-                
-                document.getElementById('avatar').src = d.avatar_url || '';
-                document.getElementById('name').textContent = d.display_name;
-                document.getElementById('handle').textContent = d.username;
-                
-                document.getElementById('followers').textContent = fmt(d.followers);
-                document.getElementById('engagement').textContent = d.engagement_rate + '%';
-                document.getElementById('viralScore').textContent = d.viral_score;
-                
-                document.getElementById('sidebarFollowers').textContent = fmt(d.followers);
-                document.getElementById('sidebarViral').textContent = d.viral_score;
-                document.getElementById('sidebarEng').textContent = d.engagement_rate + '%';
-                document.getElementById('sidebarQuality').textContent = d.quality + '%';
-                
-                document.getElementById('result').style.display = 'block';
-            } catch (e) {
-                alert('ERROR: ' + e.message);
-            }
-            
-            document.getElementById('loading').classList.remove('active');
-            document.getElementById('analyzeBtn').disabled = false;
-        }
-        
-        document.getElementById('analyzeBtn').addEventListener('click', analyze);
-        document.getElementById('username').addEventListener('keypress', e => { if (e.key === 'Enter') analyze(); });
-        
-        async function compare() {
-            const u1 = document.getElementById('user1').value.trim().replace('@', '');
-            const u2 = document.getElementById('user2').value.trim().replace('@', '');
-            if (!u1 || !u2) return;
-            
-            document.getElementById('compareBtn').disabled = true;
-            
-            try {
-                const res = await fetch('/api/compare', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user1: u1, user2: u2 })
-                });
-                
-                if (!res.ok) throw new Error('NOT_FOUND');
-                const d = await res.json();
-                
-                document.getElementById('avatar1').src = d.user1.avatar_url || '';
-                document.getElementById('name1').textContent = d.user1.username;
-                document.getElementById('avatar2').src = d.user2.avatar_url || '';
-                document.getElementById('name2').textContent = d.user2.username;
-                
-                document.getElementById('compareResult').style.display = 'block';
-            } catch (e) {
-                alert('ERROR: ' + e.message);
-            }
-            
-            document.getElementById('compareBtn').disabled = false;
-        }
-        
-        document.getElementById('compareBtn').addEventListener('click', compare);
-        
-        async function predict() {
-            const predictUser = document.getElementById('predictUser').value.trim().replace('@', '') || 'user';
-            const content = document.getElementById('tweetText').value;
-            if (!content) return;
-            
-            document.getElementById('predictBtn').disabled = true;
-            
-            try {
-                const res = await fetch('/api/predict', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: predictUser, content })
-                });
-                
-                const d = await res.json();
-                
-                document.getElementById('predictScore').textContent = d.score;
-                document.getElementById('predictResult').style.display = 'block';
-            } catch (e) {
-                alert('ERROR: ' + e.message);
-            }
-            
-            document.getElementById('predictBtn').disabled = false;
-        }
-        
-        document.getElementById('predictBtn').addEventListener('click', predict);
-    </script>
+            <div class="event-info">
+                brazilian creative<br>
+                club festival<br>
+                2025
+                <div class="rule"></div>
+                @xscore_app<br>
+                real-time analytics
+            </div>
+        </aside>
+    </div>
+    
+    <footer>
+        <a href="#">xscore.app</a>
+    </footer>
 </body>
 </html>
