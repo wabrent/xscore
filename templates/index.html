@@ -3,259 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibe — Twitter Analytics</title>
+    <title>Twitter CV — Vibe</title>
     <link rel="icon" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --bg: #FAFAFA;
-            --bg-card: #FFFFFF;
-            --text: #111111;
-            --text-secondary: #666666;
-            --text-tertiary: #999999;
-            --accent: #000000;
-            --accent-hover: #333333;
-            --border: #E5E5E5;
-            --border-hover: #CCCCCC;
-            --success: #22C55E;
-            --warning: #F59E0B;
-            --error: #EF4444;
-            --radius: 16px;
-            --radius-sm: 12px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.03);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 12px 24px rgba(0,0,0,0.05);
-            --shadow-lg: 0 8px 16px rgba(0,0,0,0.06), 0 24px 48px rgba(0,0,0,0.06);
+            --bg: #0A0A0F;
+            --bg-card: #12121A;
+            --bg-card-hover: #1A1A24;
+            --border: #2A2A3A;
+            --text: #FFFFFF;
+            --text-secondary: #8888AA;
+            --text-muted: #555566;
+            --accent: #6C5CE7;
+            --accent-gradient: linear-gradient(135deg, #6C5CE7, #A29BFE);
+            --green: #00D9A5;
+            --pink: #FF6B9D;
+            --cyan: #00D4FF;
+            --radius: 24px;
+            --radius-sm: 16px;
         }
         
-        @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: light) {
             :root {
-                --bg: #000000;
-                --bg-card: #0A0A0A;
-                --text: #FFFFFF;
-                --text-secondary: #888888;
-                --text-tertiary: #555555;
-                --accent: #FFFFFF;
-                --accent-hover: #CCCCCC;
-                --border: #1A1A1A;
-                --border-hover: #333333;
-                --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
-                --shadow-md: 0 4px 6px rgba(0,0,0,0.3), 0 12px 24px rgba(0,0,0,0.2);
-                --shadow-lg: 0 8px 16px rgba(0,0,0,0.4), 0 24px 48px rgba(0,0,0,0.3);
+                --bg: #F5F5F7;
+                --bg-card: #FFFFFF;
+                --bg-card-hover: #FAFAFA;
+                --border: #E5E5EA;
+                --text: #1A1A1F;
+                --text-secondary: #666677;
+                --text-muted: #AAAABB;
+                --accent-gradient: linear-gradient(135deg, #6C5CE7, #8B7CFF);
             }
         }
         
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
             min-height: 100vh;
-            line-height: 1.5;
             -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Gradient Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(108, 92, 231, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(0, 217, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
         
         .container {
             max-width: 480px;
             margin: 0 auto;
-            padding: 48px 20px;
+            padding: 60px 20px 80px;
+            position: relative;
+            z-index: 1;
         }
         
         /* Header */
         header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 40px;
-        }
-        
-        .logo-wrap {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            text-align: center;
+            margin-bottom: 48px;
         }
         
         .logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--text);
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: var(--accent-gradient);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: spin 8s linear infinite;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
         
         .logo img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-            filter: invert(1);
+            width: 36px;
+            height: 36px;
+            filter: brightness(0) invert(1);
         }
         
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        .brand h1 {
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
+        header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
         }
         
-        .brand p {
-            font-size: 13px;
+        header p {
+            font-size: 16px;
             color: var(--text-secondary);
         }
         
         /* Search */
-        .search-wrapper {
-            position: relative;
-            margin-bottom: 32px;
-        }
-        
         .search-box {
             display: flex;
-            gap: 8px;
+            gap: 12px;
+            margin-bottom: 32px;
         }
         
         .search-box input {
             flex: 1;
-            padding: 16px 20px;
+            padding: 18px 24px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             color: var(--text);
+            font-family: inherit;
             font-size: 16px;
             outline: none;
             transition: all 0.2s;
-            box-shadow: var(--shadow);
         }
         
         .search-box input:focus {
-            border-color: var(--text);
-            box-shadow: var(--shadow-md);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.15);
         }
         
         .search-box input::placeholder {
-            color: var(--text-tertiary);
+            color: var(--text-muted);
         }
         
         .search-box button {
-            padding: 16px 24px;
-            background: var(--text);
+            padding: 18px 28px;
+            background: var(--accent-gradient);
             border: none;
             border-radius: var(--radius);
-            color: var(--bg);
-            font-size: 15px;
+            color: white;
+            font-family: inherit;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
         
         .search-box button:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-        }
-        
-        .search-box button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(108, 92, 231, 0.3);
         }
         
         /* Loading */
         .loading { display: none; padding: 48px; text-align: center; }
         .loading.active { display: block; }
         .loading-spinner {
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--border);
-            border-top-color: var(--text);
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 12px;
+            margin: 0 auto 16px;
         }
-        .loading-text {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
         /* Error */
-        .error {
-            display: none;
-            padding: 16px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--error);
-            border-radius: var(--radius);
-            color: var(--error);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
+        .error { display: none; padding: 16px; background: rgba(255, 107, 157, 0.1); border: 1px solid var(--pink); border-radius: var(--radius); color: var(--pink); margin-bottom: 24px; text-align: center; font-size: 14px; }
         .error.active { display: block; }
         
         /* Results */
         .results { display: none; }
-        .results.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .results.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Card */
+        /* Profile Card */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 20px;
         }
         
-        /* Profile */
         .profile {
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         
         .avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
             object-fit: cover;
-            border: 2px solid var(--border);
+            border: 2px solid var(--accent);
         }
         
         .profile-info h2 {
-            font-size: 20px;
-            font-weight: 600;
+            font-size: 24px;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .verified {
-            width: 18px;
-            height: 18px;
-            background: #3B82F6;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 12px;
             color: white;
         }
         
         .profile-info .username {
-            font-size: 15px;
+            font-size: 16px;
             color: var(--text-secondary);
-            margin-top: 2px;
+            margin-top: 4px;
         }
         
         .bio {
             font-size: 15px;
             color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 16px;
+            line-height: 1.6;
+            margin-bottom: 24px;
         }
         
         /* Stats */
@@ -273,77 +254,65 @@
         }
         
         .stat-value {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            color: var(--text);
         }
         
         .stat-label {
             font-size: 12px;
-            color: var(--text-tertiary);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-top: 4px;
         }
         
-        /* Vibe Score Card */
+        /* Vibe Score */
         .vibe-card {
+            background: var(--accent-gradient);
+            border-radius: var(--radius);
+            padding: 40px 24px;
             text-align: center;
-            padding: 32px 24px;
-            background: linear-gradient(135deg, var(--bg-card), var(--bg));
+            margin-bottom: 20px;
         }
         
         .vibe-score {
-            font-size: 72px;
+            font-size: 80px;
             font-weight: 700;
-            letter-spacing: -3px;
-            color: var(--text);
+            color: white;
             line-height: 1;
-            margin-bottom: 8px;
         }
         
         .vibe-label {
-            font-size: 13px;
-            color: var(--text-secondary);
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .vibe-bar {
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-        
-        .vibe-bar-fill {
-            height: 100%;
-            background: var(--text);
-            border-radius: 2px;
-            transition: width 0.6s ease;
+            letter-spacing: 2px;
+            margin-top: 12px;
         }
         
         /* Section */
         .section {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             padding: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         
         .section-title {
             font-size: 13px;
             font-weight: 600;
             color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 16px;
-            letter-spacing: -0.2px;
         }
         
         /* Content Grid */
         .content-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
         
         .content-item {
@@ -352,24 +321,12 @@
             gap: 10px;
             padding: 14px;
             background: var(--bg);
-            border-radius: var(--radius-sm);
+            border-radius: 12px;
         }
         
-        .content-item .icon {
-            font-size: 20px;
-        }
-        
-        .content-item .name {
-            font-size: 14px;
-            font-weight: 500;
-            flex: 1;
-        }
-        
-        .content-item .score {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-        }
+        .content-item .icon { font-size: 20px; }
+        .content-item .name { font-size: 14px; font-weight: 500; flex: 1; }
+        .content-item .score { font-size: 16px; font-weight: 700; color: var(--accent); }
         
         /* Times */
         .times-grid {
@@ -382,70 +339,35 @@
             text-align: center;
             padding: 14px 8px;
             background: var(--bg);
-            border-radius: var(--radius-sm);
+            border-radius: 12px;
         }
         
-        .time-item .time {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .time-item .score {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
+        .time-item .time { font-size: 16px; font-weight: 600; }
+        .time-item .score { font-size: 13px; color: var(--green); margin-top: 4px; }
         
         /* Audience */
-        .audience-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        
         .audience-item {
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 8px 0;
         }
         
-        .audience-item .name {
-            width: 70px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-        
-        .audience-item .bar {
-            flex: 1;
-            height: 6px;
-            background: var(--border);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .audience-item .bar-fill {
-            height: 100%;
-            background: var(--text);
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-        
-        .audience-item .percent {
-            width: 40px;
-            text-align: right;
-            font-size: 14px;
-            font-weight: 600;
-        }
+        .audience-item .name { width: 70px; font-size: 14px; color: var(--text-secondary); }
+        .audience-item .bar { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; }
+        .audience-item .bar-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+        .audience-item .percent { width: 40px; text-align: right; font-size: 14px; font-weight: 600; }
         
         /* Share */
         .share-btn {
             display: block;
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             color: var(--text);
+            font-family: inherit;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -454,43 +376,35 @@
         }
         
         .share-btn:hover {
-            border-color: var(--text);
-            background: var(--bg);
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
         }
         
-        /* Responsive */
         @media (max-width: 480px) {
-            .container { padding: 32px 16px; }
-            .stats { grid-template-columns: repeat(3, 1fr); }
-            .content-grid { grid-template-columns: 1fr; }
-            .vibe-score { font-size: 56px; }
+            .container { padding: 40px 16px 60px; }
+            header h1 { font-size: 28px; }
+            .vibe-score { font-size: 60px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo-wrap">
-                <div class="logo">
-                    <img src="logo.png" alt="Vibe">
-                </div>
-                <div class="brand">
-                    <h1>Vibe</h1>
-                    <p>Twitter Analytics</p>
-                </div>
+            <div class="logo">
+                <img src="logo.png" alt="Twitter CV">
             </div>
+            <h1>Twitter CV</h1>
+            <p>Your profile at a glance</p>
         </header>
         
-        <div class="search-wrapper">
-            <div class="search-box">
-                <input type="text" id="username" placeholder="Enter username">
-                <button id="analyzeBtn">Analyze</button>
-            </div>
+        <div class="search-box">
+            <input type="text" id="username" placeholder="Enter username">
+            <button id="analyzeBtn">Generate</button>
         </div>
         
         <div class="loading" id="loading">
             <div class="loading-spinner"></div>
-            <div class="loading-text">Analyzing profile...</div>
+            <div style="color: var(--text-secondary); font-size: 14px;">Analyzing your profile...</div>
         </div>
         
         <div class="error" id="error"></div>
@@ -501,64 +415,42 @@
                 <div class="profile">
                     <img class="avatar" id="avatar" src="" alt="">
                     <div class="profile-info">
-                        <h2>
-                            <span id="name"></span>
-                            <span class="verified" id="verified" style="display:none">✓</span>
-                        </h2>
+                        <h2><span id="name"></span><span class="verified" id="verified" style="display:none">✓</span></h2>
                         <div class="username">@<span id="handle"></span></div>
                     </div>
                 </div>
                 <div class="bio" id="bio"></div>
                 
                 <div class="stats">
-                    <div class="stat">
-                        <div class="stat-value" id="followers">0</div>
-                        <div class="stat-label">Followers</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="following">0</div>
-                        <div class="stat-label">Following</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="tweets">0</div>
-                        <div class="stat-label">Tweets</div>
-                    </div>
+                    <div class="stat"><div class="stat-value" id="followers">0</div><div class="stat-label">Followers</div></div>
+                    <div class="stat"><div class="stat-value" id="following">0</div><div class="stat-label">Following</div></div>
+                    <div class="stat"><div class="stat-value" id="tweets">0</div><div class="stat-label">Tweets</div></div>
                 </div>
             </div>
             
             <!-- Vibe Score -->
-            <div class="card vibe-card">
+            <div class="vibe-card">
                 <div class="vibe-score" id="vibeScore">0</div>
-                <div class="vibe-label">Vibe Score</div>
-                <div class="vibe-bar"><div class="vibe-bar-fill" id="vibeBar"></div></div>
+                <div class="vibe-label">Your Vibe Score</div>
             </div>
             
             <!-- Engagement -->
             <div class="section">
                 <div class="section-title">Engagement</div>
                 <div class="stats">
-                    <div class="stat">
-                        <div class="stat-value" id="engagement">0%</div>
-                        <div class="stat-label">Engagement</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="avgLikes">0</div>
-                        <div class="stat-label">Avg Likes</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="quality">0%</div>
-                        <div class="stat-label">Quality</div>
-                    </div>
+                    <div class="stat"><div class="stat-value" id="engagement">0%</div><div class="stat-label">Eng Rate</div></div>
+                    <div class="stat"><div class="stat-value" id="avgLikes">0</div><div class="stat-label">Avg Likes</div></div>
+                    <div class="stat"><div class="stat-value" id="quality">0%</div><div class="stat-label">Quality</div></div>
                 </div>
             </div>
             
-            <!-- Content Mix -->
+            <!-- Content -->
             <div class="section">
                 <div class="section-title">Content</div>
                 <div class="content-grid" id="contentMix"></div>
             </div>
             
-            <!-- Best Times -->
+            <!-- Times -->
             <div class="section">
                 <div class="section-title">Best Times</div>
                 <div class="times-grid" id="bestTimes"></div>
@@ -570,7 +462,7 @@
                 <div class="audience-list" id="audience"></div>
             </div>
             
-            <button class="share-btn" id="shareBtn">Share Results</button>
+            <button class="share-btn" id="shareBtn">Share Your CV</button>
         </div>
     </div>
     
@@ -621,7 +513,6 @@
                 
                 const vs = document.getElementById('vibeScore');
                 animateValueSimple(vs, d.vibe_score, '');
-                document.getElementById('vibeBar').style.width = d.vibe_score + '%';
                 
                 setTxt('engagement', d.engagement + '%');
                 setTxt('avgLikes', d.avg_likes_per_tweet);
@@ -662,7 +553,7 @@
                 error.classList.add('active');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Analyze';
+                btn.textContent = 'Generate';
             }
         }
         
@@ -670,23 +561,23 @@
             const el = document.getElementById(id);
             if (!el) return;
             let current = 0;
-            const step = Math.max(target / 25, 1);
+            const step = Math.max(target / 20, 1);
             const timer = setInterval(() => {
                 current += step;
                 if (current >= target) { el.textContent = fmt(target); clearInterval(timer); }
                 else { el.textContent = fmt(Math.floor(current)); }
-            }, 25);
+            }, 20);
         }
         
         function animateValueSimple(el, target, suffix) {
             if (!el) return;
             let current = 0;
-            const step = Math.max(target / 20, 1);
+            const step = Math.max(target / 15, 1);
             const timer = setInterval(() => {
                 current += step;
                 if (current >= target) { el.textContent = target + suffix; clearInterval(timer); }
                 else { el.textContent = Math.floor(current) + suffix; }
-            }, 20);
+            }, 15);
         }
         
         btn.addEventListener('click', analyze);
@@ -694,7 +585,7 @@
         
         document.getElementById('shareBtn').addEventListener('click', () => {
             const vs = document.getElementById('vibeScore').textContent;
-            const text = `My Vibe Score: ${vs}`;
+            const text = `My Twitter Vibe Score: ${vs}`;
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
         });
     </script>
