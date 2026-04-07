@@ -22,65 +22,18 @@ def get_twitter_data(username):
         likes = user.get("likes", 0)
         media = user.get("media_count", 0)
         
-        # Real engagement calculation
-        avg_likes_per_tweet = likes / max(tweets, 1) if tweets > 0 else 0
+        # Real metrics
+        avg_likes = likes / max(tweets, 1) if tweets > 0 else 0
         engagement_rate = likes / max(followers, 1) * 100 if followers > 0 else 0
         
-        # Vibe Score - real metrics
-        vibe_score = min(100, int(engagement_rate * 2 + (media / max(tweets, 1)) * 30))
+        # Quality score
+        quality = min(100, int((followers / max(following, 1)) * 10))
         
-        # Content analysis
-        content_mix = []
-        if avg_likes_per_tweet > 50:
-            content_mix.append({"type": "VIBRAL", "icon": "⚡", "score": min(95, int(avg_likes_per_tweet/2 + 50))})
-        if media > tweets:
-            content_mix.append({"type": "VISUAL", "icon": "📷", "score": min(90, int(media/tweets*10 + 40))})
-        if tweets > 100:
-            content_mix.append({"type": "THREADS", "icon": "⋯⋯", "score": 75})
-        if following > followers * 2:
-            content_mix.append({"type": "NETWORK", "icon": "♾️", "score": 60})
-        content_mix.extend([
-            {"type": "HOT", "icon": "🔥", "score": 55},
-            {"type": "CHILL", "icon": "❄️", "score": 40}
-        ])
-        content_mix = sorted(content_mix, key=lambda x: x["score"], reverse=True)[:4]
+        # Viral potential
+        viral_score = min(100, int(engagement_rate * 3 + (avg_likes / 10)))
         
-        # Best times based on engagement patterns
-        engagement = engagement_rate
-        best_times = [
-            {"time": "02:00", "score": min(95, 40 + int(engagement * 1.5))},
-            {"time": "08:00", "score": min(90, 30 + int(engagement * 2))},
-            {"time": "14:00", "score": min(85, 25 + int(engagement * 2.5))},
-            {"time": "20:00", "score": min(95, 35 + int(engagement * 1.8))},
-            {"time": "04:00", "score": min(80, 20 + int(engagement * 3))},
-        ]
-        best_times = sorted(best_times, key=lambda x: x["score"], reverse=True)[:3]
-        
-        # Audience based on follower count
-        audience = []
-        if followers > 500000:
-            audience = [
-                {"segment": "CYBER", "percent": 35},
-                {"segment": "NET", "percent": 25},
-                {"segment": "SYS", "percent": 20},
-                {"segment": "USER", "percent": 20}
-            ]
-        elif followers > 50000:
-            audience = [
-                {"segment": "DEV", "percent": 40},
-                {"segment": "DES", "percent": 25},
-                {"segment": "DATA", "percent": 20},
-                {"segment": "OTHER", "percent": 15}
-            ]
-        else:
-            audience = [
-                {"segment": "NEW", "percent": 50},
-                {"segment": "GROW", "percent": 30},
-                {"segment": "HYPE", "percent": 20}
-            ]
-        
-        # Quality - follower ratio
-        quality = min(100, int((followers / max(following, 1)) * 8))
+        # Growth rate (estimated)
+        growth_rate = min(100, int((followers / max(tweets, 1)) * 2))
         
         return {
             "username": user.get("screen_name", username),
@@ -93,19 +46,38 @@ def get_twitter_data(username):
             "media": media,
             "verified": user.get("verification", {}).get("verified", False),
             "avatar_url": user.get("avatar_url", ""),
-            "vibe_score": vibe_score,
-            "engagement": round(engagement_rate, 1),
-            "avg_likes_per_tweet": round(avg_likes_per_tweet, 1),
-            "content_mix": content_mix,
-            "best_times": best_times,
-            "audience": audience,
+            "engagement_rate": round(engagement_rate, 2),
+            "avg_likes": round(avg_likes, 1),
             "quality": quality,
-            "viral_potential": min(100, vibe_score + int(media / 50)),
-            "network_strength": min(100, int(followers / max(following, 1) * 5))
+            "viral_score": viral_score,
+            "growth_rate": growth_rate,
+            "influence_rank": min(100, max(1, 100 - int(followers / 10000)))
         }
     except Exception as e:
         print(f"Error: {e}")
         return None
+
+def compare_profiles(username1, username2):
+    data1 = get_twitter_data(username1)
+    data2 = get_twitter_data(username2)
+    
+    if not data1 or not data2:
+        return None
+    
+    # Compare metrics
+    comparison = {
+        "user1": data1,
+        "user2": data2,
+        "winner": {
+            "followers": data1["followers"] > data2["followers"],
+            "engagement": data1["engagement_rate"] > data2["engagement_rate"],
+            "viral": data1["viral_score"] > data2["viral_score"],
+            "growth": data1["growth_rate"] > data2["growth_rate"],
+            "quality": data1["quality"] > data2["quality"]
+        }
+    }
+    
+    return comparison
 
 @app.route('/')
 def index():
@@ -123,6 +95,78 @@ def analyze():
         return jsonify({"error": "User not found"}), 404
     
     return jsonify(result)
+
+@app.route('/api/compare', methods=['POST'])
+def compare():
+    data = request.get_json()
+    user1 = data.get('user1', '').strip().replace('@', '')
+    user2 = data.get('user2', '').strip().replace('@', '')
+    
+    if not user1 or not user2:
+        return jsonify({"error": "Two usernames required"}), 400
+    
+    result = compare_profiles(user1, user2)
+    if not result:
+        return jsonify({"error": "One or both users not found"}), 404
+    
+    return jsonify(result)
+
+@app.route('/api/predict', methods=['POST'])
+def predict():
+    """Predict viral potential based on content analysis"""
+    data = request.get_json()
+    username = data.get('username', '').strip().replace('@', '')
+    content = data.get('content', '')
+    
+    if not username:
+        return jsonify({"error": "Username required"}), 400
+    
+    profile = get_twitter_data(username)
+    if not profile:
+        return jsonify({"error": "User not found"}), 404
+    
+    # Analyze content for viral potential
+    viral_indicators = {
+        "hashtags": content.count('#'),
+        "mentions": content.count('@'),
+        "length": len(content),
+        "has_emoji": bool(any(ord(c) > 127 for c in content)),
+        "has_link": 'http' in content.lower()
+    }
+    
+    # Score content
+    content_score = 0
+    content_score += min(30, viral_indicators["hashtags"] * 10)
+    content_score += min(20, viral_indicators["mentions"] * 5)
+    content_score += 20 if 50 <= viral_indicators["length"] <= 280 else 10
+    content_score += 15 if viral_indicators["has_emoji"] else 0
+    content_score += 15 if viral_indicators["has_link"] else 0
+    
+    # Combine with profile
+    profile_viral = profile["viral_score"]
+    combined_score = int((content_score * 0.4) + (profile_viral * 0.6))
+    
+    prediction = {
+        "score": min(100, combined_score),
+        "verdict": "HIGH" if combined_score >= 70 else "MEDIUM" if combined_score >= 40 else "LOW",
+        "factors": {
+            "content_score": content_score,
+            "profile_score": profile_viral,
+            "has_hashtags": viral_indicators["hashtags"] > 0,
+            "has_mentions": viral_indicators["mentions"] > 0,
+            "good_length": 50 <= viral_indicators["length"] <= 280,
+            "has_emoji": viral_indicators["has_emoji"],
+            "has_link": viral_indicators["has_link"]
+        },
+        "tips": []
+    }
+    
+    if combined_score < 40:
+        prediction["tips"] = ["Add more hashtags", "Use engaging hook", "Add relevant link"]
+    elif combined_score < 70:
+        prediction["tips"] = ["Good start! Add more engagement", "Try shorter format"]
+    
+    return jsonify(prediction)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
