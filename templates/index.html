@@ -155,21 +155,34 @@
     align-items: center;
   }
 
-  .btn-primary {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--bg);
-    background: var(--gold);
-    padding: 14px 28px;
-    text-decoration: none;
-    transition: opacity 0.2s;
-    border: none;
-    cursor: crosshair;
-  }
+.btn-primary {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold);
+      padding: 14px 28px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      border: none;
+      cursor: crosshair;
+    }
 
-  .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:hover { opacity: 0.85; }
+
+    /* Letter spin */
+    .spin-btn {
+      display: inline-block;
+      transition: transform 0.5s ease-out;
+      transform-style: preserve-3d;
+    }
+
+    .btn-primary:hover .spin-btn,
+    .nav-cta:hover .spin-btn,
+    .input-row button:hover .spin-btn {
+      transform: rotateY(360deg);
+    }
 
   .btn-ghost {
     font-family: 'Space Mono', monospace;
@@ -903,11 +916,11 @@
 </footer>
 
 <script>
-  // Wrap button text in spans for letter animation
-  document.querySelectorAll('.btn-primary, .btn-ghost, .nav-cta, .btn-plan').forEach(btn => {
+  // Wrap button text in spans for letter spin animation
+  document.querySelectorAll('.btn-primary, .nav-cta, .input-row button').forEach(btn => {
     const text = btn.textContent;
     btn.innerHTML = text.split('').map((char, i) => 
-      `<span class="spin-btn" style="transition-delay: ${i * 0.05}s">${char}</span>`
+      `<span class="spin-btn" style="transition-delay: ${i * 0.04}s">${char}</span>`
     ).join('');
   });
 
