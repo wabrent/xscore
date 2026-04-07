@@ -2,7 +2,7 @@ import os
 import requests
 from flask import Flask, render_template, request, jsonify
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, template_folder='templates', static_folder='static')
 
 FXTWITTER_API = "https://api.fxtwitter.com"
 

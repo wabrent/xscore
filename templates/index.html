@@ -21,10 +21,24 @@
 
   body {
     background: var(--bg);
+    background-image: url('/static/grief-1536x864.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: var(--white);
     font-family: 'Space Mono', monospace;
     overflow-x: hidden;
     cursor: crosshair;
+  }
+
+  /* Background overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 8, 8, 0.75);
+    pointer-events: none;
+    z-index: -1;
   }
 
   /* NOISE OVERLAY */
@@ -246,6 +260,26 @@
   @keyframes ticker {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
+  }
+
+  /* Floating animation */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .hero-title {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Glow pulse */
+  @keyframes glow {
+    0%, 100% { text-shadow: 0 0 20px rgba(240, 192, 64, 0.3); }
+    50% { text-shadow: 0 0 40px rgba(240, 192, 64, 0.6); }
+  }
+
+  .stat-num {
+    animation: glow 3s ease-in-out infinite;
   }
 
   /* FEATURES */
@@ -939,16 +973,32 @@
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
   // Demo input
-  function handleAnalyze() {
-    const val = document.getElementById('handle-input').value.trim();
+  async function handleAnalyze() {
+    const val = document.getElementById('handle-input').value.trim().replace('@', '');
     if (!val) return;
     const btn = document.querySelector('.input-row button');
     btn.textContent = 'Analyzing...';
     btn.style.opacity = '0.6';
-    setTimeout(() => {
-      btn.textContent = 'Sign up to see full report →';
+    
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: val })
+      });
+      
+      if (!res.ok) {
+        btn.textContent = 'User not found';
+        return;
+      }
+      
+      const d = await res.json();
+      
+      btn.textContent = `VIRAL: ${d.viral_score} | ENG: ${d.engagement_rate}%`;
       btn.style.opacity = '1';
-    }, 1800);
+    } catch (e) {
+      btn.textContent = 'Error';
+    }
   }
 
   document.getElementById('handle-input').addEventListener('keydown', e => {
