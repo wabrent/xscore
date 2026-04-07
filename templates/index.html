@@ -10,11 +10,11 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold: #f0c040;
+    --gold: #00CED1;
     --blue: #1a1aff;
     --white: #f0ede6;
     --dim: #555550;
-    --bg: #080808;
+    --bg: #020202;
   }
 
   html { scroll-behavior: smooth; }
@@ -295,6 +295,34 @@
 
   .btn-primary {
     animation: btnPulse 2s ease-in-out infinite;
+  }
+
+  /* Letter spin animation */
+  .spin-btn {
+    display: inline-block;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+
+  .spin-btn span {
+    display: inline-block;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-primary:hover .spin-btn span,
+  .btn-ghost:hover .spin-btn span,
+  .nav-cta:hover .spin-btn span {
+    transform: rotateY(360deg);
+  }
+
+  .btn-ghost {
+    display: inline-block;
+  }
+
+  .btn-ghost:hover .spin-btn span,
+  .nav-cta:hover .spin-btn span,
+  .btn-plan:hover .spin-btn span {
+    transform: rotateY(360deg);
   }
 
   /* FEATURES */
@@ -975,6 +1003,14 @@
 </footer>
 
 <script>
+  // Wrap button text in spans for letter animation
+  document.querySelectorAll('.btn-primary, .btn-ghost, .nav-cta, .btn-plan').forEach(btn => {
+    const text = btn.textContent;
+    btn.innerHTML = text.split('').map((char, i) => 
+      `<span class="spin-btn" style="transition-delay: ${i * 0.05}s">${char}</span>`
+    ).join('');
+  });
+
   // Scroll reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
