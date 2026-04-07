@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIBE // TERMINAL</title>
+    <link rel="icon" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #030308;
+            --bg-card: rgba(10, 10, 20, 0.6);
+            --border: rgba(0, 240, 255, 0.15);
+            --border-hover: rgba(0, 240, 255, 0.4);
+            --cyan: #00F0FF;
+            --pink: #FF007F;
+            --purple: #A78BFA;
+            --green: #00FF9C;
+            --text: #E0F0FF;
+            --text-dim: #607080;
+            --glow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+        
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Background Grid & Scanlines */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 2px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0a0a1a, #030308);
+            border: 2px solid var(--cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spin 6s linear infinite;
+            box-shadow: var(--glow);
+        }
+        .logo-wrap img { width: 36px; height: 36px; object-fit: contain; }
+        
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .brand h1 {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -1px;
+            color: var(--cyan);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        .brand span {
+            font-size: 12px;
+            color: var(--text-dim);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        
+        /* Search */
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 16px 20px;
+            background: rgba(10, 10, 20, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.15);
+        }
+        .search-box input::placeholder { color: var(--text-dim); }
+        
+        .search-box button {
+            padding: 16px 28px;
+            background: linear-gradient(135deg, var(--cyan), var(--green));
+            border: none;
+            border-radius: 12px;
+            color: #030308;
+            font-weight: 700;
+            font-size: 16px;
+            font-family: 'Rajdhani', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+        .search-box button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 240, 255, 0.3); }
+        .search-box button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        /* Loading */
+        .loading { display: none; text-align: center; padding: 40px; }
+        .loading.active { display: block; }
+        .loading-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--cyan);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        
+        /* Error */
+        .error {
+            display: none;
+            padding: 16px;
+            background: rgba(255, 0, 127, 0.1);
+            border: 1px solid var(--pink);
+            border-radius: 12px;
+            color: var(--pink);
+            margin-bottom: 24px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+        .error.active { display: block; }
+        
+        /* Results */
+        .results { display: none; }
+        .results.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: border-color 0.3s;
+        }
+        .card:hover { border-color: var(--border-hover); }
+        
+        /* Profile */
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            border: 2px solid var(--cyan);
+            object-fit: cover;
+        }
+        .profile-info h2 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .verified {
+            width: 20px;
+            height: 20px;
+            background: var(--cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #030308;
+            font-weight: 700;
+        }
+        .username { color: var(--text-dim); font-size: 16px; margin-top: 4px; }
+        .bio { color: var(--text-dim); font-size: 15px; margin-top: 12px; line-height: 1.5; }
+        
+        /* Stats Grid */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .stat {
+            text-align: center;
+            padding: 16px 8px;
+            background: rgba(0, 240, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        
+        /* Vibe Score */
+        .vibe-card {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(167, 139, 250, 0.05));
+            border: 1px solid var(--cyan);
+            text-align: center;
+            padding: 32px 24px;
+        }
+        .vibe-score {
+            font-size: 72px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .vibe-label {
+            font-size: 14px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 16px;
+        }
+        .vibe-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .vibe-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            border-radius: 3px;
+            transition: width 0.8s ease;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+        
+        /* Section */
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--cyan);
+        }
+        
+        /* Content Mix */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .content-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(0, 240, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .content-item:hover { border-color: var(--border-hover); background: rgba(0, 240, 255, 0.05); }
+        .content-item .icon { font-size: 24px; }
+        .content-item .name { font-size: 16px; font-weight: 600; }
+        .content-item .score {
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        /* Times */
+        .times-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .time-item {
+            text-align: center;
+            padding: 16px;
+            background: rgba(0, 240, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        .time-item .time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .time-item .score {
+            font-size: 13px;
+            color: var(--green);
+        }
+        
+        /* Audience */
+        .audience-list { display: flex; flex-direction: column; gap: 12px; }
+        .audience-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .audience-item .name {
+            width: 80px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--text-dim);
+        }
+        .audience-item .bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .audience-item .bar-fill {
+            height: 100%;
+            background: var(--purple);
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+        .audience-item .percent {
+            width: 40px;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        /* Viral */
+        .viral-card {
+            background: linear-gradient(135deg, rgba(255, 0, 127, 0.1), rgba(167, 139, 250, 0.1));
+            border: 1px solid var(--pink);
+            text-align: center;
+            padding: 32px 24px;
+        }
+        .viral-score {
+            font-size: 48px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--pink);
+            text-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+            margin-bottom: 8px;
+        }
+        .viral-label {
+            font-size: 14px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        /* Share */
+        .share-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            color: var(--cyan);
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 24px;
+        }
+        .share-btn:hover { background: rgba(0, 240, 255, 0.2); box-shadow: 0 0 20px rgba(0, 240, 255, 0.2); }
+        
+        @media (max-width: 600px) {
+            .container { padding: 24px 16px 40px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .content-grid { grid-template-columns: 1fr; }
+            .times-grid { grid-template-columns: 1fr; }
+            .vibe-score { font-size: 56px; }
+            header { flex-direction: column; gap: 16px; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-wrap"><img src="logo.png" alt="VIBE"></div>
+            <div class="brand">
+                <h1>VIBE // TERMINAL</h1>
+                <span>Real-time Twitter Analysis</span>
+            </div>
+        </header>
+        
+        <div class="search-box">
+            <input type="text" id="username" placeholder="Enter username...">
+            <button id="analyzeBtn">ANALYZE</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="loading-text">Scanning profile data...</div>
+        </div>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="results" id="results">
+            <!-- Profile -->
+            <div class="card">
+                <div class="profile">
+                    <img class="avatar" id="avatar" src="" alt="">
+                    <div class="profile-info">
+                        <h2><span id="name"></span><span class="verified" id="verified" style="display:none">✓</span></h2>
+                        <div class="username">@<span id="handle"></span></div>
+                    </div>
+                </div>
+                <div class="bio" id="bio"></div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat"><div class="stat-value" id="followers">0</div><div class="stat-label">Followers</div></div>
+                <div class="stat"><div class="stat-value" id="following">0</div><div class="stat-label">Following</div></div>
+                <div class="stat"><div class="stat-value" id="tweets">0</div><div class="stat-label">Tweets</div></div>
+                <div class="stat"><div class="stat-value" id="media">0</div><div class="stat-label">Media</div></div>
+            </div>
+            
+            <!-- Vibe Score -->
+            <div class="card vibe-card">
+                <div class="vibe-score" id="vibeScore">0</div>
+                <div class="vibe-label">Vibe Score</div>
+                <div class="vibe-bar"><div class="vibe-bar-fill" id="vibeBar" style="width: 0%"></div></div>
+            </div>
+            
+            <!-- Engagement -->
+            <div class="card">
+                <div class="section-title">Engagement</div>
+                <div class="stats">
+                    <div class="stat"><div class="stat-value" id="engagement">0%</div><div class="stat-label">Engagement Rate</div></div>
+                    <div class="stat"><div class="stat-value" id="avgLikes">0</div><div class="stat-label">Avg Likes/Tweet</div></div>
+                    <div class="stat"><div class="stat-value" id="quality">0%</div><div class="stat-label">Quality</div></div>
+                </div>
+            </div>
+            
+            <!-- Content Mix -->
+            <div class="card">
+                <div class="section-title">Content Mix</div>
+                <div class="content-grid" id="contentMix"></div>
+            </div>
+            
+            <!-- Best Times -->
+            <div class="card">
+                <div class="section-title">Best Posting Times</div>
+                <div class="times-grid" id="bestTimes"></div>
+            </div>
+            
+            <!-- Audience -->
+            <div class="card">
+                <div class="section-title">Audience</div>
+                <div class="audience-list" id="audience"></div>
+            </div>
+            
+            <!-- Viral Potential -->
+            <div class="card viral-card">
+                <div class="viral-score" id="viralScore">0%</div>
+                <div class="viral-label">Viral Potential</div>
+            </div>
+            
+            <button class="share-btn" id="shareBtn">Share Results</button>
+        </div>
+    </div>
+    
+    <script>
+        const input = document.getElementById('username');
+        const btn = document.getElementById('analyzeBtn');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
+        
+        function fmt(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+            return String(n);
+        }
+        
+        function setTxt(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
+        
+        async function analyze() {
+            const username = input.value.trim().replace('@', '');
+            if (!username) return;
+            
+            error.classList.remove('active');
+            loading.classList.add('active');
+            results.classList.remove('active');
+            btn.disabled = true;
+            btn.textContent = 'SCANNING...';
+            
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                
+                if (!res.ok) throw new Error('User not found');
+                const d = await res.json();
+                
+                // Profile
+                document.getElementById('avatar').src = d.avatar_url || '';
+                setTxt('name', d.display_name);
+                setTxt('handle', d.username);
+                document.getElementById('verified').style.display = d.verified ? 'flex' : 'none';
+                setTxt('bio', d.bio || '');
+                
+                // Stats
+                animateValue('followers', d.followers);
+                animateValue('following', d.following);
+                animateValue('tweets', d.tweets);
+                animateValue('media', d.media);
+                
+                // Vibe Score
+                const vibeEl = document.getElementById('vibeScore');
+                animateValueSimple(vibeEl, d.vibe_score, '');
+                document.getElementById('vibeBar').style.width = d.vibe_score + '%';
+                
+                // Engagement
+                setTxt('engagement', d.engagement + '%');
+                setTxt('avgLikes', d.avg_likes_per_tweet);
+                setTxt('quality', d.quality + '%');
+                
+                // Content Mix
+                const contentMix = document.getElementById('contentMix');
+                contentMix.innerHTML = d.content_mix.map(c => `
+                    <div class="content-item">
+                        <span class="icon">${c.icon}</span>
+                        <span class="name">${c.type}</span>
+                        <span class="score">${c.score}%</span>
+                    </div>
+                `).join('');
+                
+                // Best Times
+                const bestTimes = document.getElementById('bestTimes');
+                bestTimes.innerHTML = d.best_times.map(t => `
+                    <div class="time-item">
+                        <div class="time">${t.time}</div>
+                        <div class="score">${t.score}%</div>
+                    </div>
+                `).join('');
+                
+                // Audience
+                const audience = document.getElementById('audience');
+                audience.innerHTML = d.audience.map(a => `
+                    <div class="audience-item">
+                        <span class="name">${a.segment}</span>
+                        <div class="bar"><div class="bar-fill" style="width: ${a.percent}%"></div></div>
+                        <span class="percent">${a.percent}%</span>
+                    </div>
+                `).join('');
+                
+                // Viral Potential
+                setTxt('viralScore', d.viral_potential + '%');
+                
+                loading.classList.remove('active');
+                results.classList.add('active');
+                
+            } catch (e) {
+                loading.classList.remove('active');
+                error.textContent = e.message || 'Error analyzing user';
+                error.classList.add('active');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'ANALYZE';
+            }
+        }
+        
+        function animateValue(id, target) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let current = 0;
+            const step = Math.max(target / 30, 1);
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.textContent = fmt(target);
+                    clearInterval(timer);
+                } else {
+                    el.textContent = fmt(Math.floor(current));
+                }
+            }, 25);
+        }
+        
+        function animateValueSimple(el, target, suffix = '') {
+            if (!el) return;
+            let current = 0;
+            const step = Math.max(target / 25, 1);
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.textContent = target + suffix;
+                    clearInterval(timer);
+                } else {
+                    el.textContent = Math.floor(current) + suffix;
+                }
+            }, 20);
+        }
+        
+        btn.addEventListener('click', analyze);
+        input.addEventListener('keypress', e => { if (e.key === 'Enter') analyze(); });
+        
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            const vibe = document.getElementById('vibeScore').textContent;
+            const text = `My Vibe Score: ${vibe}\nCheck yours:`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+        });
+    </script>
+</body>
+</html>
