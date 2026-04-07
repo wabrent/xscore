@@ -1,384 +1,959 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSCORE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #080808;
-            --text: #ffffff;
-            --text-dim: #666666;
-            --text-muted: #aaaaaa;
-            --text-dark: #555555;
-            --gold: #f5c518;
-            --border: #333333;
-            --border-dark: #222222;
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Space Mono', monospace;
-            min-height: 100vh;
-            line-height: 1.8;
-        }
-        
-        /* Abstract sphere blob */
-        .blob {
-            position: fixed;
-            top: -20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80vw;
-            height: 80vw;
-            max-width: 600px;
-            max-height: 600px;
-            background: radial-gradient(circle at 30% 40%, #111111 0%, #080808 60%, transparent 100%);
-            border-radius: 50%;
-            opacity: 0.6;
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 40px;
-            display: grid;
-            grid-template-columns: 100px 1fr 100px;
-            gap: 40px;
-            min-height: 100vh;
-        }
-        
-        /* Left sidebar */
-        .left-col {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding-top: 120px;
-        }
-        
-        .welcome {
-            font-size: 11px;
-            letter-spacing: 0.2em;
-            color: var(--text-dim);
-            line-height: 2.2;
-        }
-        
-        .welcome span {
-            display: block;
-        }
-        
-        /* Center main */
-        .main-col {
-            text-align: center;
-        }
-        
-        /* Hero title */
-        .hero {
-            margin-bottom: 80px;
-        }
-        
-        .hero-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: clamp(60px, 15vw, 160px);
-            line-height: 0.9;
-            color: var(--text);
-            letter-spacing: -0.02em;
-        }
-        
-        .hero-line {
-            display: block;
-        }
-        
-        .hero-dash {
-            color: var(--gold);
-            font-family: 'Space Mono', monospace;
-            font-weight: 400;
-        }
-        
-        /* Divider */
-        .divider {
-            width: 1px;
-            height: 60px;
-            background: var(--border-dark);
-            margin: 40px auto;
-        }
-        
-        /* Date section */
-        .dates {
-            margin-bottom: 60px;
-        }
-        
-        .dates-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            letter-spacing: 0.3em;
-            margin-bottom: 20px;
-        }
-        
-        .dates-numbers {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: clamp(48px, 10vw, 100px);
-            color: var(--text);
-            line-height: 1;
-        }
-        
-        .dates-number {
-            display: inline-block;
-            margin: 0 8px;
-        }
-        
-        .dates-number::after {
-            content: '/';
-            color: var(--text-dim);
-            margin-left: 12px;
-            opacity: 0.5;
-        }
-        
-        .dates-number:last-child::after {
-            display: none;
-        }
-        
-        /* CTA */
-        .cta {
-            display: inline-block;
-            padding: 14px 32px;
-            border: 1px solid var(--text);
-            border-radius: 2px;
-            font-size: 11px;
-            letter-spacing: 0.2em;
-            color: var(--text);
-            text-decoration: none;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            background: transparent;
-        }
-        
-        .cta:hover {
-            background: var(--text);
-            color: var(--bg);
-        }
-        
-        /* Body text */
-        .body-text {
-            margin-top: 80px;
-            font-size: 12px;
-            color: var(--text-dark);
-            line-height: 2;
-            text-align: left;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .body-text p {
-            margin-bottom: 20px;
-        }
-        
-        .body-text .highlight {
-            color: var(--text-dim);
-        }
-        
-        .body-text a {
-            color: var(--text-dark);
-            text-decoration: none;
-            transition: color 0.4s ease;
-        }
-        
-        .body-text a:hover {
-            color: var(--text);
-        }
-        
-        /* Right sidebar */
-        .right-col {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding-top: 120px;
-            text-align: right;
-        }
-        
-        .star {
-            font-size: 24px;
-            color: var(--gold);
-            margin-bottom: 16px;
-        }
-        
-        .event-info {
-            font-size: 11px;
-            color: var(--text-muted);
-            line-height: 2;
-        }
-        
-        .event-info .rule {
-            width: 100%;
-            height: 1px;
-            background: var(--border-dark);
-            margin: 20px 0;
-        }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px;
-            font-size: 10px;
-            color: var(--text-dim);
-        }
-        
-        footer a {
-            color: var(--text-dark);
-            text-decoration: none;
-        }
-        
-        /* Nav */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: var(--bg);
-            border-bottom: 1px solid var(--border-dark);
-            z-index: 100;
-        }
-        
-        .nav-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 0.1em;
-        }
-        
-        .nav-cta {
-            font-size: 11px;
-            letter-spacing: 0.2em;
-            color: var(--text-dim);
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 1px solid var(--text-dim);
-            border-radius: 2px;
-            transition: all 0.4s ease;
-        }
-        
-        .nav-cta:hover {
-            border-color: var(--text);
-            color: var(--text);
-        }
-        
-        /* Mobile */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                padding: 120px 24px 40px;
-            }
-            
-            .left-col {
-                order: 1;
-                padding-top: 0;
-                text-align: center;
-            }
-            
-            .main-col {
-                order: 2;
-            }
-            
-            .right-col {
-                order: 3;
-                padding-top: 40px;
-                text-align: center;
-            }
-            
-            .hero-title {
-                font-size: clamp(48px, 18vw, 100px);
-            }
-            
-            .welcome span {
-                display: inline;
-            }
-            
-            .nav {
-                padding: 16px 24px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XScore — Know Before You Post</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #f0c040;
+    --blue: #1a1aff;
+    --white: #f0ede6;
+    --dim: #555550;
+    --bg: #080808;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    z-index: 100;
+    border-bottom: 1px solid #ffffff0f;
+    background: #08080899;
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--gold);
+    padding: 10px 20px;
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    transition: opacity 0.2s;
+  }
+
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 120px 40px 80px;
+    gap: 0;
+    position: relative;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 40px;
+  }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 11vw, 150px);
+    line-height: 0.92;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .hero-title span { color: var(--gold); }
+
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 11px;
+    color: var(--dim);
+    line-height: 1.9;
+    max-width: 320px;
+  }
+
+  .hero-actions {
+    margin-top: 40px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .btn-primary {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--gold);
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    border: none;
+    cursor: crosshair;
+  }
+
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-ghost {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    background: transparent;
+    padding: 14px 0;
+    text-decoration: none;
+    border: none;
+    cursor: crosshair;
+    transition: color 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--white); }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 60px;
+    border-left: 1px solid #ffffff10;
+  }
+
+  .hero-stat-block {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .hero-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--dim);
+    margin: 8px 0;
+  }
+
+  /* TICKER */
+  .ticker {
+    border-top: 1px solid #ffffff15;
+    border-bottom: 1px solid #ffffff15;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 12px 0;
+    background: #0d0d0d;
+  }
+
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 20s linear infinite;
+  }
+
+  .ticker-inner span {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-right: 60px;
+  }
+
+  .ticker-inner span em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 100px 40px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    border-bottom: 1px solid #ffffff15;
+    padding-bottom: 24px;
+  }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    letter-spacing: 0.03em;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .section-count {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: #ffffff10;
+  }
+
+  .feature-card {
+    background: var(--bg);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .feature-card:hover {
+    background: #0f0f0f;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--gold);
+    transition: height 0.4s ease;
+  }
+
+  .feature-card:hover::before { height: 100%; }
+
+  .feature-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: #ffffff08;
+    line-height: 1;
+    position: absolute;
+    top: 24px; right: 32px;
+    letter-spacing: 0.02em;
+    transition: color 0.3s;
+  }
+
+  .feature-card:hover .feature-num { color: #ffffff12; }
+
+  .feature-icon {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feature-icon::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .feature-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .feature-desc {
+    font-size: 11px;
+    color: var(--dim);
+    line-height: 1.9;
+    max-width: 340px;
+  }
+
+  /* HOW IT WORKS */
+  .how {
+    padding: 100px 40px;
+    border-top: 1px solid #ffffff10;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 60px;
+  }
+
+  .how-step {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid #ffffff15;
+  }
+
+  .how-step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+
+  .how-step-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.03em;
+    color: var(--white);
+  }
+
+  .how-step-desc {
+    font-size: 11px;
+    color: var(--dim);
+    line-height: 1.9;
+  }
+
+  /* INPUT DEMO */
+  .demo {
+    padding: 100px 40px;
+    border-top: 1px solid #ffffff10;
+    background: #0a0a0a;
+  }
+
+  .demo-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .demo-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    color: var(--white);
+    letter-spacing: 0.03em;
+    margin-bottom: 12px;
+  }
+
+  .demo-sub {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 40px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid #ffffff20;
+    transition: border-color 0.3s;
+  }
+
+  .input-row:focus-within {
+    border-color: var(--gold);
+  }
+
+  .input-at {
+    padding: 16px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: var(--gold);
+    background: #111;
+    border: none;
+    border-right: 1px solid #ffffff15;
+  }
+
+  .input-row input {
+    flex: 1;
+    padding: 16px 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--white);
+    background: #111;
+    border: none;
+    outline: none;
+  }
+
+  .input-row input::placeholder { color: #333; }
+
+  .input-row button {
+    padding: 16px 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--gold);
+    border: none;
+    cursor: crosshair;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+
+  .input-row button:hover { opacity: 0.85; }
+
+  /* PRICING */
+  .pricing {
+    padding: 100px 40px;
+    border-top: 1px solid #ffffff10;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #ffffff10;
+    margin-top: 60px;
+  }
+
+  .pricing-card {
+    background: var(--bg);
+    padding: 48px 40px;
+    position: relative;
+  }
+
+  .pricing-card.featured {
+    background: #0e0e0e;
+  }
+
+  .pricing-badge {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--gold);
+    padding: 4px 10px;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
+  .pricing-plan {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 16px;
+  }
+
+  .pricing-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .pricing-price span {
+    font-size: 20px;
+    color: var(--dim);
+    vertical-align: top;
+    margin-top: 12px;
+    display: inline-block;
+  }
+
+  .pricing-period {
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+    margin-bottom: 32px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .pricing-features li {
+    font-size: 11px;
+    color: var(--dim);
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .pricing-features li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  .pricing-features li.active { color: var(--white); }
+
+  .btn-plan {
+    display: block;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: 1px solid #ffffff20;
+    color: var(--dim);
+  }
+
+  .btn-plan:hover {
+    border-color: var(--white);
+    color: var(--white);
+  }
+
+  .btn-plan.featured-btn {
+    background: var(--gold);
+    color: var(--bg);
+    border-color: var(--gold);
+  }
+
+  .btn-plan.featured-btn:hover { opacity: 0.85; }
+
+  /* FOOTER */
+  footer {
+    padding: 60px 40px;
+    border-top: 1px solid #ffffff10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-copy {
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 0.1em;
+  }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 100px 20px 60px; }
+    .hero-right { border-left: none; border-top: 1px solid #ffffff10; padding-left: 0; padding-top: 40px; margin-top: 40px; }
+    .hero-stat-block { flex-direction: row; flex-wrap: wrap; gap: 24px; }
+    .features { padding: 60px 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .how { padding: 60px 20px; }
+    .how-grid { grid-template-columns: 1fr; }
+    .demo { padding: 60px 20px; }
+    .input-row { flex-direction: column; }
+    .pricing { padding: 60px 20px; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 24px; text-align: center; padding: 40px 20px; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
 </head>
 <body>
-    <div class="blob"></div>
-    
-    <nav class="nav">
-        <div class="nav-name">XSCORE</div>
-        <a href="#" class="nav-cta">ANALYZE</a>
-    </nav>
-    
-    <div class="container">
-        <aside class="left-col">
-            <div class="welcome">
-                <span>WEL-</span>
-                <span>COME</span>
-                <span>TO</span>
-                <span>THE</span>
-                <span>UNKNOWN</span>
-            </div>
-        </aside>
-        
-        <main class="main-col">
-            <section class="hero">
-                <h1 class="hero-title">
-                    <span class="hero-line">XS<span class="hero-dash">-</span>C</span>
-                    <span class="hero-line"><span class="hero-dash">-</span>OR</span>
-                    <span class="hero-line">E<span class="hero-dash">-</span></span>
-                </h1>
-            </section>
-            
-            <div class="dates">
-                <div class="dates-label">SEPTEMBER</div>
-                <div class="dates-numbers">
-                    <span class="dates-number">22</span>
-                    <span class="dates-number">23</span>
-                    <span class="dates-number">24</span>
-                </div>
-                <div class="dates-label" style="margin-top: 12px; color: var(--text-dim);">tickets available</div>
-            </div>
-            
-            <a href="#" class="cta">GET TICKETS</a>
-            
-            <div class="body-text">
-                <p>What if you could predict the future of your content?</p>
-                <p><span class="highlight">Searching the unknown.</span></p>
-                <p><a href="#">Explore your viral potential →</a></p>
-                <p><a href="#">Compare with competitors →</a></p>
-                <p><a href="#">Predict your reach →</a></p>
-            </div>
-        </main>
-        
-        <aside class="right-col">
-            <div class="star">★</div>
-            
-            <div class="event-info">
-                brazilian creative<br>
-                club festival<br>
-                2025
-                <div class="rule"></div>
-                @xscore_app<br>
-                real-time analytics
-            </div>
-        </aside>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">XS—CORE</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#demo" class="nav-cta">Analyze Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left fade-up">
+    <p class="hero-eyebrow">Twitter / X Analytics Tool</p>
+    <h1 class="hero-title">
+      KNOW<br>
+      BE<span>—</span><br>
+      FORE<br>
+      YOU<br>
+      POST<span>.</span>
+    </h1>
+    <p class="hero-sub">
+      XScore predicts virality, analyzes your account, compares you to competitors, 
+      and finds the exact moment your audience is watching.
+    </p>
+    <div class="hero-actions">
+      <a href="#demo" class="btn-primary">Analyze My Account</a>
+      <a href="#features" class="btn-ghost">See Features →</a>
     </div>
-    
-    <footer>
-        <a href="#">xscore.app</a>
-    </footer>
+  </div>
+
+  <div class="hero-right fade-up" style="transition-delay: 0.15s;">
+    <div class="hero-stat-block">
+      <div class="hero-stat">
+        <div class="stat-num">94%</div>
+        <div class="hero-divider"></div>
+        <div class="stat-label">Virality prediction accuracy</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">3.2×</div>
+        <div class="hero-divider"></div>
+        <div class="stat-label">Average reach increase</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">12K+</div>
+        <div class="hero-divider"></div>
+        <div class="stat-label">Creators using XScore</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">&lt;3s</div>
+        <div class="hero-divider"></div>
+        <div class="stat-label">Analysis time per tweet</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Virality Score <em>★</em></span>
+    <span>Account Analysis <em>★</em></span>
+    <span>Competitor Intel <em>★</em></span>
+    <span>Best Post Times <em>★</em></span>
+    <span>Engagement Forecast <em>★</em></span>
+    <span>Audience Insights <em>★</em></span>
+    <span>Virality Score <em>★</em></span>
+    <span>Account Analysis <em>★</em></span>
+    <span>Competitor Intel <em>★</em></span>
+    <span>Best Post Times <em>★</em></span>
+    <span>Engagement Forecast <em>★</em></span>
+    <span>Audience Insights <em>★</em></span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-header fade-up">
+    <div>
+      <p class="section-label">What XScore does</p>
+      <h2 class="section-title">FOUR<br>WEAPONS.</h2>
+    </div>
+    <span class="section-count">04 features</span>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card fade-up">
+      <div class="feature-num">01</div>
+      <div class="feature-icon">Virality Prediction</div>
+      <h3 class="feature-name">PREDICT<br>VIRALITY</h3>
+      <p class="feature-desc">
+        Paste any tweet draft and get an XScore — a 0–100 virality index. 
+        We analyze hooks, sentiment, timing patterns, and topic momentum 
+        before you even hit post.
+      </p>
+    </div>
+
+    <div class="feature-card fade-up" style="transition-delay:0.1s">
+      <div class="feature-num">02</div>
+      <div class="feature-icon">Account Analysis</div>
+      <h3 class="feature-name">DEEP<br>ACCOUNT<br>AUDIT</h3>
+      <p class="feature-desc">
+        Full breakdown of your account's engagement rate, follower growth velocity, 
+        best-performing content types, and hidden weak spots dragging your reach down.
+      </p>
+    </div>
+
+    <div class="feature-card fade-up" style="transition-delay:0.15s">
+      <div class="feature-num">03</div>
+      <div class="feature-icon">Competitor Intel</div>
+      <h3 class="feature-name">SPY ON<br>COMPETITORS</h3>
+      <p class="feature-desc">
+        Track any public account. See what's working for them, when they post, 
+        what topics spike their engagement — and use it to your advantage.
+      </p>
+    </div>
+
+    <div class="feature-card fade-up" style="transition-delay:0.2s">
+      <div class="feature-num">04</div>
+      <div class="feature-icon">Post Timing</div>
+      <h3 class="feature-name">PERFECT<br>TIMING<br>ENGINE</h3>
+      <p class="feature-desc">
+        XScore maps your audience's activity patterns to find the exact windows 
+        when they're online and most likely to engage. No more posting into the void.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-header fade-up">
+    <div>
+      <p class="section-label">Process</p>
+      <h2 class="section-title">THREE<br>STEPS.</h2>
+    </div>
+    <span class="section-count">simple flow</span>
+  </div>
+
+  <div class="how-grid">
+    <div class="how-step fade-up">
+      <div class="how-step-num">— 01</div>
+      <div class="how-step-title">ENTER YOUR HANDLE</div>
+      <p class="how-step-desc">
+        Drop in your @username or paste a tweet draft. 
+        No OAuth required for public analysis.
+      </p>
+    </div>
+    <div class="how-step fade-up" style="transition-delay:0.1s">
+      <div class="how-step-num">— 02</div>
+      <div class="how-step-title">WE RUN THE NUMBERS</div>
+      <p class="how-step-desc">
+        XScore pulls data, runs our prediction model, 
+        and cross-references competitor benchmarks in under 3 seconds.
+      </p>
+    </div>
+    <div class="how-step fade-up" style="transition-delay:0.2s">
+      <div class="how-step-num">— 03</div>
+      <div class="how-step-title">ACT ON INSIGHTS</div>
+      <p class="how-step-desc">
+        Get a full report with actionable steps: what to fix, 
+        what to post, when to post it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO INPUT -->
+<section class="demo" id="demo">
+  <div class="demo-inner fade-up">
+    <h2 class="demo-title">TRY IT NOW.</h2>
+    <p class="demo-sub">Enter any Twitter handle to get a free snapshot analysis</p>
+    <div class="input-row">
+      <span class="input-at">@</span>
+      <input type="text" placeholder="yourhandle" id="handle-input" autocomplete="off" spellcheck="false">
+      <button onclick="handleAnalyze()">Analyze →</button>
+    </div>
+    <p style="margin-top:16px; font-size:10px; color:#333; letter-spacing:0.1em;">
+      Free tier — no sign up required for public accounts
+    </p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-header fade-up">
+    <div>
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title">SIMPLE<br>PLANS.</h2>
+    </div>
+    <span class="section-count">no hidden fees</span>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card fade-up">
+      <p class="pricing-plan">Free</p>
+      <div class="pricing-price"><span>$</span>0</div>
+      <p class="pricing-period">forever</p>
+      <ul class="pricing-features">
+        <li class="active">5 virality checks / month</li>
+        <li class="active">Basic account snapshot</li>
+        <li>Competitor tracking</li>
+        <li>Post timing engine</li>
+        <li>Unlimited history</li>
+      </ul>
+      <a href="#" class="btn-plan">Get Started</a>
+    </div>
+
+    <div class="pricing-card featured fade-up" style="transition-delay:0.1s">
+      <span class="pricing-badge">Most Popular</span>
+      <p class="pricing-plan">Pro</p>
+      <div class="pricing-price"><span>$</span>19</div>
+      <p class="pricing-period">per month</p>
+      <ul class="pricing-features">
+        <li class="active">Unlimited virality checks</li>
+        <li class="active">Full account deep-dive</li>
+        <li class="active">Track 10 competitors</li>
+        <li class="active">Post timing engine</li>
+        <li>Unlimited history</li>
+      </ul>
+      <a href="#" class="btn-plan featured-btn">Start Free Trial</a>
+    </div>
+
+    <div class="pricing-card fade-up" style="transition-delay:0.2s">
+      <p class="pricing-plan">Agency</p>
+      <div class="pricing-price"><span>$</span>79</div>
+      <p class="pricing-period">per month</p>
+      <ul class="pricing-features">
+        <li class="active">Unlimited everything</li>
+        <li class="active">Unlimited accounts</li>
+        <li class="active">Track 100+ competitors</li>
+        <li class="active">Post timing engine</li>
+        <li class="active">Unlimited history + exports</li>
+      </ul>
+      <a href="#" class="btn-plan">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="fade-up">
+  <div class="footer-logo">XS—CORE</div>
+  <ul class="footer-links">
+    <li><a href="#">Twitter</a></li>
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 XScore. All rights reserved.</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Demo input
+  function handleAnalyze() {
+    const val = document.getElementById('handle-input').value.trim();
+    if (!val) return;
+    const btn = document.querySelector('.input-row button');
+    btn.textContent = 'Analyzing...';
+    btn.style.opacity = '0.6';
+    setTimeout(() => {
+      btn.textContent = 'Sign up to see full report →';
+      btn.style.opacity = '1';
+    }, 1800);
+  }
+
+  document.getElementById('handle-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleAnalyze();
+  });
+</script>
 </body>
 </html>
