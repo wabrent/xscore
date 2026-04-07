@@ -6,17 +6,14 @@
     <title>XSCORE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Space+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #020202;
-            --amber: #FFC107;
-            --blue: #00BFFF;
+            --bg: #0A0A0A;
             --text: #FFFFFF;
-            --text-dim: #666666;
-            --border: #1a1a1a;
-            --glow-amber: 0 0 20px rgba(255, 193, 7, 0.4);
-            --glow-blue: 0 0 20px rgba(0, 191, 255, 0.3);
+            --amber: #FFC107;
+            --text-dim: #444444;
+            --border: #222222;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,118 +21,151 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Space Mono', monospace;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Film grain */
+        .grain {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 40px 24px;
-        }
-        
-        /* Header */
-        header {
+            padding: 60px 40px;
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 48px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 48px;
+            flex-direction: column;
         }
         
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 42px;
-            font-weight: 400;
-            color: transparent;
-            -webkit-text-stroke: 1.5px var(--amber);
-            letter-spacing: 10px;
-        }
-        
-        .nav {
-            display: flex;
-            gap: 32px;
-        }
-        
-        .nav-item {
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: var(--text-dim);
-            cursor: pointer;
-            transition: color 0.2s;
-            text-transform: uppercase;
-        }
-        
-        .nav-item:hover, .nav-item.active {
-            color: var(--amber);
-            text-shadow: var(--glow-amber);
-        }
-        
-        /* Main layout */
-        .main {
+        /* Hero with crystal rock */
+        .hero {
             display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 64px;
+            grid-template-columns: 1fr 300px;
+            gap: 40px;
+            margin-bottom: 80px;
+            position: relative;
         }
         
-        /* Sidebar */
-        .sidebar {
-            padding-top: 16px;
-        }
-        
-        .stat {
-            margin-bottom: 32px;
-        }
-        
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--amber);
-            text-shadow: var(--glow-amber);
-        }
-        
-        .stat-label {
-            font-size: 10px;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            margin-top: 4px;
-        }
-        
-        .scale {
-            margin-top: 40px;
-        }
-        
-        .scale-header {
+        .hero-text {
             display: flex;
-            justify-content: space-between;
-            font-size: 10px;
-            color: var(--text-dim);
-            margin-bottom: 12px;
+            flex-direction: column;
+            justify-content: center;
         }
         
-        .scale-bar {
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
+        .main-title {
+            display: flex;
+            flex-direction: column;
+            line-height: 0.85;
+        }
+        
+        .main-title span {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 120px;
+            letter-spacing: -4px;
+        }
+        
+        .main-title .line {
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .main-title .dash {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            color: var(--amber);
+            margin-right: 20px;
+            font-weight: 400;
+        }
+        
+        .hero-image {
+            position: relative;
+            height: 400px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #151515 100%);
             overflow: hidden;
         }
         
-        .scale-fill {
+        /* Crystal facets */
+        .crystal {
+            position: absolute;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, var(--blue), var(--amber));
-            box-shadow: var(--glow-amber);
+            background: 
+                linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.03) 45%, transparent 45%),
+                linear-gradient(165deg, transparent 60%, rgba(30,30,30,0.8) 60%, rgba(30,30,30,0.8) 65%, transparent 65%),
+                linear-gradient(45deg, transparent 30%, rgba(40,40,40,0.6) 30%, rgba(40,40,40,0.6) 50%, transparent 50%),
+                linear-gradient(80deg, transparent 50%, rgba(25,25,25,0.9) 50%);
         }
         
-        /* Content */
+        .crystal::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            right: 20%;
+            width: 60%;
+            height: 80%;
+            background: linear-gradient(160deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            transform: skewX(-5deg);
+            clip-path: polygon(30% 0%, 100% 20%, 100% 100%, 0% 80%);
+        }
+        
+        .crystal::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 40%;
+            height: 60%;
+            background: linear-gradient(60deg, rgba(255,193,7,0.05) 0%, transparent 100%);
+            clip-path: polygon(0% 10%, 80% 0%, 100% 100%, 20% 90%);
+        }
+        
+        /* Vertical dates on right */
+        .dates {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            display: flex;
+            gap: 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+        
+        /* Main content */
         .content {
-            min-height: 400px;
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 60px;
+            flex: 1;
+        }
+        
+        .main-col {
+            padding-right: 40px;
         }
         
         .section { display: none; }
         .section.active { display: block; }
+        
+        .description {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            line-height: 2;
+            text-align: justify;
+            color: var(--text-dim);
+            margin-bottom: 40px;
+        }
         
         .input-group {
             margin-bottom: 24px;
@@ -143,22 +173,22 @@
         
         .input-group label {
             display: block;
+            font-family: 'Space Mono', monospace;
             font-size: 10px;
             color: var(--text-dim);
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             margin-bottom: 8px;
         }
         
         .input-group input,
         .input-group textarea {
             width: 100%;
-            padding: 14px 0;
+            padding: 16px;
             background: transparent;
-            border: none;
-            border-bottom: 1px solid var(--border);
+            border: 1px solid var(--border);
             color: var(--text);
             font-family: 'Space Mono', monospace;
-            font-size: 16px;
+            font-size: 14px;
             outline: none;
             transition: border-color 0.2s;
         }
@@ -166,33 +196,24 @@
         .input-group input:focus,
         .input-group textarea:focus {
             border-color: var(--amber);
-            box-shadow: 0 2px 0 var(--amber);
         }
         
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 18px;
             background: transparent;
             border: 1px solid var(--amber);
             color: var(--amber);
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
+            font-family: 'Space Mono', monospace;
             font-size: 12px;
             letter-spacing: 3px;
             cursor: pointer;
             transition: all 0.2s;
-            text-transform: uppercase;
         }
         
         .btn:hover {
             background: var(--amber);
             color: var(--bg);
-            box-shadow: var(--glow-amber);
-        }
-        
-        .btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
         }
         
         /* Results */
@@ -205,234 +226,259 @@
         .result-header {
             display: flex;
             align-items: center;
-            gap: 20px;
-            padding-bottom: 20px;
+            gap: 16px;
             margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
         }
         
         .avatar {
-            width: 64px;
-            height: 64px;
-            border: 2px solid var(--blue);
-            box-shadow: var(--glow-blue);
+            width: 48px;
+            height: 48px;
+            border: 1px solid var(--amber);
             object-fit: cover;
         }
         
-        .user-info h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: 600;
+        .user-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
         }
         
-        .user-info .username {
+        .user-handle {
+            font-family: 'Space Mono', monospace;
             font-size: 12px;
             color: var(--text-dim);
-            margin-top: 4px;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+        }
+        
+        .stat-item {
             font-family: 'Space Mono', monospace;
+            font-size: 11px;
         }
         
-        .verified {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            background: var(--amber);
-            color: var(--bg);
-            font-size: 12px;
+        .stat-item .value {
+            color: var(--text);
             font-weight: 700;
-            text-align: center;
-            line-height: 20px;
-            margin-left: 10px;
-            vertical-align: middle;
         }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        .stat-item .label {
+            color: var(--text-dim);
+            margin-left: 6px;
+        }
+        
+        /* Sidebar data */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
             gap: 24px;
         }
         
-        .stat-box {
-            text-align: center;
+        .data-block {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--text-dim);
         }
         
-        .stat-box .value {
+        .data-block .value {
             font-size: 24px;
             font-weight: 700;
             color: var(--text);
+            margin-bottom: 4px;
         }
         
-        .stat-box .label {
-            font-size: 10px;
+        .data-block .label {
+            letter-spacing: 2px;
             color: var(--text-dim);
-            letter-spacing: 1px;
-            margin-top: 4px;
+        }
+        
+        .data-block.highlight .value {
+            color: var(--amber);
         }
         
         /* Compare */
         .compare-grid {
             display: grid;
-            grid-template-columns: 1fr 60px 1fr;
-            gap: 24px;
+            grid-template-columns: 1fr 40px 1fr;
+            gap: 20px;
             align-items: center;
+            margin-bottom: 24px;
         }
         
         .compare-vs {
             text-align: center;
-            font-size: 18px;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
             color: var(--amber);
-            text-shadow: var(--glow-amber);
         }
         
         .compare-user {
-            text-align: center;
-            padding: 24px;
+            padding: 16px;
             border: 1px solid var(--border);
+            text-align: center;
         }
         
         .compare-user img {
-            width: 56px;
-            height: 56px;
-            border: 2px solid var(--blue);
-            margin-bottom: 12px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
         }
         
         .compare-user .name {
             font-family: 'Space Mono', monospace;
-            font-size: 14px;
+            font-size: 12px;
         }
         
-        /* Score display */
+        /* Score */
         .score-display {
             text-align: center;
             padding: 48px;
-            margin: 32px 0;
+            margin-top: 24px;
+            border: 1px solid var(--border);
         }
         
         .score-value {
-            font-size: 96px;
-            font-weight: 700;
+            font-size: 72px;
+            font-weight: 900;
             color: var(--amber);
-            text-shadow: var(--glow-amber);
             line-height: 1;
         }
         
         .score-label {
-            font-size: 11px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
             color: var(--text-dim);
-            letter-spacing: 3px;
-            margin-top: 16px;
+            letter-spacing: 2px;
+            margin-top: 12px;
         }
         
-        /* Loading */
-        .loading { display: none; text-align: center; padding: 48px; }
-        .loading.active { display: block; }
+        /* Nav */
+        .nav {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+        }
+        
+        .nav-item {
+            padding: 10px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: var(--text);
+            border-color: var(--amber);
+        }
+        
+        .loading { display: none; }
+        .loading.active { display: block; text-align: center; padding: 32px; }
         
         .spinner {
-            width: 32px; height: 32px;
+            width: 24px; height: 24px;
             border: 1px solid var(--border);
             border-top-color: var(--amber);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 16px;
+            margin: 0 auto 12px;
         }
         
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .loading-text {
-            font-size: 10px;
-            color: var(--text-dim);
-            letter-spacing: 2px;
-        }
-        
-        .error {
-            display: none;
-            padding: 12px;
-            border: 1px solid #ff3333;
-            color: #ff3333;
-            margin-top: 16px;
-            font-size: 11px;
-        }
-        .error.active { display: block; }
-        
-        @media (max-width: 700px) {
-            .main { grid-template-columns: 1fr; }
-            header { flex-direction: column; gap: 24px; }
-            .compare-grid { grid-template-columns: 1fr; }
-            .compare-vs { display: none; }
+        @media (max-width: 800px) {
+            .hero { grid-template-columns: 1fr; }
+            .hero-image { display: none; }
+            .content { grid-template-columns: 1fr; }
+            .dates { display: none; }
+            .main-title span { font-size: 64px; }
         }
     </style>
 </head>
 <body>
+    <div class="grain"></div>
+    
     <div class="container">
-        <header>
-            <div class="logo">XSCORE</div>
-            <nav class="nav">
-                <div class="nav-item active" data-tab="analyze">Analyze</div>
-                <div class="nav-item" data-tab="compare">Compare</div>
-                <div class="nav-item" data-tab="predict">Predict</div>
-            </nav>
-        </header>
+        <div class="hero">
+            <div class="hero-text">
+                <div class="main-title">
+                    <div class="line">
+                        <span class="dash">XSC-</span>
+                        <span>ORE</span>
+                    </div>
+                    <div class="line">
+                        <span class="dash">AN-</span>
+                        <span>ALYZE</span>
+                    </div>
+                    <div class="line">
+                        <span class="dash">PRE-</span>
+                        <span>DICT</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="crystal"></div>
+            </div>
+        </div>
         
-        <div class="main">
-            <aside class="sidebar">
-                <div class="stat">
-                    <div class="stat-value" id="followers">0</div>
-                    <div class="stat-label">FOLLOWERS</div>
-                </div>
+        <div class="dates">
+            <span>01</span>
+            <span>02</span>
+            <span>03</span>
+        </div>
+        
+        <div class="content">
+            <div class="main-col">
+                <p class="description">
+                    XSCORE IS A REAL-TIME ANALYTICS ENGINE FOR TWITTER PROFILES. 
+                    IT TRACKS ENGAGEMENT METRICS, VIRAL POTENTIAL, AND AUDIENCE QUALITY. 
+                    ENTER ANY USERNAME TO RETRIEVE INSTANT INSIGHTS ABOUT THEIR SOCIAL PRESENCE.
+                </p>
                 
-                <div class="stat">
-                    <div class="stat-value" id="viralScore">0</div>
-                    <div class="stat-label">VIRAL SCORE</div>
-                </div>
-                
-                <div class="scale">
-                    <div class="scale-header">
-                        <span>COLD</span>
-                        <span>HOT</span>
-                    </div>
-                    <div class="scale-bar">
-                        <div class="scale-fill" id="scaleFill" style="width: 0%"></div>
-                    </div>
-                </div>
-            </aside>
-            
-            <div class="content">
                 <!-- Analyze -->
                 <div class="section active" id="analyze">
                     <div class="input-group">
-                        <label>USERNAME</label>
+                        <label>>> USERNAME</label>
                         <input type="text" id="username" placeholder="@handle">
                     </div>
-                    <button class="btn" id="analyzeBtn">Analyze</button>
+                    <button class="btn" id="analyzeBtn">ANALYZE</button>
                     
                     <div class="loading" id="loading">
                         <div class="spinner"></div>
-                        <div class="loading-text">PROCESSING</div>
                     </div>
-                    
-                    <div class="error" id="error"></div>
                     
                     <div class="result-card" id="result" style="display: none;">
                         <div class="result-header">
                             <img class="avatar" id="avatar" src="">
-                            <div class="user-info">
-                                <h3><span id="name"></span><span class="verified" id="verified" style="display: none;">✓</span></h3>
-                                <div class="username">@<span id="handle"></span></div>
+                            <div>
+                                <div class="user-name" id="name"></div>
+                                <div class="user-handle">@<span id="handle"></span></div>
                             </div>
                         </div>
-                        <div class="stats-grid">
-                            <div class="stat-box">
-                                <div class="value" id="engagement">0%</div>
-                                <div class="label">ENGAGEMENT</div>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span class="value" id="followers">0</span>
+                                <span class="label">FOLLOWERS</span>
                             </div>
-                            <div class="stat-box">
-                                <div class="value" id="avgLikes">0</div>
-                                <div class="label">AVG LIKES</div>
+                            <div class="stat-item">
+                                <span class="value" id="engagement">0%</span>
+                                <span class="label">ENG</span>
                             </div>
-                            <div class="stat-box">
-                                <div class="value" id="quality">0%</div>
-                                <div class="label">QUALITY</div>
+                            <div class="stat-item">
+                                <span class="value" id="viralScore">0</span>
+                                <span class="label">INDEX</span>
                             </div>
                         </div>
                     </div>
@@ -440,18 +486,18 @@
                 
                 <!-- Compare -->
                 <div class="section" id="compare">
-                    <div class="compare-grid" style="margin-bottom: 24px;">
+                    <div class="compare-grid">
                         <div class="input-group">
-                            <label>USER A</label>
+                            <label>>> USER A</label>
                             <input type="text" id="user1" placeholder="@you">
                         </div>
                         <div class="compare-vs">VS</div>
                         <div class="input-group">
-                            <label>USER B</label>
+                            <label>>> USER B</label>
                             <input type="text" id="user2" placeholder="@them">
                         </div>
                     </div>
-                    <button class="btn" id="compareBtn">Compare</button>
+                    <button class="btn" id="compareBtn">COMPARE</button>
                     
                     <div class="result-card" id="compareResult" style="display: none; margin-top: 24px;">
                         <div class="compare-grid">
@@ -471,14 +517,14 @@
                 <!-- Predict -->
                 <div class="section" id="predict">
                     <div class="input-group">
-                        <label>OPERATOR</label>
+                        <label>>> OPERATOR</label>
                         <input type="text" id="predictUser" placeholder="@username">
                     </div>
                     <div class="input-group">
-                        <label>PAYLOAD</label>
-                        <textarea id="tweetText" placeholder="Your tweet..." rows="4"></textarea>
+                        <label>>> PAYLOAD</label>
+                        <textarea id="tweetText" placeholder="content..." rows="3"></textarea>
                     </div>
-                    <button class="btn" id="predictBtn">Predict</button>
+                    <button class="btn" id="predictBtn">PREDICT</button>
                     
                     <div class="score-display" id="predictResult" style="display: none;">
                         <div class="score-value" id="predictScore">0</div>
@@ -486,8 +532,36 @@
                     </div>
                 </div>
             </div>
+            
+            <aside class="sidebar">
+                <div class="data-block highlight">
+                    <div class="value" id="sidebarFollowers">0</div>
+                    <div class="label">FOLLOWERS</div>
+                </div>
+                
+                <div class="data-block">
+                    <div class="value" id="sidebarViral">0</div>
+                    <div class="label">VIRAL INDEX</div>
+                </div>
+                
+                <div class="data-block">
+                    <div class="value" id="sidebarEng">0%</div>
+                    <div class="label">ENGAGEMENT</div>
+                </div>
+                
+                <div class="data-block">
+                    <div class="value" id="sidebarQuality">0%</div>
+                    <div class="label">QUALITY</div>
+                </div>
+            </aside>
         </div>
     </div>
+    
+    <nav class="nav">
+        <div class="nav-item active" data-tab="analyze">ANALYZE</div>
+        <div class="nav-item" data-tab="compare">COMPARE</div>
+        <div class="nav-item" data-tab="predict">PREDICT</div>
+    </nav>
     
     <script>
         const navItems = document.querySelectorAll('.nav-item');
@@ -508,25 +582,12 @@
             return String(n);
         }
         
-        function animateValue(id, target) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            let current = 0;
-            const step = Math.max(target / 20, 1);
-            const timer = setInterval(() => {
-                current += step;
-                if (current >= target) { el.textContent = fmt(target); clearInterval(timer); }
-                else { el.textContent = fmt(Math.floor(current)); }
-            }, 20);
-        }
-        
         async function analyze() {
             const username = document.getElementById('username').value.trim().replace('@', '');
             if (!username) return;
             
             document.getElementById('loading').classList.add('active');
             document.getElementById('result').style.display = 'none';
-            document.getElementById('error').classList.remove('active');
             document.getElementById('analyzeBtn').disabled = true;
             
             try {
@@ -542,20 +603,19 @@
                 document.getElementById('avatar').src = d.avatar_url || '';
                 document.getElementById('name').textContent = d.display_name;
                 document.getElementById('handle').textContent = d.username;
-                document.getElementById('verified').style.display = d.verified ? 'inline-block' : 'none';
                 
-                animateValue('followers', d.followers);
-                animateValue('viralScore', d.viral_score);
-                document.getElementById('scaleFill').style.width = d.viral_score + '%';
-                
+                document.getElementById('followers').textContent = fmt(d.followers);
                 document.getElementById('engagement').textContent = d.engagement_rate + '%';
-                document.getElementById('avgLikes').textContent = d.avg_likes;
-                document.getElementById('quality').textContent = d.quality + '%';
+                document.getElementById('viralScore').textContent = d.viral_score;
+                
+                document.getElementById('sidebarFollowers').textContent = fmt(d.followers);
+                document.getElementById('sidebarViral').textContent = d.viral_score;
+                document.getElementById('sidebarEng').textContent = d.engagement_rate + '%';
+                document.getElementById('sidebarQuality').textContent = d.quality + '%';
                 
                 document.getElementById('result').style.display = 'block';
             } catch (e) {
-                document.getElementById('error').textContent = 'ERROR: ' + e.message;
-                document.getElementById('error').classList.add('active');
+                alert('ERROR: ' + e.message);
             }
             
             document.getElementById('loading').classList.remove('active');
@@ -589,8 +649,7 @@
                 
                 document.getElementById('compareResult').style.display = 'block';
             } catch (e) {
-                document.getElementById('error').textContent = 'ERROR: ' + e.message;
-                document.getElementById('error').classList.add('active');
+                alert('ERROR: ' + e.message);
             }
             
             document.getElementById('compareBtn').disabled = false;
@@ -617,8 +676,7 @@
                 document.getElementById('predictScore').textContent = d.score;
                 document.getElementById('predictResult').style.display = 'block';
             } catch (e) {
-                document.getElementById('error').textContent = 'ERROR: ' + e.message;
-                document.getElementById('error').classList.add('active');
+                alert('ERROR: ' + e.message);
             }
             
             document.getElementById('predictBtn').disabled = false;
