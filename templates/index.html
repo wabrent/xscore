@@ -3,185 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral — Predict Your Tweets</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>XSCORE — Viral Predictor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Space+Mono:wght@400;700&family=Inter:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         :root {
-            --bg: #050508;
-            --bg-card: #0A0A0F;
-            --bg-card-2: #0F0F15;
-            --border: #1A1A25;
-            --border-hover: #252535;
-            --text: #F0F0F5;
-            --text-secondary: #8888AA;
-            --text-muted: #555566;
-            --accent: #FF3366;
-            --accent-2: #FF6B35;
-            --accent-gradient: linear-gradient(135deg, #FF3366, #FF6B35);
-            --cyan: #00FFFF;
-            --glow: 0 0 30px rgba(255, 51, 102, 0.3);
-            --radius: 20px;
-            --radius-sm: 14px;
+            --bg: #050505;
+            --amber: #E89E2D;
+            --royal: #2B3D8F;
+            --text: #F5F5F5;
+            --text-dim: #888888;
+            --border: #1a1a1a;
         }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Space Mono', monospace;
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
         }
         
-        body::before {
-            content: '';
+        /* Film grain overlay */
+        .noise {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255, 51, 102, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255, 107, 53, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 50%);
+            top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
-            z-index: 0;
+            z-index: 9999;
+            opacity: 0.08;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 9998;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.1) 2px,
+                rgba(0,0,0,0.1) 4px
+            );
         }
         
         .container {
-            max-width: 520px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 48px 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
             position: relative;
-            z-index: 1;
         }
         
+        /* Header */
         header {
-            text-align: center;
-            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
         }
         
         .logo {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 20px;
-            background: var(--accent-gradient);
-            border-radius: 24px;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--amber);
+            letter-spacing: 4px;
+        }
+        
+        .nav {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--glow);
-            animation: pulse 2s ease-in-out infinite;
+            gap: 0;
         }
         
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 30px rgba(255, 51, 102, 0.3); }
-            50% { box-shadow: 0 0 50px rgba(255, 51, 102, 0.5); }
-        }
-        
-        .logo img { width: 40px; height: 40px; filter: brightness(0) invert(1); }
-        
-        header h1 {
-            font-size: 42px;
+        .nav-item {
+            padding: 8px 16px;
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
-            letter-spacing: -2px;
-            background: linear-gradient(135deg, #FFF, #FF3366);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            border-left: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            color: var(--amber);
+            background: rgba(232, 158, 45, 0.05);
+        }
+        
+        /* Main layout */
+        .main {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 24px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            border: 1px solid var(--border);
+            padding: 16px;
+        }
+        
+        .sidebar-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+        
+        .stat {
+            margin-bottom: 20px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--amber);
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+        
+        .scale {
+            margin-top: 24px;
+        }
+        
+        .scale-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--text-dim);
             margin-bottom: 8px;
         }
         
-        header p { font-size: 16px; color: var(--text-secondary); font-weight: 300; }
+        .scale-bar {
+            height: 4px;
+            background: var(--border);
+            position: relative;
+        }
         
-        .tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 28px;
-            background: var(--bg-card);
+        .scale-fill {
+            position: absolute;
+            left: 0; top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--royal), var(--amber));
+        }
+        
+        /* Content */
+        .content {
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 5px;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 14px;
-            background: transparent;
-            border: none;
-            border-radius: 12px;
-            color: var(--text-secondary);
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.25s;
-        }
-        
-        .tab.active {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
-        }
-        
-        .tab:not(.active):hover {
-            background: var(--bg-card-2);
-            color: var(--text);
+            padding: 24px;
         }
         
         .section { display: none; }
         .section.active { display: block; }
         
-        .input-wrapper { position: relative; margin-bottom: 20px; }
-        
-        .input-wrapper input, .input-wrapper textarea {
-            width: 100%;
-            padding: 20px 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            font-family: inherit;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.25s;
+        .input-group {
+            margin-bottom: 16px;
         }
         
-        .input-wrapper textarea { min-height: 120px; resize: vertical; }
+        .input-group label {
+            display: block;
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
         
-        .input-wrapper input:focus, .input-wrapper textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.1);
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus {
+            border-color: var(--amber);
         }
         
         .btn {
             width: 100%;
-            padding: 20px;
-            background: var(--accent-gradient);
-            border: none;
-            border-radius: var(--radius);
-            color: white;
-            font-family: inherit;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid var(--amber);
+            color: var(--amber);
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 2px;
             cursor: pointer;
-            transition: all 0.25s;
-            box-shadow: var(--glow);
+            transition: all 0.2s;
         }
         
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255, 51, 102, 0.4); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn:hover {
+            background: var(--amber);
+            color: var(--bg);
+        }
         
-        .loading { display: none; padding: 48px; text-align: center; }
-        .loading.active { display: block; }
+        /* Results */
+        .result-card {
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-top: 20px;
+        }
         
-        .loading-spinner {
-            width: 48px; height: 48px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border: 1px solid var(--amber);
+            object-fit: cover;
+        }
+        
+        .user-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .user-info .username {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        
+        .verified {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: var(--amber);
+            color: var(--bg);
+            font-size: 10px;
+            text-align: center;
+            line-height: 16px;
+            margin-left: 8px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .stat-box {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .stat-box .value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .stat-box .label {
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+        
+        /* Score display */
+        .score-display {
+            text-align: center;
+            padding: 40px;
+            border: 1px solid var(--border);
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .score-display::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(232, 158, 45, 0.1));
+        }
+        
+        .score-value {
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--amber);
+        }
+        
+        .score-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+        
+        /* Compare */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 80px 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .compare-vs {
+            text-align: center;
+            font-size: 12px;
+            color: var(--amber);
+        }
+        
+        .compare-user {
+            text-align: center;
+            padding: 16px;
+            border: 1px solid var(--border);
+        }
+        
+        .compare-user img {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+        
+        /* Dictionary style */
+        .dict {
+            margin-top: 24px;
+            font-size: 11px;
+        }
+        
+        .dict-term {
+            color: var(--amber);
+            font-weight: 700;
+        }
+        
+        .dict-def {
+            color: var(--text-dim);
+            margin-left: 8px;
+        }
+        
+        /* Footer */
+        footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+        
+        /* Loading */
+        .loading { display: none; }
+        .loading.active { display: block; text-align: center; padding: 40px; }
+        
+        .spinner {
+            width: 40px; height: 40px;
+            border: 2px solid var(--border);
+            border-top-color: var(--amber);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 1s linear infinite;
             margin: 0 auto 16px;
         }
         
@@ -189,284 +394,228 @@
         
         .error {
             display: none;
-            padding: 16px;
-            background: rgba(255, 51, 102, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: var(--radius);
-            color: var(--accent);
-            margin-bottom: 20px;
-            text-align: center;
+            padding: 12px;
+            border: 1px solid #ff3333;
+            color: #ff3333;
+            margin-top: 16px;
         }
         .error.active { display: block; }
         
-        .results { display: none; }
-        .results.active { display: block; animation: fadeIn 0.5s ease; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin-bottom: 16px;
-        }
-        
-        .profile { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-        
-        .avatar {
-            width: 64px; height: 64px;
-            border-radius: 18px;
-            object-fit: cover;
-            border: 2px solid var(--accent);
-        }
-        
-        .profile-info h2 {
-            font-size: 22px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .verified { width: 18px; height: 18px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white; }
-        .profile-info .username { font-size: 15px; color: var(--text-secondary); margin-top: 4px; }
-        
-        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        
-        .stat { text-align: center; padding: 16px 8px; background: var(--bg-card-2); border-radius: 12px; }
-        .stat-value { font-size: 22px; font-weight: 700; }
-        .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-        
-        .score-card {
-            background: var(--accent-gradient);
-            border-radius: var(--radius);
-            padding: 40px 24px;
-            text-align: center;
-            margin-bottom: 16px;
-            box-shadow: var(--glow);
-        }
-        
-        .score-value { font-size: 72px; font-weight: 700; color: white; line-height: 1; }
-        .score-label { font-size: 13px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 2px; margin-top: 12px; }
-        
-        .compare-grid {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 16px;
-            align-items: center;
-        }
-        
-        .compare-user { text-align: center; }
-        .compare-user .avatar { width: 52px; height: 52px; border-radius: 14px; margin: 0 auto 8px; border-color: var(--accent); }
-        .compare-user .name { font-size: 15px; font-weight: 600; }
-        .compare-vs { font-size: 24px; font-weight: 700; color: var(--accent); }
-        
-        .compare-stats { display: flex; flex-direction: column; gap: 10px; }
-        
-        .compare-row {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 12px;
-            padding: 12px;
-            background: var(--bg-card-2);
-            border-radius: 12px;
-            align-items: center;
-        }
-        
-        .compare-row .val { font-size: 16px; font-weight: 700; text-align: center; }
-        .compare-row .label { font-size: 12px; color: var(--text-muted); text-align: center; }
-        .compare-row .winner { color: var(--accent); }
-        
-        .predict-result { text-align: center; padding: 32px 24px; }
-        
-        .predict-score { font-size: 80px; font-weight: 700; line-height: 1; margin-bottom: 8px; }
-        .predict-score.high { color: #00FF88; }
-        .predict-score.medium { color: #FFAA00; }
-        .predict-score.low { color: #FF3366; }
-        
-        .predict-verdict { font-size: 18px; font-weight: 600; margin-bottom: 24px; }
-        
-        .factors { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; text-align: left; }
-        
-        .factor {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px;
-            background: var(--bg-card-2);
-            border-radius: 10px;
-            font-size: 13px;
-        }
-        
-        .tips {
-            margin-top: 20px;
-            padding: 16px;
-            background: rgba(255, 51, 102, 0.1);
-            border-radius: 12px;
-            text-align: left;
-        }
-        
-        .tips-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
-        .tips-list { font-size: 14px; color: var(--text-secondary); }
-        
-        @media (max-width: 480px) {
-            .container { padding: 32px 16px; }
-            header h1 { font-size: 32px; }
+        @media (max-width: 700px) {
+            .main { grid-template-columns: 1fr; }
             .compare-grid { grid-template-columns: 1fr; }
             .compare-vs { display: none; }
         }
     </style>
 </head>
 <body>
+    <div class="noise"></div>
+    <div class="scanlines"></div>
+    
     <div class="container">
         <header>
-            <div class="logo"><span style="font-size:36px;color:white;">🔥</span></div>
-            <h1>Viral</h1>
-            <p>Predict your Twitter success</p>
+            <div class="logo">XSCORE</div>
+            <nav class="nav">
+                <div class="nav-item active" data-tab="analyze">Analyze</div>
+                <div class="nav-item" data-tab="compare">Compare</div>
+                <div class="nav-item" data-tab="predict">Predict</div>
+            </nav>
         </header>
         
-        <div class="tabs">
-            <button class="tab active" data-tab="analyze">Analyze</button>
-            <button class="tab" data-tab="compare">Compare</button>
-            <button class="tab" data-tab="predict">Predict</button>
-        </div>
-        
-        <!-- Analyze -->
-        <div class="section active" id="analyze">
-            <div class="input-wrapper">
-                <input type="text" id="username" placeholder="Enter username">
-            </div>
-            <button class="btn" id="analyzeBtn">Analyze Profile</button>
+        <div class="main">
+            <aside class="sidebar">
+                <div class="sidebar-title">DATA SHEET</div>
+                
+                <div class="stat">
+                    <div class="stat-value" id="followers">0</div>
+                    <div class="stat-label">FOLLOWERS</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-value" id="viralScore">0</div>
+                    <div class="stat-label">VIRAL INDEX</div>
+                </div>
+                
+                <div class="scale">
+                    <div class="scale-header">
+                        <span>COLD</span>
+                        <span>HOT</span>
+                    </div>
+                    <div class="scale-bar">
+                        <div class="scale-fill" id="scaleFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="dict">
+                    <div><span class="dict-term">RETINA</span><span class="dict-def">[noun] Display metric</span></div>
+                    <div><span class="dict-term">PUPIL</span><span class="dict-def">[noun] Entry point</span></div>
+                </div>
+            </aside>
             
-            <div class="loading" id="loading">
-                <div class="loading-spinner"></div>
-                <div style="color: var(--text-secondary)">Analyzing...</div>
-            </div>
-            
-            <div class="error" id="error"></div>
-            
-            <div class="results" id="results">
-                <div class="card">
-                    <div class="profile">
-                        <img class="avatar" id="avatar" src="" alt="">
-                        <div class="profile-info">
-                            <h2><span id="name"></span><span class="verified" id="verified" style="display:none">✓</span></h2>
-                            <div class="username">@<span id="handle"></span></div>
+            <div class="content">
+                <!-- Analyze -->
+                <div class="section active" id="analyze">
+                    <div class="input-group">
+                        <label>USERNAME</label>
+                        <input type="text" id="username" placeholder="@username">
+                    </div>
+                    <button class="btn" id="analyzeBtn">ANALYZE</button>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <div>PROCESSING...</div>
+                    </div>
+                    
+                    <div class="error" id="error"></div>
+                    
+                    <div class="result-card" id="result">
+                        <div class="result-header">
+                            <img class="avatar" id="avatar" src="">
+                            <div class="user-info">
+                                <h3><span id="name"></span><span class="verified" id="verified" style="display:none">✓</span></h3>
+                                <div class="username">@<span id="handle"></span></div>
+                            </div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="value" id="engagement">0%</div>
+                                <div class="label">ENG RATE</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="value" id="avgLikes">0</div>
+                                <div class="label">AVG LIKES</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="value" id="quality">0%</div>
+                                <div class="label">QUALITY</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="stats">
-                        <div class="stat"><div class="stat-value" id="followers">0</div><div class="stat-label">Followers</div></div>
-                        <div class="stat"><div class="stat-value" id="following">0</div><div class="stat-label">Following</div></div>
-                        <div class="stat"><div class="stat-value" id="tweets">0</div><div class="stat-label">Tweets</div></div>
-                    </div>
                 </div>
                 
-                <div class="score-card">
-                    <div class="score-value" id="viralScore">0</div>
-                    <div class="score-label">Viral Score</div>
-                </div>
-                
-                <div class="card">
-                    <div class="stats">
-                        <div class="stat"><div class="stat-value" id="engagement">0%</div><div class="stat-label">Eng Rate</div></div>
-                        <div class="stat"><div class="stat-value" id="avgLikes">0</div><div class="stat-label">Avg Likes</div></div>
-                        <div class="stat"><div class="stat-value" id="quality">0%</div><div class="stat-label">Quality</div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Compare -->
-        <div class="section" id="compare">
-            <div class="compare-grid" style="margin-bottom: 20px;">
-                <input type="text" id="user1" placeholder="Your username">
-                <span class="compare-vs">VS</span>
-                <input type="text" id="user2" placeholder="Competitor">
-            </div>
-            <button class="btn" id="compareBtn">Compare</button>
-            
-            <div class="results" id="compareResults" style="margin-top: 24px;">
-                <div class="card">
-                    <div class="compare-grid">
-                        <div class="compare-user">
-                            <img class="avatar" id="avatar1" src="" alt="">
-                            <div class="name" id="name1"></div>
+                <!-- Compare -->
+                <div class="section" id="compare">
+                    <div class="compare-grid" style="margin-bottom: 20px;">
+                        <div class="input-group">
+                            <label>YOUR USERNAME</label>
+                            <input type="text" id="user1" placeholder="@you">
                         </div>
                         <div class="compare-vs">VS</div>
-                        <div class="compare-user">
-                            <img class="avatar" id="avatar2" src="" alt="">
-                            <div class="name" id="name2"></div>
+                        <div class="input-group">
+                            <label>COMPETITOR</label>
+                            <input type="text" id="user2" placeholder="@them">
                         </div>
                     </div>
+                    <button class="btn" id="compareBtn">COMPARE</button>
                     
-                    <div class="compare-stats" style="margin-top: 20px;">
-                        <div class="compare-row">
-                            <div class="val" id="followers1">0</div>
-                            <div class="label">Followers</div>
-                            <div class="val" id="followers2">0</div>
+                    <div class="result-card" id="compareResult" style="display:none;">
+                        <div class="compare-grid">
+                            <div class="compare-user">
+                                <img class="avatar" id="avatar1" src="">
+                                <div class="username" id="name1"></div>
+                            </div>
+                            <div class="compare-vs">VS</div>
+                            <div class="compare-user">
+                                <img class="avatar" id="avatar2" src="">
+                                <div class="username" id="name2"></div>
+                            </div>
                         </div>
-                        <div class="compare-row">
-                            <div class="val" id="engage1">0%</div>
-                            <div class="label">Engagement</div>
-                            <div class="val" id="engage2">0%</div>
+                        <div class="stats-grid" style="margin-top: 16px;">
+                            <div class="stat-box">
+                                <div class="value" id="followers1">0</div>
+                                <div class="label">FOLLOWERS</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="value" id="viral1">0</div>
+                                <div class="label">VIRAL</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="value" id="engage1">0%</div>
+                                <div class="label">ENG</div>
+                            </div>
                         </div>
-                        <div class="compare-row">
-                            <div class="val" id="viral1">0</div>
-                            <div class="label">Viral Score</div>
-                            <div class="val" id="viral2">0</div>
+                        <div class="stats-grid" style="margin-top: 8px;">
+                            <div class="stat-box">
+                                <div class="value" id="followers2">0</div>
+                                <div class="label">FOLLOWERS</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="value" id="viral2">0</div>
+                                <div class="label">VIRAL</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="value" id="engage2">0%</div>
+                                <div class="label">ENG</div>
+                            </div>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Predict -->
+                <div class="section" id="predict">
+                    <div class="input-group">
+                        <label>USERNAME</label>
+                        <input type="text" id="predictUser" placeholder="@username">
+                    </div>
+                    <div class="input-group">
+                        <label>TWEET CONTENT</label>
+                        <textarea id="tweetText" placeholder="Your tweet..." rows="4"></textarea>
+                    </div>
+                    <button class="btn" id="predictBtn">PREDICT</button>
+                    
+                    <div class="score-display" id="predictResult" style="display:none;">
+                        <div class="score-value" id="predictScore">0</div>
+                        <div class="score-label">VIRAL POTENTIAL</div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Predict -->
-        <div class="section" id="predict">
-            <div class="input-wrapper">
-                <textarea id="tweetText" placeholder="Write your tweet..."></textarea>
-            </div>
-            <button class="btn" id="predictBtn">Predict</button>
-            
-            <div class="results" id="predictResults" style="margin-top: 24px;">
-                <div class="score-card">
-                    <div class="predict-score" id="predictScore">0</div>
-                    <div class="predict-verdict" id="predictVerdict">LOW POTENTIAL</div>
-                </div>
-                
-                <div class="card">
-                    <div class="factors" id="factors"></div>
-                    
-                    <div class="tips" id="tips" style="display:none;">
-                        <div class="tips-title">Tips to go viral:</div>
-                        <div class="tips-list" id="tipsList"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <footer>
+            <span>v1.0.0 // XSCORE</span>
+            <span>5128</span>
+        </footer>
     </div>
     
     <script>
-        const tabs = document.querySelectorAll('.tab');
+        const navItems = document.querySelectorAll('.nav-item');
         const sections = document.querySelectorAll('.section');
         
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(n => n.classList.remove('active'));
                 sections.forEach(s => s.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active');
+                item.classList.add('active');
+                document.getElementById(item.dataset.tab).classList.add('active');
             });
         });
         
-        // Analyze
-        const analyzeInput = document.getElementById('username');
+        function fmt(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+            return String(n);
+        }
+        
+        function animateValue(id, target) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let current = 0;
+            const step = Math.max(target / 20, 1);
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) { el.textContent = fmt(target); clearInterval(timer); }
+                else { el.textContent = fmt(Math.floor(current)); }
+            }, 20);
+        }
         
         async function analyze() {
-            const username = analyzeInput.value.trim().replace('@', '');
+            const username = document.getElementById('username').value.trim().replace('@', '');
             if (!username) return;
             
-            showLoading();
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').classList.remove('active');
+            document.getElementById('analyzeBtn').disabled = true;
             
             try {
                 const res = await fetch('/api/analyze', {
@@ -481,35 +630,35 @@
                 document.getElementById('avatar').src = d.avatar_url || '';
                 document.getElementById('name').textContent = d.display_name;
                 document.getElementById('handle').textContent = d.username;
-                document.getElementById('verified').style.display = d.verified ? 'flex' : 'none';
+                document.getElementById('verified').style.display = d.verified ? 'inline-block' : 'none';
                 
                 animateValue('followers', d.followers);
-                animateValue('following', d.following);
-                animateValue('tweets', d.tweets);
-                
-                const vs = document.getElementById('viralScore');
-                animateValueSimple(vs, d.viral_score, '');
+                animateValue('viralScore', d.viral_score);
+                document.getElementById('scaleFill').style.width = d.viral_score + '%';
                 
                 document.getElementById('engagement').textContent = d.engagement_rate + '%';
                 document.getElementById('avgLikes').textContent = d.avg_likes;
                 document.getElementById('quality').textContent = d.quality + '%';
                 
-                showResults();
+                document.getElementById('result').style.display = 'block';
             } catch (e) {
-                showError(e.message);
+                document.getElementById('error').textContent = e.message;
+                document.getElementById('error').classList.add('active');
             }
+            
+            document.getElementById('loading').classList.remove('active');
+            document.getElementById('analyzeBtn').disabled = false;
         }
         
         document.getElementById('analyzeBtn').addEventListener('click', analyze);
-        analyzeInput.addEventListener('keypress', e => { if (e.key === 'Enter') analyze(); });
+        document.getElementById('username').addEventListener('keypress', e => { if (e.key === 'Enter') analyze(); });
         
-        // Compare
         async function compare() {
             const u1 = document.getElementById('user1').value.trim().replace('@', '');
             const u2 = document.getElementById('user2').value.trim().replace('@', '');
             if (!u1 || !u2) return;
             
-            showLoading();
+            document.getElementById('compareBtn').disabled = true;
             
             try {
                 const res = await fetch('/api/compare', {
@@ -528,128 +677,47 @@
                 
                 document.getElementById('followers1').textContent = fmt(d.user1.followers);
                 document.getElementById('followers2').textContent = fmt(d.user2.followers);
-                document.getElementById('engage1').textContent = d.user1.engagement_rate + '%';
-                document.getElementById('engage2').textContent = d.user2.engagement_rate + '%';
                 document.getElementById('viral1').textContent = d.user1.viral_score;
                 document.getElementById('viral2').textContent = d.user2.viral_score;
+                document.getElementById('engage1').textContent = d.user1.engagement_rate + '%';
+                document.getElementById('engage2').textContent = d.user2.engagement_rate + '%';
                 
-                document.getElementById('followers1').classList.toggle('winner', d.winner.followers);
-                document.getElementById('followers2').classList.toggle('winner', !d.winner.followers);
-                
-                document.getElementById('compareResults').classList.add('active');
-                hideLoading();
+                document.getElementById('compareResult').style.display = 'block';
             } catch (e) {
-                showError(e.message);
+                alert(e.message);
             }
+            
+            document.getElementById('compareBtn').disabled = false;
         }
         
         document.getElementById('compareBtn').addEventListener('click', compare);
         
-        // Predict
         async function predict() {
-            const username = analyzeInput.value.trim().replace('@', '') || 'user';
+            const predictUser = document.getElementById('predictUser').value.trim().replace('@', '') || 'user';
             const content = document.getElementById('tweetText').value;
-            
             if (!content) return;
             
-            showLoading();
+            document.getElementById('predictBtn').disabled = true;
             
             try {
                 const res = await fetch('/api/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, content })
+                    body: JSON.stringify({ username: predictUser, content })
                 });
                 
                 const d = await res.json();
                 
-                const scoreEl = document.getElementById('predictScore');
-                scoreEl.textContent = d.score;
-                scoreEl.className = 'predict-score ' + d.verdict.toLowerCase();
-                
-                const verdictEl = document.getElementById('predictVerdict');
-                verdictEl.textContent = d.verdict + ' POTENTIAL';
-                verdictEl.style.color = d.verdict === 'HIGH' ? '#00FF88' : d.verdict === 'MEDIUM' ? '#FFAA00' : '#FF3366';
-                
-                document.getElementById('factors').innerHTML = `
-                    <div class="factor"><span>${d.factors.has_hashtags ? '✓' : '✗'}</span> Hashtags</div>
-                    <div class="factor"><span>${d.factors.has_mentions ? '✓' : '✗'}</span> Mentions</div>
-                    <div class="factor"><span>${d.factors.good_length ? '✓' : '✗'}</span> Good length</div>
-                    <div class="factor"><span>${d.factors.has_emoji ? '✓' : '✗'}</span> Emoji</div>
-                    <div class="factor"><span>${d.factors.has_link ? '✓' : '✗'}</span> Link</div>
-                `;
-                
-                if (d.tips.length > 0) {
-                    document.getElementById('tips').style.display = 'block';
-                    document.getElementById('tipsList').innerHTML = d.tips.map(t => '• ' + t).join('<br>');
-                }
-                
-                document.getElementById('predictResults').classList.add('active');
-                hideLoading();
+                document.getElementById('predictScore').textContent = d.score;
+                document.getElementById('predictResult').style.display = 'block';
             } catch (e) {
-                showError(e.message);
+                alert(e.message);
             }
-        }
-        
-        document.getElementById('predictBtn').addEventListener('click', predict);
-        
-        function showLoading() {
-            document.getElementById('loading').classList.add('active');
-            document.getElementById('error').classList.remove('active');
-            document.getElementById('results').classList.remove('active');
-            document.getElementById('compareResults').classList.remove('active');
-            document.getElementById('predictResults').classList.remove('active');
-            document.getElementById('analyzeBtn').disabled = true;
-            document.getElementById('compareBtn').disabled = true;
-            document.getElementById('predictBtn').disabled = true;
-        }
-        
-        function hideLoading() {
-            document.getElementById('loading').classList.remove('active');
-            document.getElementById('analyzeBtn').disabled = false;
-            document.getElementById('compareBtn').disabled = false;
+            
             document.getElementById('predictBtn').disabled = false;
         }
         
-        function showError(msg) {
-            hideLoading();
-            document.getElementById('error').textContent = msg;
-            document.getElementById('error').classList.add('active');
-        }
-        
-        function showResults() {
-            hideLoading();
-            document.getElementById('results').classList.add('active');
-        }
-        
-        function animateValue(id, target) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            let current = 0;
-            const step = Math.max(target / 20, 1);
-            const timer = setInterval(() => {
-                current += step;
-                if (current >= target) { el.textContent = fmt(target); clearInterval(timer); }
-                else { el.textContent = fmt(Math.floor(current)); }
-            }, 20);
-        }
-        
-        function animateValueSimple(el, target, suffix) {
-            if (!el) return;
-            let current = 0;
-            const step = Math.max(target / 15, 1);
-            const timer = setInterval(() => {
-                current += step;
-                if (current >= target) { el.textContent = target + suffix; clearInterval(timer); }
-                else { el.textContent = Math.floor(current) + suffix; }
-            }, 15);
-        }
-        
-        function fmt(n) {
-            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
-            return String(n);
-        }
+        document.getElementById('predictBtn').addEventListener('click', predict);
     </script>
 </body>
 </html>
