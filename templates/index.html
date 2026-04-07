@@ -282,6 +282,21 @@
     animation: glow 3s ease-in-out infinite;
   }
 
+  /* Hero title hover glow */
+  .hero-title:hover {
+    text-shadow: 0 0 30px rgba(240, 192, 64, 0.5);
+  }
+
+  /* Button pulse */
+  @keyframes btnPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(240, 192, 64, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(240, 192, 64, 0); }
+  }
+
+  .btn-primary {
+    animation: btnPulse 2s ease-in-out infinite;
+  }
+
   /* FEATURES */
   .features {
     padding: 100px 40px;
