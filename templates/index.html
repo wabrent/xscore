@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe — Twitter Analyzer</title>
+    <link rel="icon" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #000000;
+            --bg-secondary: #1c1c1e;
+            --bg-tertiary: #2c2c2e;
+            --text: #ffffff;
+            --text-secondary: #8e8e93;
+            --text-tertiary: #636366;
+            --accent: #0a84ff;
+            --accent-secondary: #5e5ce6;
+            --green: #30d158;
+            --orange: #ff9f0a;
+            --red: #ff453a;
+            --yellow: #ffd60a;
+            --pink: #ff375b;
+            --radius: 12px;
+            --radius-lg: 20px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.3);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 60px 20px 40px;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #fff, #888);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spin 8s linear infinite;
+            overflow: hidden;
+        }
+        
+        .logo img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .brand h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .brand span {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Search */
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .search-box input:focus {
+            border-color: var(--accent);
+        }
+        
+        .search-box input::placeholder {
+            color: var(--text-tertiary);
+        }
+        
+        .search-box button {
+            padding: 14px 24px;
+            background: var(--text);
+            border: none;
+            border-radius: var(--radius);
+            color: var(--bg);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        
+        .search-box button:hover {
+            transform: scale(1.02);
+        }
+        
+        .search-box button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Loading */
+        .loading {
+            display: none;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .loading.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--bg-tertiary);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Error */
+        .error {
+            display: none;
+            padding: 16px;
+            background: rgba(255, 69, 58, 0.1);
+            border: 1px solid var(--red);
+            border-radius: var(--radius);
+            color: var(--red);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .error.active {
+            display: block;
+        }
+        
+        /* Results */
+        .results {
+            display: none;
+        }
+        
+        .results.active {
+            display: block;
+        }
+        
+        /* Profile Card */
+        .profile-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            object-fit: cover;
+        }
+        
+        .profile-info h2 {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .verified {
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+        
+        .profile-info .username {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+        
+        .bio {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        /* Vibe Score Card */
+        .vibe-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .vibe-score {
+            font-size: 64px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        
+        .vibe-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .vibe-bar {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .vibe-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Section */
+        .section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+        
+        /* Content Mix */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .content-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+        }
+        
+        .content-item .icon {
+            font-size: 20px;
+        }
+        
+        .content-item .name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .content-item .score {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-left: auto;
+        }
+        
+        /* Best Times */
+        .times-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .time-item {
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+        }
+        
+        .time-item .time {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .time-item .score {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* Audience */
+        .audience-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .audience-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .audience-item .name {
+            width: 80px;
+            font-size: 14px;
+        }
+        
+        .audience-item .bar {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .audience-item .bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .audience-item .percent {
+            width: 40px;
+            text-align: right;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Viral Potential */
+        .viral-card {
+            background: linear-gradient(135deg, var(--pink), var(--accent-secondary));
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .viral-score {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .viral-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* Share Button */
+        .share-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: none;
+            border-radius: var(--radius-lg);
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 40px 16px 24px;
+            }
+            
+            .vibe-score {
+                font-size: 48px;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="logo.png" alt="Vibe">
+                </div>
+                <div class="brand">
+                    <h1>Vibe</h1>
+                    <span>Twitter Analyzer</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="search-box">
+            <input type="text" id="username" placeholder="Enter Twitter username">
+            <button id="analyzeBtn">Analyze</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+        </div>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="results" id="results">
+            <!-- Profile -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <img class="avatar" id="avatar" src="" alt="">
+                    <div class="profile-info">
+                        <h2>
+                            <span id="name"></span>
+                            <span class="verified" id="verified" style="display:none">✓</span>
+                        </h2>
+                        <div class="username">@<span id="username"></span></div>
+                    </div>
+                </div>
+                <div class="bio" id="bio"></div>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value" id="followers">0</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="following">0</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="tweets">0</div>
+                        <div class="stat-label">Tweets</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vibe Score -->
+            <div class="vibe-card">
+                <div class="vibe-score" id="vibeScore">0</div>
+                <div class="vibe-label">Vibe Score</div>
+                <div class="vibe-bar">
+                    <div class="vibe-bar-fill" id="vibeBar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Engagement -->
+            <div class="section">
+                <div class="section-title">Engagement</div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value" id="engagement">0%</div>
+                        <div class="stat-label">Likes Rate</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="avgLikes">0</div>
+                        <div class="stat-label">Avg Likes/Tweet</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="quality">0%</div>
+                        <div class="stat-label">Quality</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Content Mix -->
+            <div class="section">
+                <div class="section-title">Content Mix</div>
+                <div class="content-grid" id="contentMix"></div>
+            </div>
+            
+            <!-- Best Times -->
+            <div class="section">
+                <div class="section-title">Best Posting Times</div>
+                <div class="times-grid" id="bestTimes"></div>
+            </div>
+            
+            <!-- Audience -->
+            <div class="section">
+                <div class="section-title">Audience</div>
+                <div class="audience-list" id="audience"></div>
+            </div>
+            
+            <!-- Viral Potential -->
+            <div class="viral-card">
+                <div class="viral-score" id="viralScore">0%</div>
+                <div class="viral-label">Viral Potential</div>
+            </div>
+            
+            <button class="share-btn" id="shareBtn">Share Results</button>
+        </div>
+    </div>
+    
+    <script>
+        const input = document.getElementById('username');
+        const btn = document.getElementById('analyzeBtn');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const results = document.getElementById('results');
+        
+        function fmt(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+            return String(n);
+        }
+        
+        async function analyze() {
+            const username = input.value.trim().replace('@', '');
+            if (!username) return;
+            
+            error.classList.remove('active');
+            loading.classList.add('active');
+            results.classList.remove('active');
+            btn.disabled = true;
+            btn.textContent = 'Analyzing...';
+            
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                
+                if (!res.ok) throw new Error('User not found');
+                
+                const d = await res.json();
+                
+                // Profile
+                document.getElementById('avatar').src = d.avatar_url || '';
+                document.getElementById('name').textContent = d.display_name;
+                document.getElementById('username').textContent = d.username;
+                document.getElementById('verified').style.display = d.verified ? 'flex' : 'none';
+                document.getElementById('bio').textContent = d.bio || '';
+                
+                // Stats
+                animateValue('followers', d.followers);
+                animateValue('following', d.following);
+                animateValue('tweets', d.tweets);
+                
+                // Vibe Score
+                const vibeScore = document.getElementById('vibeScore');
+                animateValueSimple(vibeScore, d.vibe_score, '%');
+                document.getElementById('vibeBar').style.width = d.vibe_score + '%';
+                
+                // Engagement
+                document.getElementById('engagement').textContent = d.engagement + '%';
+                document.getElementById('avgLikes').textContent = d.avg_likes_per_tweet;
+                document.getElementById('quality').textContent = d.quality + '%';
+                
+                // Content Mix
+                const contentMix = document.getElementById('contentMix');
+                contentMix.innerHTML = d.content_mix.map(c => `
+                    <div class="content-item">
+                        <span class="icon">${c.icon}</span>
+                        <span class="name">${c.type}</span>
+                        <span class="score">${c.score}%</span>
+                    </div>
+                `).join('');
+                
+                // Best Times
+                const bestTimes = document.getElementById('bestTimes');
+                bestTimes.innerHTML = d.best_times.map(t => `
+                    <div class="time-item">
+                        <div class="time">${t.time}</div>
+                        <div class="score">${t.score}%</div>
+                    </div>
+                `).join('');
+                
+                // Audience
+                const audience = document.getElementById('audience');
+                audience.innerHTML = d.audience.map(a => `
+                    <div class="audience-item">
+                        <span class="name">${a.segment}</span>
+                        <div class="bar"><div class="bar-fill" style="width: ${a.percent}%"></div></div>
+                        <span class="percent">${a.percent}%</span>
+                    </div>
+                `).join('');
+                
+                // Viral Potential
+                document.getElementById('viralScore').textContent = d.viral_potential + '%';
+                
+                loading.classList.remove('active');
+                results.classList.add('active');
+                
+            } catch (e) {
+                loading.classList.remove('active');
+                error.textContent = e.message || 'Error analyzing user';
+                error.classList.add('active');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Analyze';
+            }
+        }
+        
+        function animateValue(id, target) {
+            const el = document.getElementById(id);
+            let current = 0;
+            const step = Math.max(target / 40, 1);
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.textContent = fmt(target);
+                    clearInterval(timer);
+                } else {
+                    el.textContent = fmt(Math.floor(current));
+                }
+            }, 25);
+        }
+        
+        function animateValueSimple(el, target, suffix = '') {
+            let current = 0;
+            const step = Math.max(target / 30, 1);
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.textContent = target + suffix;
+                    clearInterval(timer);
+                } else {
+                    el.textContent = Math.floor(current) + suffix;
+                }
+            }, 20);
+        }
+        
+        btn.addEventListener('click', analyze);
+        input.addEventListener('keypress', e => { if (e.key === 'Enter') analyze(); });
+        
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            const username = input.value.trim().replace('@', '');
+            const vibe = document.getElementById('vibeScore').textContent;
+            const text = `My Vibe Score: ${vibe}\n\nCheck yours:`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+        });
+    </script>
+</body>
+</html>
