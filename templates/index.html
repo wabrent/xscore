@@ -10,11 +10,13 @@
     <style>
         :root {
             --bg: #050505;
-            --amber: #E89E2D;
+            --amber: #D98324;
+            --amber-dim: #8B5A1C;
             --royal: #2B3D8F;
-            --text: #F5F5F5;
-            --text-dim: #888888;
+            --text: #E0E0E0;
+            --text-dim: #666666;
             --border: #1a1a1a;
+            --grid: #0f0f0f;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,14 +30,23 @@
             overflow-x: hidden;
         }
         
-        /* Film grain overlay */
+        /* Heavy film grain */
         .noise {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
             z-index: 9999;
-            opacity: 0.08;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0.12;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 9997;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%);
         }
         
         /* Scanlines */
@@ -47,177 +58,260 @@
             background: repeating-linear-gradient(
                 0deg,
                 transparent,
-                transparent 2px,
-                rgba(0,0,0,0.1) 2px,
-                rgba(0,0,0,0.1) 4px
+                transparent 1px,
+                rgba(0,0,0,0.15) 1px,
+                rgba(0,0,0,0.15) 2px
             );
         }
         
         .container {
-            max-width: 900px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 20px;
-            border: 1px solid var(--border);
+            padding: 0;
             position: relative;
+        }
+        
+        /* Grid lines */
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+                linear-gradient(var(--grid) 1px, transparent 1px);
+            background-size: 80px 80px;
         }
         
         /* Header */
         header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
+            align-items: stretch;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 24px;
+            margin-bottom: 0;
+        }
+        
+        .logo-container {
+            padding: 24px 32px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            align-items: center;
         }
         
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 600;
+            font-size: 48px;
+            font-weight: 400;
             color: transparent;
-            -webkit-text-stroke: 1px var(--amber);
-            letter-spacing: 4px;
+            -webkit-text-stroke: 1.5px var(--amber);
+            letter-spacing: 12px;
+            line-height: 1;
+        }
+        
+        .logo-sn {
+            font-size: 9px;
+            color: var(--text-dim);
+            margin-left: 12px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
         }
         
         .nav {
             display: flex;
-            gap: 0;
+            flex: 1;
         }
         
         .nav-item {
-            padding: 8px 16px;
-            font-family: 'Inter', sans-serif;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
             font-weight: 700;
             font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            letter-spacing: 3px;
             color: var(--text-dim);
             border-left: 1px solid var(--border);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            position: relative;
+        }
+        
+        .nav-item::after {
+            content: '+';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 8px;
+            opacity: 0.3;
         }
         
         .nav-item:hover, .nav-item.active {
             color: var(--amber);
-            background: rgba(232, 158, 45, 0.05);
+            background: rgba(217, 131, 36, 0.05);
         }
         
         /* Main layout */
         .main {
             display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 24px;
+            grid-template-columns: 180px 1fr;
+            min-height: 600px;
         }
         
         /* Sidebar */
         .sidebar {
-            border: 1px solid var(--border);
-            padding: 16px;
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
         }
         
         .sidebar-title {
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 10px;
-            letter-spacing: 2px;
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
             color: var(--text-dim);
-            margin-bottom: 16px;
-        }
-        
-        .stat {
+            letter-spacing: 2px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
             margin-bottom: 20px;
         }
         
+        .stat {
+            margin-bottom: 24px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .stat::before {
+            content: '+';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            font-size: 10px;
+            color: var(--text-dim);
+            opacity: 0.5;
+        }
+        
         .stat-value {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--amber);
             line-height: 1;
         }
         
         .stat-label {
-            font-size: 10px;
+            font-size: 8px;
             color: var(--text-dim);
+            letter-spacing: 1px;
             margin-top: 4px;
         }
         
         .scale {
-            margin-top: 24px;
+            margin-top: 32px;
         }
         
         .scale-header {
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
+            font-size: 8px;
             color: var(--text-dim);
+            letter-spacing: 1px;
             margin-bottom: 8px;
         }
         
         .scale-bar {
-            height: 4px;
+            height: 6px;
             background: var(--border);
             position: relative;
+            border: 1px solid var(--border);
         }
         
         .scale-fill {
             position: absolute;
             left: 0; top: 0;
             height: 100%;
-            background: linear-gradient(90deg, var(--royal), var(--amber));
+            background: var(--amber);
+        }
+        
+        .dict {
+            margin-top: 32px;
+            font-size: 9px;
+            line-height: 1.8;
+        }
+        
+        .dict-term {
+            color: var(--amber-dim);
+            font-weight: 700;
+        }
+        
+        .dict-def {
+            color: var(--text-dim);
         }
         
         /* Content */
         .content {
-            border: 1px solid var(--border);
             padding: 24px;
+            position: relative;
         }
         
         .section { display: none; }
         .section.active { display: block; }
         
+        /* Grid dots at intersections */
+        .content::before {
+            content: '+  +  +  +  +  +  +  +  +  +  +  +';
+            position: absolute;
+            top: 8px;
+            right: 16px;
+            font-size: 8px;
+            color: var(--text-dim);
+            opacity: 0.3;
+            letter-spacing: 8px;
+        }
+        
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         
         .input-group label {
             display: block;
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-dim);
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             margin-bottom: 8px;
         }
         
         .input-group input,
         .input-group textarea {
             width: 100%;
-            padding: 12px;
+            padding: 14px 16px;
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text);
             font-family: 'Space Mono', monospace;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.15s;
         }
         
         .input-group input:focus,
         .input-group textarea:focus {
             border-color: var(--amber);
+            background: rgba(217, 131, 36, 0.02);
         }
         
         .btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: transparent;
             border: 1px solid var(--amber);
             color: var(--amber);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Space Mono', monospace;
             font-weight: 700;
             font-size: 12px;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
         
         .btn:hover {
@@ -225,11 +319,26 @@
             color: var(--bg);
         }
         
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
         /* Results */
         .result-card {
+            margin-top: 24px;
             border: 1px solid var(--border);
             padding: 20px;
-            margin-top: 20px;
+            position: relative;
+        }
+        
+        .result-card::before {
+            content: '+';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 12px;
+            color: var(--amber);
         }
         
         .result-header {
@@ -237,194 +346,233 @@
             align-items: center;
             gap: 16px;
             margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
         }
         
         .avatar {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             border: 1px solid var(--amber);
             object-fit: cover;
+            position: relative;
+        }
+        
+        /* Scanline effect on avatar */
+        .avatar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.3) 2px,
+                rgba(0,0,0,0.3) 4px
+            );
+            pointer-events: none;
         }
         
         .user-info h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
         }
         
         .user-info .username {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-dim);
+            margin-top: 4px;
+            font-family: 'Space Mono', monospace;
         }
         
         .verified {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
+            display: inline-flex;
+            width: 18px;
+            height: 18px;
             background: var(--amber);
             color: var(--bg);
             font-size: 10px;
-            text-align: center;
-            line-height: 16px;
+            font-weight: 700;
+            align-items: center;
+            justify-content: center;
             margin-left: 8px;
+            font-family: 'Space Mono', monospace;
         }
         
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 1px;
+            background: var(--border);
         }
         
         .stat-box {
-            border: 1px solid var(--border);
-            padding: 12px;
+            background: var(--bg);
+            padding: 16px 12px;
             text-align: center;
         }
         
         .stat-box .value {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
+            color: var(--text);
         }
         
         .stat-box .label {
-            font-size: 9px;
+            font-size: 8px;
             color: var(--text-dim);
             letter-spacing: 1px;
-        }
-        
-        /* Score display */
-        .score-display {
-            text-align: center;
-            padding: 40px;
-            border: 1px solid var(--border);
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .score-display::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 100px;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(232, 158, 45, 0.1));
-        }
-        
-        .score-value {
-            font-size: 72px;
-            font-weight: 700;
-            color: var(--amber);
-        }
-        
-        .score-label {
-            font-size: 10px;
-            color: var(--text-dim);
-            letter-spacing: 2px;
+            margin-top: 4px;
         }
         
         /* Compare */
         .compare-grid {
             display: grid;
-            grid-template-columns: 1fr 80px 1fr;
+            grid-template-columns: 1fr 60px 1fr;
             gap: 16px;
-            align-items: center;
+            align-items: start;
         }
         
         .compare-vs {
             text-align: center;
-            font-size: 12px;
+            font-size: 14px;
             color: var(--amber);
+            padding-top: 40px;
         }
         
         .compare-user {
-            text-align: center;
-            padding: 16px;
             border: 1px solid var(--border);
+            padding: 16px;
+            text-align: center;
         }
         
         .compare-user img {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border: 1px solid var(--border);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
         
-        /* Dictionary style */
-        .dict {
-            margin-top: 24px;
+        .compare-user .name {
             font-size: 11px;
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
         }
         
-        .dict-term {
-            color: var(--amber);
-            font-weight: 700;
+        /* Score display */
+        .score-display {
+            text-align: center;
+            padding: 48px;
+            border: 1px solid var(--border);
+            margin: 24px 0;
+            position: relative;
         }
         
-        .dict-def {
+        .score-display::before {
+            content: '[ SCORE ]';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg);
+            padding: 0 12px;
+            font-size: 9px;
             color: var(--text-dim);
-            margin-left: 8px;
+            letter-spacing: 2px;
+        }
+        
+        .score-value {
+            font-size: 80px;
+            font-weight: 700;
+            color: var(--amber);
+            line-height: 1;
+        }
+        
+        .score-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 3px;
+            margin-top: 12px;
         }
         
         /* Footer */
         footer {
-            margin-top: 24px;
-            padding-top: 16px;
+            padding: 16px;
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-dim);
         }
         
+        footer .sn {
+            font-size: 8px;
+            opacity: 0.5;
+        }
+        
         /* Loading */
-        .loading { display: none; }
-        .loading.active { display: block; text-align: center; padding: 40px; }
+        .loading { display: none; padding: 48px; text-align: center; }
+        .loading.active { display: block; }
         
         .spinner {
-            width: 40px; height: 40px;
-            border: 2px solid var(--border);
+            width: 32px; height: 32px;
+            border: 1px solid var(--border);
             border-top-color: var(--amber);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
             margin: 0 auto 16px;
         }
         
         @keyframes spin { to { transform: rotate(360deg); } }
         
+        .loading-text {
+            font-size: 9px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+        
         .error {
             display: none;
-            padding: 12px;
-            border: 1px solid #ff3333;
-            color: #ff3333;
+            padding: 12px 16px;
+            border: 1px solid #883333;
+            color: #cc4444;
+            font-size: 10px;
             margin-top: 16px;
         }
         .error.active { display: block; }
         
         @media (max-width: 700px) {
             .main { grid-template-columns: 1fr; }
+            .logo { font-size: 32px; letter-spacing: 6px; }
             .compare-grid { grid-template-columns: 1fr; }
             .compare-vs { display: none; }
         }
     </style>
 </head>
 <body>
+    <div class="grid-overlay"></div>
     <div class="noise"></div>
+    <div class="vignette"></div>
     <div class="scanlines"></div>
     
     <div class="container">
         <header>
-            <div class="logo">XSCORE</div>
+            <div class="logo-container">
+                <div class="logo">XSCORE</div>
+                <div class="logo-sn">SN-7742</div>
+            </div>
             <nav class="nav">
-                <div class="nav-item active" data-tab="analyze">Analyze</div>
-                <div class="nav-item" data-tab="compare">Compare</div>
-                <div class="nav-item" data-tab="predict">Predict</div>
+                <div class="nav-item active" data-tab="analyze">ANALYZE</div>
+                <div class="nav-item" data-tab="compare">COMPARE</div>
+                <div class="nav-item" data-tab="predict">PREDICT</div>
             </nav>
         </header>
         
         <div class="main">
             <aside class="sidebar">
-                <div class="sidebar-title">DATA SHEET</div>
+                <div class="sidebar-title">// DATA_01</div>
                 
                 <div class="stat">
                     <div class="stat-value" id="followers">0</div>
@@ -433,7 +581,7 @@
                 
                 <div class="stat">
                     <div class="stat-value" id="viralScore">0</div>
-                    <div class="stat-label">VIRAL INDEX</div>
+                    <div class="stat-label">VIRAL_INDEX</div>
                 </div>
                 
                 <div class="scale">
@@ -447,43 +595,46 @@
                 </div>
                 
                 <div class="dict">
-                    <div><span class="dict-term">RETINA</span><span class="dict-def">[noun] Display metric</span></div>
-                    <div><span class="dict-term">PUPIL</span><span class="dict-def">[noun] Entry point</span></div>
+                    <div><span class="dict-term">RETINA</span> <span class="dict-def">[n] display</span></div>
+                    <div><span class="dict-term">PUPIL</span> <span class="dict-def">[n] entry</span></div>
+                    <div><span class="dict-term">CORnea</span> <span class="dict-def">[n] layer</span></div>
                 </div>
             </aside>
             
             <div class="content">
+                <span class="sn">ID: x8847a</span>
+                
                 <!-- Analyze -->
                 <div class="section active" id="analyze">
                     <div class="input-group">
-                        <label>USERNAME</label>
-                        <input type="text" id="username" placeholder="@username">
+                        <label>>> USERNAME</label>
+                        <input type="text" id="username" placeholder="@handle">
                     </div>
                     <button class="btn" id="analyzeBtn">ANALYZE</button>
                     
                     <div class="loading" id="loading">
                         <div class="spinner"></div>
-                        <div>PROCESSING...</div>
+                        <div class="loading-text">PROCESSING...</div>
                     </div>
                     
                     <div class="error" id="error"></div>
                     
-                    <div class="result-card" id="result">
+                    <div class="result-card" id="result" style="display:none;">
                         <div class="result-header">
                             <img class="avatar" id="avatar" src="">
                             <div class="user-info">
-                                <h3><span id="name"></span><span class="verified" id="verified" style="display:none">✓</span></h3>
+                                <h3><span id="name"></span><span class="verified" id="verified" style="display:none">V</span></h3>
                                 <div class="username">@<span id="handle"></span></div>
                             </div>
                         </div>
                         <div class="stats-grid">
                             <div class="stat-box">
                                 <div class="value" id="engagement">0%</div>
-                                <div class="label">ENG RATE</div>
+                                <div class="label">ENG_RATE</div>
                             </div>
                             <div class="stat-box">
                                 <div class="value" id="avgLikes">0</div>
-                                <div class="label">AVG LIKES</div>
+                                <div class="label">AVG_LIKES</div>
                             </div>
                             <div class="stat-box">
                                 <div class="value" id="quality">0%</div>
@@ -497,55 +648,32 @@
                 <div class="section" id="compare">
                     <div class="compare-grid" style="margin-bottom: 20px;">
                         <div class="input-group">
-                            <label>YOUR USERNAME</label>
+                            <label>>> USER_A</label>
                             <input type="text" id="user1" placeholder="@you">
                         </div>
                         <div class="compare-vs">VS</div>
                         <div class="input-group">
-                            <label>COMPETITOR</label>
+                            <label>>> USER_B</label>
                             <input type="text" id="user2" placeholder="@them">
                         </div>
                     </div>
                     <button class="btn" id="compareBtn">COMPARE</button>
                     
-                    <div class="result-card" id="compareResult" style="display:none;">
-                        <div class="compare-grid">
-                            <div class="compare-user">
-                                <img class="avatar" id="avatar1" src="">
-                                <div class="username" id="name1"></div>
-                            </div>
-                            <div class="compare-vs">VS</div>
-                            <div class="compare-user">
-                                <img class="avatar" id="avatar2" src="">
-                                <div class="username" id="name2"></div>
-                            </div>
+                    <div class="result-card" id="compareResult" style="display:none; margin-top: 24px;">
+                        <div class="result-header" style="border: none; margin-bottom: 0; padding-bottom: 0;">
+                            <span class="sn">COMPARISON_MATRIX</span>
                         </div>
-                        <div class="stats-grid" style="margin-top: 16px;">
-                            <div class="stat-box">
-                                <div class="value" id="followers1">0</div>
-                                <div class="label">FOLLOWERS</div>
+                        <div class="compare-grid" style="margin-top: 16px;">
+                            <div class="compare-user">
+                                <img id="avatar1" src="">
+                                <div class="name" id="name1"></div>
+                                <div class="stat-label" id="v1" style="margin-top:8px;">0</div>
                             </div>
-                            <div class="stat-box">
-                                <div class="value" id="viral1">0</div>
-                                <div class="label">VIRAL</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="value" id="engage1">0%</div>
-                                <div class="label">ENG</div>
-                            </div>
-                        </div>
-                        <div class="stats-grid" style="margin-top: 8px;">
-                            <div class="stat-box">
-                                <div class="value" id="followers2">0</div>
-                                <div class="label">FOLLOWERS</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="value" id="viral2">0</div>
-                                <div class="label">VIRAL</div>
-                            </div>
-                            <div class="stat-box">
-                                <div class="value" id="engage2">0%</div>
-                                <div class="label">ENG</div>
+                            <div class="compare-vs" style="padding-top:20px;">&lt;&gt;</div>
+                            <div class="compare-user">
+                                <img id="avatar2" src="">
+                                <div class="name" id="name2"></div>
+                                <div class="stat-label" id="v2" style="margin-top:8px;">0</div>
                             </div>
                         </div>
                     </div>
@@ -554,26 +682,26 @@
                 <!-- Predict -->
                 <div class="section" id="predict">
                     <div class="input-group">
-                        <label>USERNAME</label>
+                        <label>>> OPERATOR</label>
                         <input type="text" id="predictUser" placeholder="@username">
                     </div>
                     <div class="input-group">
-                        <label>TWEET CONTENT</label>
-                        <textarea id="tweetText" placeholder="Your tweet..." rows="4"></textarea>
+                        <label>>> CONTENT</label>
+                        <textarea id="tweetText" placeholder="payload..." rows="4"></textarea>
                     </div>
                     <button class="btn" id="predictBtn">PREDICT</button>
                     
                     <div class="score-display" id="predictResult" style="display:none;">
                         <div class="score-value" id="predictScore">0</div>
-                        <div class="score-label">VIRAL POTENTIAL</div>
+                        <div class="score-label">VIRAL_POTENTIAL</div>
                     </div>
                 </div>
             </div>
         </div>
         
         <footer>
-            <span>v1.0.0 // XSCORE</span>
-            <span>5128</span>
+            <span>XSCORE v1.0 // 2024</span>
+            <span class="sn">S/N: 8847-A</span>
         </footer>
     </div>
     
@@ -624,13 +752,13 @@
                     body: JSON.stringify({ username })
                 });
                 
-                if (!res.ok) throw new Error('User not found');
+                if (!res.ok) throw new Error('NOT_FOUND');
                 const d = await res.json();
                 
                 document.getElementById('avatar').src = d.avatar_url || '';
                 document.getElementById('name').textContent = d.display_name;
                 document.getElementById('handle').textContent = d.username;
-                document.getElementById('verified').style.display = d.verified ? 'inline-block' : 'none';
+                document.getElementById('verified').style.display = d.verified ? 'inline-flex' : 'none';
                 
                 animateValue('followers', d.followers);
                 animateValue('viralScore', d.viral_score);
@@ -642,7 +770,7 @@
                 
                 document.getElementById('result').style.display = 'block';
             } catch (e) {
-                document.getElementById('error').textContent = e.message;
+                document.getElementById('error').textContent = 'ERROR: ' + e.message;
                 document.getElementById('error').classList.add('active');
             }
             
@@ -667,24 +795,20 @@
                     body: JSON.stringify({ user1: u1, user2: u2 })
                 });
                 
-                if (!res.ok) throw new Error('User not found');
+                if (!res.ok) throw new Error('NOT_FOUND');
                 const d = await res.json();
                 
                 document.getElementById('avatar1').src = d.user1.avatar_url || '';
                 document.getElementById('name1').textContent = d.user1.username;
+                document.getElementById('v1').textContent = 'VIRAL: ' + d.user1.viral_score;
                 document.getElementById('avatar2').src = d.user2.avatar_url || '';
                 document.getElementById('name2').textContent = d.user2.username;
-                
-                document.getElementById('followers1').textContent = fmt(d.user1.followers);
-                document.getElementById('followers2').textContent = fmt(d.user2.followers);
-                document.getElementById('viral1').textContent = d.user1.viral_score;
-                document.getElementById('viral2').textContent = d.user2.viral_score;
-                document.getElementById('engage1').textContent = d.user1.engagement_rate + '%';
-                document.getElementById('engage2').textContent = d.user2.engagement_rate + '%';
+                document.getElementById('v2').textContent = 'VIRAL: ' + d.user2.viral_score;
                 
                 document.getElementById('compareResult').style.display = 'block';
             } catch (e) {
-                alert(e.message);
+                document.getElementById('error').textContent = 'ERROR: ' + e.message;
+                document.getElementById('error').classList.add('active');
             }
             
             document.getElementById('compareBtn').disabled = false;
@@ -711,7 +835,8 @@
                 document.getElementById('predictScore').textContent = d.score;
                 document.getElementById('predictResult').style.display = 'block';
             } catch (e) {
-                alert(e.message);
+                document.getElementById('error').textContent = 'ERROR: ' + e.message;
+                document.getElementById('error').classList.add('active');
             }
             
             document.getElementById('predictBtn').disabled = false;
