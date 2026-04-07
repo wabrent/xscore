@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: vibe-terminal
+    name: xscore
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app

@@ -4,35 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viral — Predict Your Tweets</title>
-    <link rel="icon" href="logo.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --bg: #0A0A0F;
-            --bg-card: #12121A;
-            --bg-card-hover: #1A1A24;
-            --border: #2A2A3A;
-            --text: #FFFFFF;
+            --bg: #050508;
+            --bg-card: #0A0A0F;
+            --bg-card-2: #0F0F15;
+            --border: #1A1A25;
+            --border-hover: #252535;
+            --text: #F0F0F5;
             --text-secondary: #8888AA;
             --text-muted: #555566;
-            --accent: #6C5CE7;
-            --accent-gradient: linear-gradient(135deg, #6C5CE7, #A29BFE);
-            --green: #00D9A5;
-            --pink: #FF6B9D;
-            --yellow: #FFD93D;
-            --cyan: #00D4FF;
-            --radius: 24px;
-            --radius-sm: 16px;
+            --accent: #FF3366;
+            --accent-2: #FF6B35;
+            --accent-gradient: linear-gradient(135deg, #FF3366, #FF6B35);
+            --cyan: #00FFFF;
+            --glow: 0 0 30px rgba(255, 51, 102, 0.3);
+            --radius: 20px;
+            --radius-sm: 14px;
         }
         
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Outfit', sans-serif;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
@@ -40,12 +38,14 @@
         body::before {
             content: '';
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 20%, rgba(108, 92, 231, 0.15) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(255, 107, 157, 0.1) 0%, transparent 50%);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255, 51, 102, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255, 107, 53, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0, 255, 255, 0.03) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
@@ -58,52 +58,51 @@
             z-index: 1;
         }
         
-        /* Header */
         header {
             text-align: center;
             margin-bottom: 40px;
         }
         
         .logo {
-            width: 64px;
-            height: 64px;
+            width: 72px;
+            height: 72px;
             margin: 0 auto 20px;
             background: var(--accent-gradient);
-            border-radius: 20px;
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: float 3s ease-in-out infinite;
+            box-shadow: var(--glow);
+            animation: pulse 2s ease-in-out infinite;
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 51, 102, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(255, 51, 102, 0.5); }
         }
         
-        .logo img { width: 36px; height: 36px; filter: brightness(0) invert(1); }
+        .logo img { width: 40px; height: 40px; filter: brightness(0) invert(1); }
         
         header h1 {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: 700;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #FFF, #FF3366);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
-            letter-spacing: -1px;
         }
         
-        header p {
-            font-size: 16px;
-            color: var(--text-secondary);
-        }
+        header p { font-size: 16px; color: var(--text-secondary); font-weight: 300; }
         
-        /* Tabs */
         .tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
+            gap: 6px;
+            margin-bottom: 28px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 6px;
+            padding: 5px;
         }
         
         .tab {
@@ -111,39 +110,34 @@
             padding: 14px;
             background: transparent;
             border: none;
-            border-radius: var(--radius-sm);
+            border-radius: 12px;
             color: var(--text-secondary);
             font-family: inherit;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
         }
         
         .tab.active {
-            background: var(--accent);
+            background: var(--accent-gradient);
             color: white;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
         }
         
         .tab:not(.active):hover {
-            background: var(--bg-card-hover);
+            background: var(--bg-card-2);
             color: var(--text);
         }
         
-        /* Section */
         .section { display: none; }
         .section.active { display: block; }
         
-        /* Search */
-        .search-box {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
+        .input-wrapper { position: relative; margin-bottom: 20px; }
         
-        .search-box input {
-            flex: 1;
-            padding: 18px 24px;
+        .input-wrapper input, .input-wrapper textarea {
+            width: 100%;
+            padding: 20px 24px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -151,16 +145,19 @@
             font-family: inherit;
             font-size: 16px;
             outline: none;
-            transition: all 0.2s;
+            transition: all 0.25s;
         }
         
-        .search-box input:focus {
+        .input-wrapper textarea { min-height: 120px; resize: vertical; }
+        
+        .input-wrapper input:focus, .input-wrapper textarea:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.15);
+            box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.1);
         }
         
-        .search-box button {
-            padding: 18px 24px;
+        .btn {
+            width: 100%;
+            padding: 20px;
             background: var(--accent-gradient);
             border: none;
             border-radius: var(--radius);
@@ -169,64 +166,44 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
+            box-shadow: var(--glow);
         }
         
-        .search-box button:hover { transform: scale(1.02); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255, 51, 102, 0.4); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         
-        .search-box button:disabled { opacity: 0.5; transform: none; }
-        
-        /* Compare Search */
-        .compare-box {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        
-        .compare-box input {
-            padding: 18px 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            font-family: inherit;
-            font-size: 16px;
-            outline: none;
-            text-align: center;
-        }
-        
-        .vs {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-        
-        /* Loading */
         .loading { display: none; padding: 48px; text-align: center; }
         .loading.active { display: block; }
+        
         .loading-spinner {
-            width: 40px;
-            height: 40px;
+            width: 48px; height: 48px;
             border: 3px solid var(--border);
             border-top-color: var(--accent);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
             margin: 0 auto 16px;
         }
+        
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* Error */
-        .error { display: none; padding: 16px; background: rgba(255, 107, 157, 0.1); border: 1px solid var(--pink); border-radius: var(--radius); color: var(--pink); margin-bottom: 24px; text-align: center; font-size: 14px; }
+        .error {
+            display: none;
+            padding: 16px;
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: var(--radius);
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-align: center;
+        }
         .error.active { display: block; }
         
-        /* Results */
         .results { display: none; }
         .results.active { display: block; animation: fadeIn 0.5s ease; }
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Card */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -235,25 +212,18 @@
             margin-bottom: 16px;
         }
         
-        /* Profile */
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
+        .profile { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
         
         .avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
+            width: 64px; height: 64px;
+            border-radius: 18px;
             object-fit: cover;
             border: 2px solid var(--accent);
         }
         
         .profile-info h2 {
             font-size: 22px;
-            font-weight: 700;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -262,120 +232,77 @@
         .verified { width: 18px; height: 18px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white; }
         .profile-info .username { font-size: 15px; color: var(--text-secondary); margin-top: 4px; }
         
-        /* Stats */
         .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .stat { text-align: center; padding: 14px 8px; background: var(--bg); border-radius: 12px; }
-        .stat-value { font-size: 20px; font-weight: 700; }
+        
+        .stat { text-align: center; padding: 16px 8px; background: var(--bg-card-2); border-radius: 12px; }
+        .stat-value { font-size: 22px; font-weight: 700; }
         .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
         
-        /* Score Card */
         .score-card {
             background: var(--accent-gradient);
             border-radius: var(--radius);
-            padding: 32px 24px;
+            padding: 40px 24px;
             text-align: center;
             margin-bottom: 16px;
+            box-shadow: var(--glow);
         }
         
         .score-value { font-size: 72px; font-weight: 700; color: white; line-height: 1; }
-        .score-label { font-size: 13px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 2px; margin-top: 8px; }
+        .score-label { font-size: 13px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 2px; margin-top: 12px; }
         
-        .score-bar { height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-top: 20px; overflow: hidden; }
-        .score-bar-fill { height: 100%; background: white; border-radius: 3px; transition: width 0.6s ease; }
-        
-        /* Compare Result */
-        .compare-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin-bottom: 16px;
-        }
-        
-        .compare-header {
+        .compare-grid {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             gap: 16px;
             align-items: center;
-            margin-bottom: 20px;
         }
         
         .compare-user { text-align: center; }
-        .compare-user .avatar { width: 56px; height: 56px; border-radius: 14px; margin: 0 auto 8px; border-color: var(--green); }
-        .compare-user .name { font-size: 16px; font-weight: 600; }
+        .compare-user .avatar { width: 52px; height: 52px; border-radius: 14px; margin: 0 auto 8px; border-color: var(--accent); }
+        .compare-user .name { font-size: 15px; font-weight: 600; }
         .compare-vs { font-size: 24px; font-weight: 700; color: var(--accent); }
         
-        .compare-stats { display: grid; gap: 12px; }
-        .compare-stat {
+        .compare-stats { display: flex; flex-direction: column; gap: 10px; }
+        
+        .compare-row {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             gap: 12px;
             padding: 12px;
-            background: var(--bg);
+            background: var(--bg-card-2);
             border-radius: 12px;
             align-items: center;
         }
         
-        .compare-stat .val { font-size: 18px; font-weight: 700; text-align: center; }
-        .compare-stat .label { font-size: 13px; color: var(--text-muted); text-align: center; }
-        .compare-stat .winner { color: var(--green); }
+        .compare-row .val { font-size: 16px; font-weight: 700; text-align: center; }
+        .compare-row .label { font-size: 12px; color: var(--text-muted); text-align: center; }
+        .compare-row .winner { color: var(--accent); }
         
-        /* Predictor */
-        .predict-input {
-            width: 100%;
-            padding: 18px 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            font-family: inherit;
-            font-size: 16px;
-            min-height: 120px;
-            resize: vertical;
-            outline: none;
-            margin-bottom: 16px;
-        }
+        .predict-result { text-align: center; padding: 32px 24px; }
         
-        .predict-input:focus { border-color: var(--accent); }
+        .predict-score { font-size: 80px; font-weight: 700; line-height: 1; margin-bottom: 8px; }
+        .predict-score.high { color: #00FF88; }
+        .predict-score.medium { color: #FFAA00; }
+        .predict-score.low { color: #FF3366; }
         
-        .predict-result {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            text-align: center;
-        }
+        .predict-verdict { font-size: 18px; font-weight: 600; margin-bottom: 24px; }
         
-        .predict-score { font-size: 64px; font-weight: 700; margin-bottom: 8px; }
-        .predict-score.high { color: var(--green); }
-        .predict-score.medium { color: var(--yellow); }
-        .predict-score.low { color: var(--pink); }
-        
-        .predict-verdict { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
-        
-        .factors {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            text-align: left;
-        }
+        .factors { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; text-align: left; }
         
         .factor {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px;
-            background: var(--bg);
-            border-radius: 8px;
+            padding: 12px;
+            background: var(--bg-card-2);
+            border-radius: 10px;
             font-size: 13px;
         }
-        
-        .factor .icon { font-size: 16px; }
         
         .tips {
             margin-top: 20px;
             padding: 16px;
-            background: rgba(108, 92, 231, 0.1);
+            background: rgba(255, 51, 102, 0.1);
             border-radius: 12px;
             text-align: left;
         }
@@ -384,15 +311,17 @@
         .tips-list { font-size: 14px; color: var(--text-secondary); }
         
         @media (max-width: 480px) {
-            .compare-box { grid-template-columns: 1fr; }
-            .compare-box .vs { display: none; }
+            .container { padding: 32px 16px; }
+            header h1 { font-size: 32px; }
+            .compare-grid { grid-template-columns: 1fr; }
+            .compare-vs { display: none; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo"><img src="logo.png" alt="Viral"></div>
+            <div class="logo"><span style="font-size:36px;color:white;">🔥</span></div>
             <h1>Viral</h1>
             <p>Predict your Twitter success</p>
         </header>
@@ -403,16 +332,16 @@
             <button class="tab" data-tab="predict">Predict</button>
         </div>
         
-        <!-- Analyze Section -->
+        <!-- Analyze -->
         <div class="section active" id="analyze">
-            <div class="search-box">
+            <div class="input-wrapper">
                 <input type="text" id="username" placeholder="Enter username">
-                <button id="analyzeBtn">Analyze</button>
             </div>
+            <button class="btn" id="analyzeBtn">Analyze Profile</button>
             
             <div class="loading" id="loading">
                 <div class="loading-spinner"></div>
-                <div style="color: var(--text-secondary); font-size: 14px;">Analyzing...</div>
+                <div style="color: var(--text-secondary)">Analyzing...</div>
             </div>
             
             <div class="error" id="error"></div>
@@ -436,12 +365,11 @@
                 <div class="score-card">
                     <div class="score-value" id="viralScore">0</div>
                     <div class="score-label">Viral Score</div>
-                    <div class="score-bar"><div class="score-bar-fill" id="viralBar"></div></div>
                 </div>
                 
                 <div class="card">
                     <div class="stats">
-                        <div class="stat"><div class="stat-value" id="engagement">0%</div><div class="stat-label">Engagement</div></div>
+                        <div class="stat"><div class="stat-value" id="engagement">0%</div><div class="stat-label">Eng Rate</div></div>
                         <div class="stat"><div class="stat-value" id="avgLikes">0</div><div class="stat-label">Avg Likes</div></div>
                         <div class="stat"><div class="stat-value" id="quality">0%</div><div class="stat-label">Quality</div></div>
                     </div>
@@ -449,19 +377,18 @@
             </div>
         </div>
         
-        <!-- Compare Section -->
+        <!-- Compare -->
         <div class="section" id="compare">
-            <div class="compare-box">
+            <div class="compare-grid" style="margin-bottom: 20px;">
                 <input type="text" id="user1" placeholder="Your username">
-                <span class="vs">VS</span>
-                <input type="text" id="user2" placeholder="Competitor username">
+                <span class="compare-vs">VS</span>
+                <input type="text" id="user2" placeholder="Competitor">
             </div>
+            <button class="btn" id="compareBtn">Compare</button>
             
-            <button id="compareBtn" style="width: 100%; padding: 18px; background: var(--accent-gradient); border: none; border-radius: var(--radius); color: white; font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 24px;">Compare</button>
-            
-            <div class="compare-result" id="compareResult" style="display: none;">
-                <div class="compare-card">
-                    <div class="compare-header">
+            <div class="results" id="compareResults" style="margin-top: 24px;">
+                <div class="card">
+                    <div class="compare-grid">
                         <div class="compare-user">
                             <img class="avatar" id="avatar1" src="" alt="">
                             <div class="name" id="name1"></div>
@@ -473,18 +400,18 @@
                         </div>
                     </div>
                     
-                    <div class="compare-stats">
-                        <div class="compare-stat">
+                    <div class="compare-stats" style="margin-top: 20px;">
+                        <div class="compare-row">
                             <div class="val" id="followers1">0</div>
                             <div class="label">Followers</div>
                             <div class="val" id="followers2">0</div>
                         </div>
-                        <div class="compare-stat">
+                        <div class="compare-row">
                             <div class="val" id="engage1">0%</div>
                             <div class="label">Engagement</div>
                             <div class="val" id="engage2">0%</div>
                         </div>
-                        <div class="compare-stat">
+                        <div class="compare-row">
                             <div class="val" id="viral1">0</div>
                             <div class="label">Viral Score</div>
                             <div class="val" id="viral2">0</div>
@@ -494,20 +421,26 @@
             </div>
         </div>
         
-        <!-- Predict Section -->
+        <!-- Predict -->
         <div class="section" id="predict">
-            <textarea class="predict-input" id="tweetText" placeholder="Write your tweet here..."></textarea>
-            <button id="predictBtn" style="width: 100%; padding: 18px; background: var(--accent-gradient); border: none; border-radius: var(--radius); color: white; font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 24px;">Predict</button>
+            <div class="input-wrapper">
+                <textarea id="tweetText" placeholder="Write your tweet..."></textarea>
+            </div>
+            <button class="btn" id="predictBtn">Predict</button>
             
-            <div class="predict-result" id="predictResult" style="display: none;">
-                <div class="predict-score" id="predictScore">0</div>
-                <div class="predict-verdict" id="predictVerdict">LOW</div>
+            <div class="results" id="predictResults" style="margin-top: 24px;">
+                <div class="score-card">
+                    <div class="predict-score" id="predictScore">0</div>
+                    <div class="predict-verdict" id="predictVerdict">LOW POTENTIAL</div>
+                </div>
                 
-                <div class="factors" id="factors"></div>
-                
-                <div class="tips" id="tips" style="display: none;">
-                    <div class="tips-title">Tips to go viral:</div>
-                    <div class="tips-list" id="tipsList"></div>
+                <div class="card">
+                    <div class="factors" id="factors"></div>
+                    
+                    <div class="tips" id="tips" style="display:none;">
+                        <div class="tips-title">Tips to go viral:</div>
+                        <div class="tips-list" id="tipsList"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -528,7 +461,6 @@
         
         // Analyze
         const analyzeInput = document.getElementById('username');
-        const analyzeBtn = document.getElementById('analyzeBtn');
         
         async function analyze() {
             const username = analyzeInput.value.trim().replace('@', '');
@@ -557,7 +489,6 @@
                 
                 const vs = document.getElementById('viralScore');
                 animateValueSimple(vs, d.viral_score, '');
-                document.getElementById('viralBar').style.width = d.viral_score + '%';
                 
                 document.getElementById('engagement').textContent = d.engagement_rate + '%';
                 document.getElementById('avgLikes').textContent = d.avg_likes;
@@ -569,17 +500,13 @@
             }
         }
         
-        analyzeBtn.addEventListener('click', analyze);
+        document.getElementById('analyzeBtn').addEventListener('click', analyze);
         analyzeInput.addEventListener('keypress', e => { if (e.key === 'Enter') analyze(); });
         
         // Compare
-        const compareBtn = document.getElementById('compareBtn');
-        const user1Input = document.getElementById('user1');
-        const user2Input = document.getElementById('user2');
-        
         async function compare() {
-            const u1 = user1Input.value.trim().replace('@', '');
-            const u2 = user2Input.value.trim().replace('@', '');
+            const u1 = document.getElementById('user1').value.trim().replace('@', '');
+            const u2 = document.getElementById('user2').value.trim().replace('@', '');
             if (!u1 || !u2) return;
             
             showLoading();
@@ -601,31 +528,27 @@
                 
                 document.getElementById('followers1').textContent = fmt(d.user1.followers);
                 document.getElementById('followers2').textContent = fmt(d.user2.followers);
-                document.getElementById('followers1').classList.toggle('winner', d.winner.followers);
-                document.getElementById('followers2').classList.toggle('winner', d.winner.followers);
-                
                 document.getElementById('engage1').textContent = d.user1.engagement_rate + '%';
                 document.getElementById('engage2').textContent = d.user2.engagement_rate + '%';
-                
                 document.getElementById('viral1').textContent = d.user1.viral_score;
                 document.getElementById('viral2').textContent = d.user2.viral_score;
                 
-                document.getElementById('compareResult').style.display = 'block';
+                document.getElementById('followers1').classList.toggle('winner', d.winner.followers);
+                document.getElementById('followers2').classList.toggle('winner', !d.winner.followers);
+                
+                document.getElementById('compareResults').classList.add('active');
                 hideLoading();
             } catch (e) {
                 showError(e.message);
             }
         }
         
-        compareBtn.addEventListener('click', compare);
+        document.getElementById('compareBtn').addEventListener('click', compare);
         
         // Predict
-        const tweetInput = document.getElementById('tweetText');
-        const predictBtn = document.getElementById('predictBtn');
-        
         async function predict() {
-            const username = analyzeInput.value.trim().replace('@', '') || tweetInput.dataset.user;
-            const content = tweetInput.value;
+            const username = analyzeInput.value.trim().replace('@', '') || 'user';
+            const content = document.getElementById('tweetText').value;
             
             if (!content) return;
             
@@ -638,53 +561,54 @@
                     body: JSON.stringify({ username, content })
                 });
                 
-                if (!res.ok) throw new Error('Error');
                 const d = await res.json();
                 
                 const scoreEl = document.getElementById('predictScore');
                 scoreEl.textContent = d.score;
                 scoreEl.className = 'predict-score ' + d.verdict.toLowerCase();
                 
-                document.getElementById('predictVerdict').textContent = d.verdict + ' POTENTIAL';
-                document.getElementById('predictVerdict').style.color = d.verdict === 'HIGH' ? 'var(--green)' : d.verdict === 'MEDIUM' ? 'var(--yellow)' : 'var(--pink)';
+                const verdictEl = document.getElementById('predictVerdict');
+                verdictEl.textContent = d.verdict + ' POTENTIAL';
+                verdictEl.style.color = d.verdict === 'HIGH' ? '#00FF88' : d.verdict === 'MEDIUM' ? '#FFAA00' : '#FF3366';
                 
-                const factors = document.getElementById('factors');
-                factors.innerHTML = `
-                    <div class="factor"><span class="icon">${d.factors.has_hashtags ? '✅' : '❌'}</span>Hashtags</div>
-                    <div class="factor"><span class="icon">${d.factors.has_mentions ? '✅' : '❌'}</span>Mentions</div>
-                    <div class="factor"><span class="icon">${d.factors.good_length ? '✅' : '❌'}</span>Good length</div>
-                    <div class="factor"><span class="icon">${d.factors.has_emoji ? '✅' : '❌'}</span>Emoji</div>
-                    <div class="factor"><span class="icon">${d.factors.has_link ? '✅' : '❌'}</span>Link</div>
+                document.getElementById('factors').innerHTML = `
+                    <div class="factor"><span>${d.factors.has_hashtags ? '✓' : '✗'}</span> Hashtags</div>
+                    <div class="factor"><span>${d.factors.has_mentions ? '✓' : '✗'}</span> Mentions</div>
+                    <div class="factor"><span>${d.factors.good_length ? '✓' : '✗'}</span> Good length</div>
+                    <div class="factor"><span>${d.factors.has_emoji ? '✓' : '✗'}</span> Emoji</div>
+                    <div class="factor"><span>${d.factors.has_link ? '✓' : '✗'}</span> Link</div>
                 `;
                 
                 if (d.tips.length > 0) {
                     document.getElementById('tips').style.display = 'block';
                     document.getElementById('tipsList').innerHTML = d.tips.map(t => '• ' + t).join('<br>');
-                } else {
-                    document.getElementById('tips').style.display = 'none';
                 }
                 
-                document.getElementById('predictResult').style.display = 'block';
+                document.getElementById('predictResults').classList.add('active');
                 hideLoading();
             } catch (e) {
                 showError(e.message);
             }
         }
         
-        predictBtn.addEventListener('click', predict);
+        document.getElementById('predictBtn').addEventListener('click', predict);
         
         function showLoading() {
             document.getElementById('loading').classList.add('active');
             document.getElementById('error').classList.remove('active');
             document.getElementById('results').classList.remove('active');
-            document.getElementById('compareResult').style.display = 'none';
-            document.getElementById('predictResult').style.display = 'none';
-            analyzeBtn.disabled = compareBtn.disabled = predictBtn.disabled = true;
+            document.getElementById('compareResults').classList.remove('active');
+            document.getElementById('predictResults').classList.remove('active');
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('compareBtn').disabled = true;
+            document.getElementById('predictBtn').disabled = true;
         }
         
         function hideLoading() {
             document.getElementById('loading').classList.remove('active');
-            analyzeBtn.disabled = compareBtn.disabled = predictBtn.disabled = false;
+            document.getElementById('analyzeBtn').disabled = false;
+            document.getElementById('compareBtn').disabled = false;
+            document.getElementById('predictBtn').disabled = false;
         }
         
         function showError(msg) {
