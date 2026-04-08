@@ -1,12 +1,28 @@
 import os
 import requests
+import time
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
 FXTWITTER_API = "https://api.fxtwitter.com"
 
-def get_twitter_data(username):
+# Simple in-memory cache with 5 minute TTL
+cache = {}
+CACHE_TTL = 300  # 5 minutes in seconds
+
+def validate_username(username):
+    """Basic Twitter username validation"""
+    if not username:
+        return False
+    if len(username) > 15:
+        return False
+    # Twitter usernames can contain letters, numbers, underscore
+    import re
+    return bool(re.match(r'^[A-Za-z0-9_]+$', username))
+
+def _get_twitter_data_uncached(username):
+    """Fetch Twitter data from API without cache"""
     try:
         resp = requests.get(f"{FXTWITTER_API}/{username}", timeout=10)
         if resp.status_code != 200:
@@ -56,6 +72,25 @@ def get_twitter_data(username):
     except Exception as e:
         print(f"Error: {e}")
         return None
+
+def get_twitter_data(username):
+    """Get Twitter data with caching"""
+    # Check cache first
+    if username in cache:
+        cached_data, timestamp = cache[username]
+        if time.time() - timestamp < CACHE_TTL:
+            return cached_data
+        else:
+            # Cache expired
+            del cache[username]
+    
+    # Fetch fresh data
+    data = _get_twitter_data_uncached(username)
+    if data:
+        # Store in cache
+        cache[username] = (data, time.time())
+    
+    return data
 
 def compare_profiles(username1, username2):
     data1 = get_twitter_data(username1)

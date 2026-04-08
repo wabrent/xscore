@@ -21,14 +21,38 @@
 
   body {
     background: var(--bg);
-    background-image: url('/static/grief-1536x864.jpg');
-    background-size: cover;
+    background-image: url('/static/stains_dark_paint_143249_3840x2400.jpg');
+    background-size: 120% 120%;
     background-position: center;
     background-attachment: fixed;
     color: var(--white);
     font-family: 'Space Mono', monospace;
     overflow-x: hidden;
     cursor: crosshair;
+    animation: bgPan 60s infinite alternate ease-in-out;
+  }
+
+  @keyframes bgPan {
+    0% {
+      background-position: 0% 0%;
+      background-size: 120% 120%;
+    }
+    25% {
+      background-position: 10% 10%;
+      background-size: 115% 115%;
+    }
+    50% {
+      background-position: 20% 20%;
+      background-size: 110% 110%;
+    }
+    75% {
+      background-position: 10% 10%;
+      background-size: 115% 115%;
+    }
+    100% {
+      background-position: 0% 0%;
+      background-size: 120% 120%;
+    }
   }
 
   /* Background overlay */
@@ -36,7 +60,7 @@
     content: '';
     position: fixed;
     inset: 0;
-    background: rgba(8, 8, 8, 0.75);
+    background: rgba(2, 2, 2, 0.85);
     pointer-events: none;
     z-index: -1;
   }
@@ -432,6 +456,42 @@
     footer { flex-direction: column; gap: 24px; text-align: center; padding: 40px 20px; }
     .footer-links { flex-wrap: wrap; justify-content: center; }
   }
+
+  /* PROGRESS BARS */
+  .progress-container {
+    width: 100%;
+    height: 4px;
+    background: #ffffff10;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.5s ease-out;
+  }
+
+  /* LOADING SPINNER */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 206, 209, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--gold);
+    animation: spin 1s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
@@ -462,29 +522,41 @@
       <a href="#demo" class="btn-primary">Analyze My Account</a>
       <a href="#features" class="btn-ghost">See Features →</a>
     </div>
-  </div>
-
-  <div class="hero-right fade-up" style="transition-delay: 0.15s;">
-    <div class="hero-stat-block">
-      <div class="hero-stat">
-        <div class="stat-num">94%</div>
-        <div class="hero-divider"></div>
-        <div class="stat-label">Virality prediction accuracy</div>
+    
+    <!-- Insights Tab -->
+    <div id="tab-insights" class="tab-content" style="display:none;">
+      <p class="demo-sub" style="margin-bottom:24px;">Get personalized recommendations to improve your Twitter presence</p>
+      <div class="input-row" style="border:2px solid var(--gold);margin-bottom:24px;">
+        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
+        <input type="text" placeholder="username" id="insights-user" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
+        <button onclick="handleInsights()" style="font-size:14px;padding:20px 32px;">GET INSIGHTS</button>
       </div>
-      <div class="hero-stat">
-        <div class="stat-num">3.2×</div>
-        <div class="hero-divider"></div>
-        <div class="stat-label">Average reach increase</div>
-      </div>
-      <div class="hero-stat">
-        <div class="stat-num">12K+</div>
-        <div class="hero-divider"></div>
-        <div class="stat-label">Creators using XScore</div>
-      </div>
-      <div class="hero-stat">
-        <div class="stat-num">&lt;3s</div>
-        <div class="hero-divider"></div>
-        <div class="stat-label">Analysis time per tweet</div>
+      <div id="insights-result" style="display:none;margin-top:32px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:24px;">
+          <img id="insights-avatar" src="" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;">
+          <div style="text-align:left;">
+            <div style="font-size:24px;font-family:'Bebas Neue',sans-serif;color:var(--white);" id="insights-display-name">User</div>
+            <div style="font-size:11px;color:var(--dim);" id="insights-username">@username</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+          <div style="padding:20px;background:#111;border:1px solid #ffffff10;">
+            <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">STRENGTHS</div>
+            <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-strengths"></div>
+          </div>
+          <div style="padding:20px;background:#111;border:1px solid #ffffff10;">
+            <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">WEAKNESSES</div>
+            <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-weaknesses"></div>
+          </div>
+        </div>
+        <div style="margin-top:24px;padding:20px;background:#111;border:1px solid var(--gold);">
+          <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">RECOMMENDATIONS</div>
+          <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-recommendations"></div>
+        </div>
+        <div style="margin-top:24px;padding:20px;background:#111;border:1px solid #ffffff10;">
+          <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">ACTION PLAN</div>
+          <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-action-plan"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -522,6 +594,7 @@
       <button class="tab-btn active" data-tab="analyze" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:var(--gold);color:var(--bg);border:none;cursor:crosshair;">ANALYZE</button>
       <button class="tab-btn" data-tab="compare" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">COMPARE</button>
       <button class="tab-btn" data-tab="predict" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">PREDICT</button>
+      <button class="tab-btn" data-tab="insights" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">INSIGHTS</button>
     </div>
     
     <!-- Analyze Tab -->
@@ -532,13 +605,25 @@
         <input type="text" placeholder="username" id="handle-input" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
         <button onclick="handleAnalyze()" style="font-size:14px;padding:20px 32px;">ANALYZE</button>
       </div>
-      <div id="result-display" style="display:none;margin-top:32px;text-align:center;">
+       <div id="result-display" style="display:none;margin-top:32px;text-align:center;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px;">
+          <img id="result-avatar" src="" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;">
+          <div style="text-align:left;">
+            <div style="font-size:24px;font-family:'Bebas Neue',sans-serif;color:var(--white);" id="result-display-name">User</div>
+            <div style="font-size:11px;color:var(--dim);" id="result-username">@username</div>
+            <div style="font-size:9px;color:var(--gold);margin-top:4px;" id="result-verified"></div>
+          </div>
+        </div>
         <div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="result-score">0</div>
         <div style="font-size:11px;color:var(--dim);letter-spacing:0.3em;">VIRAL SCORE</div>
         <div style="display:flex;gap:24px;justify-content:center;margin-top:24px;">
           <div><span id="result-followers" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">FOLLOWERS</div></div>
           <div><span id="result-engagement" style="font-size:24px;color:var(--white);">0%</span><div style="font-size:9px;color:var(--dim);">ENGAGEMENT</div></div>
           <div><span id="result-quality" style="font-size:24px;color:var(--white);">0%</span><div style="font-size:9px;color:var(--dim);">QUALITY</div></div>
+        </div>
+        <div style="margin-top:24px;padding:16px;background:#111;border:1px solid #ffffff10;text-align:left;">
+          <div style="font-size:11px;color:var(--gold);margin-bottom:8px;">BIO</div>
+          <div style="font-size:11px;color:var(--dim);" id="result-bio">No bio</div>
         </div>
       </div>
     </div>
@@ -555,23 +640,33 @@
         <input type="text" placeholder="second username" id="compare-user2" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
       </div>
       <button onclick="handleCompare()" style="width:100%;font-size:14px;padding:20px 32px;background:var(--gold);color:var(--bg);border:none;cursor:crosshair;font-family:'Space Mono',monospace;">COMPARE</button>
-      <div id="compare-result" style="display:none;margin-top:32px;">
+       <div id="compare-result" style="display:none;margin-top:32px;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
           <div style="text-align:center;">
-            <div style="font-size:36px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="compare-name1">@user1</div>
-            <div style="font-size:11px;color:var(--dim);margin-bottom:16px;" id="compare-bio1">Bio</div>
+            <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px;">
+              <img id="compare-avatar1" src="" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;margin-bottom:12px;">
+              <div style="font-size:36px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="compare-name1">@user1</div>
+              <div style="font-size:11px;color:var(--gold);margin-top:4px;" id="compare-verified1"></div>
+            </div>
+            <div style="font-size:11px;color:var(--dim);margin-bottom:16px;min-height:40px;" id="compare-bio1">Bio</div>
             <div style="font-size:48px;color:var(--white);" id="compare-score1">0</div>
             <div style="font-size:9px;color:var(--dim);">SCORE</div>
             <div style="margin-top:16px;font-size:11px;color:var(--dim);">Followers: <span id="compare-followers1" style="color:var(--white);">0</span></div>
             <div style="font-size:11px;color:var(--dim);">Engagement: <span id="compare-engagement1" style="color:var(--white);">0%</span></div>
+            <div style="font-size:11px;color:var(--dim);margin-top:8px;">Tweets: <span id="compare-tweets1" style="color:var(--white);">0</span></div>
           </div>
           <div style="text-align:center;">
-            <div style="font-size:36px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="compare-name2">@user2</div>
-            <div style="font-size:11px;color:var(--dim);margin-bottom:16px;" id="compare-bio2">Bio</div>
+            <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px;">
+              <img id="compare-avatar2" src="" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;margin-bottom:12px;">
+              <div style="font-size:36px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="compare-name2">@user2</div>
+              <div style="font-size:11px;color:var(--gold);margin-top:4px;" id="compare-verified2"></div>
+            </div>
+            <div style="font-size:11px;color:var(--dim);margin-bottom:16px;min-height:40px;" id="compare-bio2">Bio</div>
             <div style="font-size:48px;color:var(--white);" id="compare-score2">0</div>
             <div style="font-size:9px;color:var(--dim);">SCORE</div>
             <div style="margin-top:16px;font-size:11px;color:var(--dim);">Followers: <span id="compare-followers2" style="color:var(--white);">0</span></div>
             <div style="font-size:11px;color:var(--dim);">Engagement: <span id="compare-engagement2" style="color:var(--white);">0%</span></div>
+            <div style="font-size:11px;color:var(--dim);margin-top:8px;">Tweets: <span id="compare-tweets2" style="color:var(--white);">0</span></div>
           </div>
         </div>
         <div style="margin-top:32px;text-align:center;font-size:11px;color:var(--gold);" id="compare-winner"></div>
@@ -637,6 +732,7 @@
     btn.innerHTML = text.split('').map((char, i) => 
       `<span class="spin-btn" style="transition-delay: ${i * 0.04}s">${char}</span>`
     ).join('');
+    btn.dataset.initialHtml = btn.innerHTML;
   });
 
   // Scroll reveal
@@ -657,7 +753,12 @@
     if (!val) return;
     const btn = document.querySelector('#tab-analyze .input-row button');
     const resultDisplay = document.getElementById('result-display');
-    btn.textContent = 'Analyzing...';
+    // Ensure button has spin letters
+    if (!btn.querySelector('.spin-btn') && btn.dataset.initialHtml) {
+      btn.innerHTML = btn.dataset.initialHtml;
+    }
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Analyzing...';
     btn.style.opacity = '0.6';
     resultDisplay.style.display = 'none';
     
@@ -669,21 +770,33 @@
       });
       
       if (!res.ok) {
+        btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+        btn.style.opacity = '1';
         btn.textContent = 'User not found';
         return;
       }
       
       const d = await res.json();
       
+      // Update profile info
+      document.getElementById('result-avatar').src = d.avatar_url || '';
+      document.getElementById('result-display-name').textContent = d.display_name || d.username;
+      document.getElementById('result-username').textContent = '@' + d.username;
+      document.getElementById('result-verified').textContent = d.verified ? '✓ Verified' : '';
+      document.getElementById('result-bio').textContent = d.bio || 'No bio';
+      
+      // Update scores
       document.getElementById('result-score').textContent = d.viral_score;
       document.getElementById('result-followers').textContent = d.followers >= 1000 ? (d.followers/1000).toFixed(1) + 'K' : d.followers;
       document.getElementById('result-engagement').textContent = d.engagement_rate + '%';
       document.getElementById('result-quality').textContent = d.quality + '%';
       
       resultDisplay.style.display = 'block';
-      btn.textContent = 'ANALYZE';
+      btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
       btn.style.opacity = '1';
     } catch (e) {
+      btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+      btn.style.opacity = '1';
       btn.textContent = 'Error';
     }
   }
@@ -695,7 +808,12 @@
     if (!user1 || !user2) return;
     const btn = document.querySelector('#tab-compare button');
     const resultDisplay = document.getElementById('compare-result');
-    btn.textContent = 'Comparing...';
+    // Ensure button has spin letters
+    if (!btn.querySelector('.spin-btn') && btn.dataset.initialHtml) {
+      btn.innerHTML = btn.dataset.initialHtml;
+    }
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Comparing...';
     btn.style.opacity = '0.6';
     resultDisplay.style.display = 'none';
     
@@ -707,6 +825,8 @@
       });
       
       if (!res.ok) {
+        btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+        btn.style.opacity = '1';
         btn.textContent = 'User(s) not found';
         return;
       }
@@ -715,19 +835,25 @@
       
       // User 1 data
       const u1 = data.user1;
+      document.getElementById('compare-avatar1').src = u1.avatar_url || '';
       document.getElementById('compare-name1').textContent = '@' + u1.username;
+      document.getElementById('compare-verified1').textContent = u1.verified ? '✓ Verified' : '';
       document.getElementById('compare-bio1').textContent = u1.bio || 'No bio';
       document.getElementById('compare-score1').textContent = u1.viral_score;
       document.getElementById('compare-followers1').textContent = u1.followers >= 1000 ? (u1.followers/1000).toFixed(1) + 'K' : u1.followers;
       document.getElementById('compare-engagement1').textContent = u1.engagement_rate + '%';
+      document.getElementById('compare-tweets1').textContent = u1.tweets >= 1000 ? (u1.tweets/1000).toFixed(1) + 'K' : u1.tweets;
       
       // User 2 data
       const u2 = data.user2;
+      document.getElementById('compare-avatar2').src = u2.avatar_url || '';
       document.getElementById('compare-name2').textContent = '@' + u2.username;
+      document.getElementById('compare-verified2').textContent = u2.verified ? '✓ Verified' : '';
       document.getElementById('compare-bio2').textContent = u2.bio || 'No bio';
       document.getElementById('compare-score2').textContent = u2.viral_score;
       document.getElementById('compare-followers2').textContent = u2.followers >= 1000 ? (u2.followers/1000).toFixed(1) + 'K' : u2.followers;
       document.getElementById('compare-engagement2').textContent = u2.engagement_rate + '%';
+      document.getElementById('compare-tweets2').textContent = u2.tweets >= 1000 ? (u2.tweets/1000).toFixed(1) + 'K' : u2.tweets;
       
       // Determine winner
       const winner = data.winner;
@@ -744,9 +870,11 @@
       document.getElementById('compare-winner').textContent = winnerText;
       
       resultDisplay.style.display = 'block';
-      btn.textContent = 'COMPARE';
+      btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
       btn.style.opacity = '1';
     } catch (e) {
+      btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+      btn.style.opacity = '1';
       btn.textContent = 'Error';
     }
   }
@@ -761,7 +889,12 @@
     }
     const btn = document.querySelector('#tab-predict button');
     const resultDisplay = document.getElementById('predict-result');
-    btn.textContent = 'Predicting...';
+    // Ensure button has spin letters
+    if (!btn.querySelector('.spin-btn') && btn.dataset.initialHtml) {
+      btn.innerHTML = btn.dataset.initialHtml;
+    }
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Predicting...';
     btn.style.opacity = '0.6';
     resultDisplay.style.display = 'none';
     
@@ -773,6 +906,8 @@
       });
       
       if (!res.ok) {
+        btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+        btn.style.opacity = '1';
         btn.textContent = 'User not found';
         return;
       }
@@ -788,11 +923,153 @@
       document.getElementById('predict-tips').textContent = tips;
       
       resultDisplay.style.display = 'block';
-      btn.textContent = 'PREDICT VIRALITY';
+      btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
       btn.style.opacity = '1';
     } catch (e) {
+      btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+      btn.style.opacity = '1';
       btn.textContent = 'Error';
     }
+  }
+
+  // Insights function
+  async function handleInsights() {
+    const username = document.getElementById('insights-user').value.trim().replace('@', '');
+    if (!username) return;
+    const btn = document.querySelector('#tab-insights .input-row button');
+    const resultDisplay = document.getElementById('insights-result');
+    // Ensure button has spin letters
+    if (!btn.querySelector('.spin-btn') && btn.dataset.initialHtml) {
+      btn.innerHTML = btn.dataset.initialHtml;
+    }
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Analyzing...';
+    btn.style.opacity = '0.6';
+    resultDisplay.style.display = 'none';
+    
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username })
+      });
+      
+      if (!res.ok) {
+        btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+        btn.style.opacity = '1';
+        btn.textContent = 'User not found';
+        return;
+      }
+      
+      const data = await res.json();
+      
+      // Update profile info
+      document.getElementById('insights-avatar').src = data.avatar_url || '';
+      document.getElementById('insights-display-name').textContent = data.display_name || data.username;
+      document.getElementById('insights-username').textContent = '@' + data.username;
+      
+      // Generate insights based on data
+      generateInsights(data);
+      
+      resultDisplay.style.display = 'block';
+      btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+      btn.style.opacity = '1';
+    } catch (e) {
+      btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
+      btn.style.opacity = '1';
+      btn.textContent = 'Error';
+    }
+  }
+  
+  // Generate insights from profile data
+  function generateInsights(data) {
+    const strengths = [];
+    const weaknesses = [];
+    const recommendations = [];
+    const actionPlan = [];
+    
+    // Analyze followers
+    if (data.followers > 10000) {
+      strengths.push(`Strong follower base (${data.followers >= 1000 ? (data.followers/1000).toFixed(1) + 'K' : data.followers})`);
+    } else if (data.followers < 1000) {
+      weaknesses.push(`Small audience (${data.followers} followers)`);
+      recommendations.push('Focus on growing your follower base through consistent posting');
+      actionPlan.push('Post daily for 30 days to increase visibility');
+    }
+    
+    // Analyze engagement rate
+    if (data.engagement_rate > 5) {
+      strengths.push(`High engagement rate (${data.engagement_rate}%)`);
+    } else if (data.engagement_rate < 1) {
+      weaknesses.push(`Low engagement rate (${data.engagement_rate}%)`);
+      recommendations.push('Improve engagement by asking questions and using polls');
+      actionPlan.push('Add 1-2 questions per tweet to boost replies');
+    }
+    
+    // Analyze tweet frequency
+    if (data.tweets > 1000) {
+      strengths.push(`Active account (${data.tweets} tweets)`);
+    } else if (data.tweets < 100) {
+      weaknesses.push(`Low tweet volume (${data.tweets} tweets)`);
+      recommendations.push('Increase posting frequency to stay relevant');
+      actionPlan.push('Aim for 3-5 tweets per week minimum');
+    }
+    
+    // Analyze follower/following ratio
+    if (data.followers > data.following * 2) {
+      strengths.push('Healthy follower/following ratio');
+    } else if (data.following > data.followers * 2) {
+      weaknesses.push('Following more than being followed');
+      recommendations.push('Focus on creating follow-worthy content');
+      actionPlan.push('Audit who you follow and unfollow inactive accounts');
+    }
+    
+    // Analyze bio
+    if (!data.bio || data.bio.length < 10) {
+      weaknesses.push('Weak or missing bio');
+      recommendations.push('Create a compelling bio with keywords');
+      actionPlan.push('Update bio with 3 key topics you tweet about');
+    } else if (data.bio.length > 50) {
+      strengths.push('Detailed bio with clear messaging');
+    }
+    
+    // Analyze viral score
+    if (data.viral_score > 70) {
+      strengths.push(`High viral potential (${data.viral_score}/100)`);
+    } else if (data.viral_score < 30) {
+      weaknesses.push(`Low viral score (${data.viral_score}/100)`);
+      recommendations.push('Work on creating more shareable content');
+      actionPlan.push('Study viral tweets in your niche and adapt their patterns');
+    }
+    
+    // Analyze quality score
+    if (data.quality > 70) {
+      strengths.push(`High quality content (${data.quality}%)`);
+    } else if (data.quality < 30) {
+      weaknesses.push(`Content quality needs improvement (${data.quality}%)`);
+      recommendations.push('Focus on value-driven content over quantity');
+      actionPlan.push('Plan 3 high-value threads per month');
+    }
+    
+    // Default messages if no insights
+    if (strengths.length === 0) {
+      strengths.push('Solid foundation to build upon');
+    }
+    if (weaknesses.length === 0) {
+      weaknesses.push('Minor optimizations needed');
+    }
+    if (recommendations.length === 0) {
+      recommendations.push('Continue current strategy with minor tweaks');
+    }
+    if (actionPlan.length === 0) {
+      actionPlan.push('Review metrics weekly and adjust based on performance');
+    }
+    
+    // Update DOM
+    document.getElementById('insights-strengths').innerHTML = strengths.map(s => `• ${s}`).join('<br>');
+    document.getElementById('insights-weaknesses').innerHTML = weaknesses.map(w => `• ${w}`).join('<br>');
+    document.getElementById('insights-recommendations').innerHTML = recommendations.map(r => `• ${r}`).join('<br>');
+    document.getElementById('insights-action-plan').innerHTML = actionPlan.map(a => `• ${a}`).join('<br>');
   }
 
   // Enter key support for analyze input
@@ -809,6 +1086,10 @@
   // Enter key support for predict (Ctrl+Enter)
   document.getElementById('predict-content').addEventListener('keydown', e => {
     if (e.ctrlKey && e.key === 'Enter') handlePredict();
+  });
+  // Enter key support for insights
+  document.getElementById('insights-user').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleInsights();
   });
 </script>
 </body>
