@@ -92,6 +92,87 @@ def get_twitter_data(username):
     
     return data
 
+def calculate_fake_score(profile):
+    """Calculate fake follower score (0-100, higher = more fake)"""
+    score = 0
+    factors = []
+    
+    # 1. Followers/Following ratio
+    if profile["followers"] == 0:
+        following_ratio = 10  # extreme risk
+    else:
+        following_ratio = profile["following"] / max(profile["followers"], 1)
+    
+    if following_ratio > 2:
+        ratio_penalty = min(40, following_ratio * 20)
+        score += ratio_penalty
+        factors.append(f"High following/followers ratio (+{int(ratio_penalty)}%)")
+    
+    # 2. Tweet activity (assuming account age ~3 years)
+    tweets_per_day = profile["tweets"] / 1095  # 3 years
+    if tweets_per_day < 0.1:
+        activity_penalty = min(10, (0.1 - tweets_per_day) * 100)
+        score += activity_penalty
+        factors.append(f"Low tweet activity (+{int(activity_penalty)}%)")
+    
+    # 3. Bio length
+    bio_length = len(profile.get("bio", ""))
+    if bio_length < 10:
+        bio_penalty = min(20, (10 - bio_length) * 2)
+        score += bio_penalty
+        factors.append(f"Short or missing bio (+{int(bio_penalty)}%)")
+    
+    # 4. Media presence
+    media_ratio = profile["media"] / max(profile["tweets"], 1)
+    if media_ratio < 0.1 and profile["tweets"] > 10:
+        media_penalty = min(5, (0.1 - media_ratio) * 50)
+        score += media_penalty
+        factors.append(f"Low media content (+{int(media_penalty)}%)")
+    
+    # 5. Verified status bonus
+    if profile["verified"]:
+        score -= 20
+        factors.append("Verified account (-20%)")
+    
+    # 6. Likes per tweet
+    avg_likes = profile.get("avg_likes", 0)
+    if avg_likes < 1:
+        likes_penalty = min(10, (1 - avg_likes) * 10)
+        score += likes_penalty
+        factors.append(f"Low engagement per tweet (+{int(likes_penalty)}%)")
+    
+    # 7. Small follower base
+    if profile["followers"] < 100:
+        followers_penalty = min(10, (100 - profile["followers"]) / 10)
+        score += followers_penalty
+        factors.append(f"Small follower base (+{int(followers_penalty)}%)")
+    
+    # Normalize to 0-100
+    fake_score = max(0, min(100, int(score)))
+    real_percentage = 100 - fake_score
+    
+    # Determine risk level
+    if fake_score >= 70:
+        risk = "HIGH"
+        description = "Suspicious audience quality"
+    elif fake_score >= 40:
+        risk = "MEDIUM"
+        description = "Mixed audience quality"
+    else:
+        risk = "LOW"
+        description = "Good audience quality"
+    
+    return {
+        "fake_score": fake_score,
+        "real_percentage": real_percentage,
+        "risk": risk,
+        "description": description,
+        "factors": factors,
+        "total_followers": profile["followers"],
+        "estimated_fake": int(profile["followers"] * fake_score / 100),
+        "estimated_real": int(profile["followers"] * real_percentage / 100)
+    }
+
 def compare_profiles(username1, username2):
     data1 = get_twitter_data(username1)
     data2 = get_twitter_data(username2)
@@ -202,6 +283,25 @@ def predict():
         prediction["tips"] = ["Good start! Add more engagement", "Try shorter format"]
     
     return jsonify(prediction)
+
+@app.route('/api/fake-score', methods=['POST'])
+def fake_score():
+    """Calculate fake follower score for a user"""
+    data = request.get_json()
+    username = data.get('username', '').strip().replace('@', '')
+    if not username:
+        return jsonify({"error": "Username required"}), 400
+    
+    profile = get_twitter_data(username)
+    if not profile:
+        return jsonify({"error": "User not found"}), 404
+    
+    result = calculate_fake_score(profile)
+    # Add profile info for display
+    result["avatar_url"] = profile.get("avatar_url", "")
+    result["display_name"] = profile.get("display_name", profile.get("username", ""))
+    result["username"] = profile.get("username", username)
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
