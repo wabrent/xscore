@@ -92,85 +92,141 @@ def get_twitter_data(username):
     
     return data
 
-def calculate_fake_score(profile):
-    """Calculate fake follower score (0-100, higher = more fake)"""
+def calculate_audience_quality(profile):
+    """Calculate audience quality score based on real Twitter metrics (0-100, higher = better)"""
     score = 0
     factors = []
     
-    # 1. Followers/Following ratio
+    # 1. Followers/Following ratio (40% of score)
+    # Healthy ratio: followers > following * 2 (score: 40)
+    # Neutral: followers ≈ following (score: 20)
+    # Poor: following > followers * 2 (score: 0)
     if profile["followers"] == 0:
-        following_ratio = 10  # extreme risk
+        ratio_score = 0
+        factors.append("No followers")
     else:
-        following_ratio = profile["following"] / max(profile["followers"], 1)
+        ratio = profile["followers"] / max(profile["following"], 1)
+        if ratio >= 2:
+            ratio_score = 40
+            factors.append("Excellent follower/following ratio")
+        elif ratio >= 1:
+            ratio_score = 30
+            factors.append("Good follower/following ratio")
+        elif ratio >= 0.5:
+            ratio_score = 20
+            factors.append("Average follower/following ratio")
+        else:
+            ratio_score = 10
+            factors.append("Poor follower/following ratio")
     
-    if following_ratio > 2:
-        ratio_penalty = min(40, following_ratio * 20)
-        score += ratio_penalty
-        factors.append(f"High following/followers ratio (+{int(ratio_penalty)}%)")
+    score += ratio_score
     
-    # 2. Tweet activity (assuming account age ~3 years)
-    tweets_per_day = profile["tweets"] / 1095  # 3 years
-    if tweets_per_day < 0.1:
-        activity_penalty = min(10, (0.1 - tweets_per_day) * 100)
-        score += activity_penalty
-        factors.append(f"Low tweet activity (+{int(activity_penalty)}%)")
-    
-    # 3. Bio length
-    bio_length = len(profile.get("bio", ""))
-    if bio_length < 10:
-        bio_penalty = min(20, (10 - bio_length) * 2)
-        score += bio_penalty
-        factors.append(f"Short or missing bio (+{int(bio_penalty)}%)")
-    
-    # 4. Media presence
-    media_ratio = profile["media"] / max(profile["tweets"], 1)
-    if media_ratio < 0.1 and profile["tweets"] > 10:
-        media_penalty = min(5, (0.1 - media_ratio) * 50)
-        score += media_penalty
-        factors.append(f"Low media content (+{int(media_penalty)}%)")
-    
-    # 5. Verified status bonus
-    if profile["verified"]:
-        score -= 20
-        factors.append("Verified account (-20%)")
-    
-    # 6. Likes per tweet
-    avg_likes = profile.get("avg_likes", 0)
-    if avg_likes < 1:
-        likes_penalty = min(10, (1 - avg_likes) * 10)
-        score += likes_penalty
-        factors.append(f"Low engagement per tweet (+{int(likes_penalty)}%)")
-    
-    # 7. Small follower base
-    if profile["followers"] < 100:
-        followers_penalty = min(10, (100 - profile["followers"]) / 10)
-        score += followers_penalty
-        factors.append(f"Small follower base (+{int(followers_penalty)}%)")
-    
-    # Normalize to 0-100
-    fake_score = max(0, min(100, int(score)))
-    real_percentage = 100 - fake_score
-    
-    # Determine risk level
-    if fake_score >= 70:
-        risk = "HIGH"
-        description = "Suspicious audience quality"
-    elif fake_score >= 40:
-        risk = "MEDIUM"
-        description = "Mixed audience quality"
+    # 2. Engagement rate (30% of score)
+    # High: >5% (score: 30)
+    # Medium: 1-5% (score: 20)
+    # Low: <1% (score: 10)
+    engagement = profile.get("engagement_rate", 0)
+    if engagement > 5:
+        engagement_score = 30
+        factors.append(f"High engagement rate ({engagement:.1f}%)")
+    elif engagement >= 1:
+        engagement_score = 20
+        factors.append(f"Good engagement rate ({engagement:.1f}%)")
     else:
-        risk = "LOW"
-        description = "Good audience quality"
+        engagement_score = 10
+        factors.append(f"Low engagement rate ({engagement:.1f}%)")
+    
+    score += engagement_score
+    
+    # 3. Account completeness (15% of score)
+    completeness_score = 0
+    bio = profile.get("bio", "")
+    if len(bio) > 50:
+        completeness_score += 10
+        factors.append("Detailed bio")
+    elif len(bio) > 10:
+        completeness_score += 5
+        factors.append("Basic bio")
+    else:
+        factors.append("Missing or short bio")
+    
+    if profile.get("verified", False):
+        completeness_score += 5
+        factors.append("Verified account")
+    
+    score += completeness_score
+    
+    # 4. Content quality (15% of score)
+    content_score = 0
+    if profile["tweets"] > 0:
+        media_ratio = profile["media"] / profile["tweets"]
+        if media_ratio > 0.3:
+            content_score += 10
+            factors.append("High media content")
+        elif media_ratio > 0.1:
+            content_score += 7
+            factors.append("Moderate media content")
+        else:
+            content_score += 3
+            factors.append("Low media content")
+        
+        # Account activity
+        tweets_per_month = profile["tweets"] / 36  # Assuming 3 years
+        if tweets_per_month > 30:
+            content_score += 5
+            factors.append("Very active account")
+        elif tweets_per_month > 10:
+            content_score += 3
+            factors.append("Active account")
+        else:
+            content_score += 1
+            factors.append("Inactive account")
+    
+    score += content_score
+    
+    # Ensure score is between 0-100
+    score = max(0, min(100, int(score)))
+    
+    # Determine quality level
+    if score >= 80:
+        quality_level = "EXCELLENT"
+        description = "Top-tier audience quality"
+    elif score >= 60:
+        quality_level = "GOOD"
+        description = "Strong audience quality"
+    elif score >= 40:
+        quality_level = "AVERAGE"
+        description = "Moderate audience quality"
+    elif score >= 20:
+        quality_level = "NEEDS IMPROVEMENT"
+        description = "Below average audience quality"
+    else:
+        quality_level = "POOR"
+        description = "Low audience quality"
+    
+    # Estimate verified followers based on quality score
+    # Formula: verified_followers = total_followers * (quality_score/100) * multiplier
+    # Higher quality accounts attract more verified followers
+    multiplier = 0.4 if profile.get("verified", False) else 0.2
+    estimated_verified = int(profile["followers"] * (score / 100) * multiplier)
+    
+    # Estimate low-quality audience (inactive/suspicious accounts)
+    # Formula: low_quality = total_followers * (100 - quality_score)/100 * 0.7
+    estimated_low_quality = int(profile["followers"] * ((100 - score) / 100) * 0.7)
+    
+    # Ensure estimates don't exceed total followers
+    estimated_verified = min(estimated_verified, profile["followers"])
+    estimated_low_quality = min(estimated_low_quality, profile["followers"] - estimated_verified)
     
     return {
-        "fake_score": fake_score,
-        "real_percentage": real_percentage,
-        "risk": risk,
+        "quality_score": score,
+        "real_percentage": score,  # for backward compatibility
+        "risk": quality_level,  # now represents quality level
         "description": description,
         "factors": factors,
         "total_followers": profile["followers"],
-        "estimated_fake": int(profile["followers"] * fake_score / 100),
-        "estimated_real": int(profile["followers"] * real_percentage / 100)
+        "estimated_real": estimated_verified,  # estimated verified followers
+        "estimated_fake": estimated_low_quality  # estimated low-quality audience
     }
 
 def generate_insights(profile):
@@ -399,7 +455,7 @@ def insights():
 
 @app.route('/api/fake-score', methods=['POST'])
 def fake_score():
-    """Calculate fake follower score for a user"""
+    """Calculate audience quality score for a user"""
     data = request.get_json()
     username = data.get('username', '').strip().replace('@', '')
     if not username:
@@ -409,7 +465,7 @@ def fake_score():
     if not profile:
         return jsonify({"error": "User not found"}), 404
     
-    result = calculate_fake_score(profile)
+    result = calculate_audience_quality(profile)
     # Add profile info for display
     result["avatar_url"] = profile.get("avatar_url", "")
     result["display_name"] = profile.get("display_name", profile.get("username", ""))

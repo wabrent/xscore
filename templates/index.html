@@ -513,13 +513,26 @@
     <h2 class="demo-title" style="font-size:clamp(48px,8vw,96px);margin-bottom:24px;">XSCORE.<br>ANALYZE.</h2>
     <p class="demo-sub" style="margin-bottom:32px;">Five tools to master your Twitter presence</p>
     
+    <!-- Global Username Input -->
+    <div style="margin-bottom:32px;">
+      <p class="demo-sub" style="margin-bottom:16px;font-size:13px;">Enter Twitter handle to analyze across all tools</p>
+      <div class="input-row" style="border:2px solid var(--gold);">
+        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
+        <input type="text" placeholder="username" id="global-username" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;width:100%;">
+      </div>
+      <div style="display:flex;gap:12px;margin-top:16px;">
+        <button onclick="applyGlobalUsername()" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:var(--gold);color:var(--bg);border:none;cursor:crosshair;">APPLY TO ALL TABS</button>
+        <button onclick="generateCard()" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">GENERATE CARD</button>
+      </div>
+    </div>
+    
     <!-- Tabs -->
     <div style="display:flex;gap:1px;margin-bottom:32px;">
       <button class="tab-btn active" data-tab="analyze" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:var(--gold);color:var(--bg);border:none;cursor:crosshair;">ANALYZE</button>
       <button class="tab-btn" data-tab="compare" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">COMPARE</button>
       <button class="tab-btn" data-tab="predict" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">PREDICT</button>
       <button class="tab-btn" data-tab="insights" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">INSIGHTS</button>
-      <button class="tab-btn" data-tab="fake" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">FAKE SCORE</button>
+      <button class="tab-btn" data-tab="fake" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">AUDIENCE QUALITY</button>
     </div>
     
     <!-- Analyze Tab -->
@@ -654,11 +667,11 @@
     
     <!-- Fake Score Tab -->
     <div id="tab-fake" class="tab-content" style="display:none;">
-      <p class="demo-sub" style="margin-bottom:24px;">Audit an account for fake followers</p>
+      <p class="demo-sub" style="margin-bottom:24px;">Analyze audience quality and verified follower estimate</p>
       <div class="input-row" style="border:2px solid var(--gold);">
         <span class="input-at" style="font-size:18px;padding:20px;">@</span>
         <input type="text" placeholder="username" id="fake-user" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
-        <button onclick="handleFakeScore()" style="font-size:14px;padding:20px 32px;">AUDIT</button>
+        <button onclick="handleFakeScore()" style="font-size:14px;padding:20px 32px;">ANALYZE</button>
       </div>
       <div id="fake-result" style="display:none;margin-top:32px;text-align:center;">
         <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px;">
@@ -669,16 +682,16 @@
           </div>
         </div>
         <div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="fake-percentage">0%</div>
-        <div style="font-size:11px;color:var(--dim);letter-spacing:0.3em;">REAL FOLLOWERS</div>
+        <div style="font-size:11px;color:var(--dim);letter-spacing:0.3em;">AUDIENCE QUALITY</div>
         <div style="font-size:11px;color:var(--dim);margin-top:8px;" id="fake-risk"></div>
         <div style="margin-top:24px;font-size:11px;color:var(--dim);" id="fake-description"></div>
         <div style="display:flex;gap:24px;justify-content:center;margin-top:24px;">
           <div><span id="fake-total" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">TOTAL</div></div>
-          <div><span id="fake-real" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">REAL</div></div>
-          <div><span id="fake-fake" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">FAKE</div></div>
+          <div><span id="fake-real" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">VERIFIED ESTIMATE</div></div>
+          <div><span id="fake-fake" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">LOW QUALITY</div></div>
         </div>
         <div style="margin-top:32px;padding:16px;background:#111;border:1px solid #ffffff10;text-align:left;">
-          <div style="font-size:11px;color:var(--gold);margin-bottom:8px;">RISK FACTORS</div>
+           <div style="font-size:11px;color:var(--gold);margin-bottom:8px;">QUALITY FACTORS</div>
           <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="fake-factors"></div>
         </div>
       </div>
@@ -695,14 +708,14 @@
     <span>Best Post Times <em>★</em></span>
     <span>Engagement Forecast <em>★</em></span>
     <span>Audience Insights <em>★</em></span>
-    <span>Fake Follower Score <em>★</em></span>
+    <span>Audience Quality <em>★</em></span>
     <span>Virality Score <em>★</em></span>
     <span>Account Analysis <em>★</em></span>
     <span>Competitor Intel <em>★</em></span>
     <span>Best Post Times <em>★</em></span>
     <span>Engagement Forecast <em>★</em></span>
     <span>Audience Insights <em>★</em></span>
-    <span>Fake Follower Score <em>★</em></span>
+    <span>Audience Quality <em>★</em></span>
   </div>
 </div>
 
@@ -724,6 +737,194 @@
 </footer>
 
 <script>
+  // Global username management
+  let currentUsername = '';
+  
+  function applyGlobalUsername() {
+    const username = document.getElementById('global-username').value.trim().replace('@', '');
+    if (!username) return;
+    
+    currentUsername = username;
+    
+    // Update all input fields
+    document.getElementById('handle-input').value = username;
+    document.getElementById('compare-user1').value = username;
+    document.getElementById('compare-user2').value = username;
+    document.getElementById('predict-user').value = username;
+    document.getElementById('insights-user').value = username;
+    document.getElementById('fake-user').value = username;
+    
+    // Auto-trigger analyze on current tab
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab) {
+      const tab = activeTab.dataset.tab;
+      if (tab === 'analyze') {
+        handleAnalyze();
+      } else if (tab === 'compare') {
+        // Don't auto-trigger compare since it needs two users
+      } else if (tab === 'predict') {
+        // Don't auto-trigger predict since it needs content
+      } else if (tab === 'insights') {
+        handleInsights();
+      } else if (tab === 'fake') {
+        handleFakeScore();
+      }
+    }
+    
+    // Show confirmation
+    const btn = document.querySelector('#global-username').parentElement.nextElementSibling.querySelector('button');
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = 'APPLIED ✓';
+    btn.style.background = '#00ff00';
+    btn.style.color = '#000';
+    setTimeout(() => {
+      btn.innerHTML = originalHtml;
+      btn.style.background = 'var(--gold)';
+      btn.style.color = 'var(--bg)';
+    }, 1500);
+  }
+  
+  function generateCard() {
+    if (!currentUsername) {
+      alert('Please enter a username first');
+      return;
+    }
+    
+    // Create card modal
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.zIndex = '1000';
+    modal.style.padding = '20px';
+    
+    // Card content
+    const card = document.createElement('div');
+    card.style.background = 'var(--bg)';
+    card.style.border = '2px solid var(--gold)';
+    card.style.padding = '40px';
+    card.style.maxWidth = '600px';
+    card.style.width = '100%';
+    card.style.color = 'var(--white)';
+    card.style.fontFamily = "'Space Mono', monospace";
+    card.style.position = 'relative';
+    
+    // Close button
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '×';
+    closeBtn.style.position = 'absolute';
+    closeBtn.style.top = '10px';
+    closeBtn.style.right = '10px';
+    closeBtn.style.background = 'none';
+    closeBtn.style.border = 'none';
+    closeBtn.style.color = 'var(--gold)';
+    closeBtn.style.fontSize = '24px';
+    closeBtn.style.cursor = 'crosshair';
+    closeBtn.onclick = () => document.body.removeChild(modal);
+    
+    // Card title
+    const title = document.createElement('h2');
+    title.textContent = 'XSCORE ANALYSIS CARD';
+    title.style.fontFamily = "'Bebas Neue', sans-serif";
+    title.style.fontSize = '32px';
+    title.style.color = 'var(--gold)';
+    title.style.marginBottom = '20px';
+    title.style.textAlign = 'center';
+    
+    // Username
+    const userDiv = document.createElement('div');
+    userDiv.style.marginBottom = '20px';
+    userDiv.style.textAlign = 'center';
+    userDiv.innerHTML = `<div style="font-size:24px;color:var(--white);">@${currentUsername}</div>
+                         <div style="font-size:11px;color:var(--dim);margin-top:4px;">Full analysis available at XSCORE</div>`;
+    
+    // Card body - would be populated with actual data
+    const body = document.createElement('div');
+    body.style.marginTop = '20px';
+    body.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+        <div style="text-align:center;">
+          <div style="font-size:48px;color:var(--gold);" id="card-viral">0</div>
+          <div style="font-size:11px;color:var(--dim);">VIRAL SCORE</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:48px;color:var(--gold);" id="card-fake">0%</div>
+          <div style="font-size:11px;color:var(--dim);">AUDIENCE QUALITY</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--dim);text-align:center;margin-top:20px;">
+        Scan to view full analysis • Share your XSCORE
+      </div>
+    `;
+    
+    // Action buttons
+    const actions = document.createElement('div');
+    actions.style.display = 'flex';
+    actions.style.gap = '12px';
+    actions.style.marginTop = '30px';
+    actions.style.justifyContent = 'center';
+    
+    const downloadBtn = document.createElement('button');
+    downloadBtn.textContent = 'DOWNLOAD IMAGE';
+    downloadBtn.style.padding = '12px 24px';
+    downloadBtn.style.background = 'var(--gold)';
+    downloadBtn.style.color = 'var(--bg)';
+    downloadBtn.style.border = 'none';
+    downloadBtn.style.cursor = 'crosshair';
+    downloadBtn.style.fontFamily = "'Space Mono', monospace";
+    downloadBtn.style.fontSize = '11px';
+    downloadBtn.onclick = () => {
+      alert('Image download would be implemented with html2canvas library');
+      // In production: html2canvas(card).then(canvas => {...})
+    };
+    
+    const tweetBtn = document.createElement('button');
+    tweetBtn.textContent = 'SHARE ON TWITTER';
+    tweetBtn.style.padding = '12px 24px';
+    tweetBtn.style.background = '#1DA1F2';
+    tweetBtn.style.color = 'white';
+    tweetBtn.style.border = 'none';
+    tweetBtn.style.cursor = 'crosshair';
+    tweetBtn.style.fontFamily = "'Space Mono', monospace";
+    tweetBtn.style.fontSize = '11px';
+    tweetBtn.onclick = () => {
+      const text = `My XSCORE analysis: ${document.getElementById('result-score')?.textContent || '0'} viral score • ${document.getElementById('fake-percentage')?.textContent || '0%'} audience quality`;
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+      window.open(url, '_blank');
+    };
+    
+    actions.appendChild(downloadBtn);
+    actions.appendChild(tweetBtn);
+    
+    // Assemble card
+    card.appendChild(closeBtn);
+    card.appendChild(title);
+    card.appendChild(userDiv);
+    card.appendChild(body);
+    card.appendChild(actions);
+    modal.appendChild(card);
+    document.body.appendChild(modal);
+    
+    // Try to populate with existing data if available
+    setTimeout(() => {
+      const viralScore = document.getElementById('result-score')?.textContent || '0';
+      const fakeScore = document.getElementById('fake-percentage')?.textContent || '0%';
+      document.getElementById('card-viral').textContent = viralScore;
+      document.getElementById('card-fake').textContent = fakeScore;
+    }, 100);
+  }
+  
+  // Enter key support for global input
+  document.getElementById('global-username').addEventListener('keydown', e => {
+    if (e.key === 'Enter') applyGlobalUsername();
+  });
+
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
