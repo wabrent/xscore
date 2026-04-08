@@ -287,160 +287,7 @@
     /* No animations */
   }
 
-  /* FEATURES */
-  .features {
-    padding: 100px 40px;
-  }
 
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 60px;
-    border-bottom: 1px solid #ffffff15;
-    padding-bottom: 24px;
-  }
-
-  .section-label {
-    font-size: 9px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--dim);
-  }
-
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(40px, 6vw, 72px);
-    letter-spacing: 0.03em;
-    line-height: 1;
-    color: var(--white);
-  }
-
-  .section-count {
-    font-size: 11px;
-    color: var(--dim);
-    letter-spacing: 0.1em;
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: #ffffff10;
-  }
-
-  .feature-card {
-    background: var(--bg);
-    padding: 48px 40px;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.3s;
-  }
-
-  .feature-card:hover {
-    background: #0f0f0f;
-  }
-
-  .feature-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px;
-    height: 0;
-    background: var(--gold);
-    transition: height 0.4s ease;
-  }
-
-  .feature-card:hover::before { height: 100%; }
-
-  .feature-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 72px;
-    color: #ffffff08;
-    line-height: 1;
-    position: absolute;
-    top: 24px; right: 32px;
-    letter-spacing: 0.02em;
-    transition: color 0.3s;
-  }
-
-  .feature-card:hover .feature-num { color: #ffffff12; }
-
-  .feature-icon {
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .feature-icon::before {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 1px;
-    background: var(--gold);
-  }
-
-  .feature-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    letter-spacing: 0.03em;
-    color: var(--white);
-    margin-bottom: 16px;
-    line-height: 1.1;
-  }
-
-  .feature-desc {
-    font-size: 11px;
-    color: var(--dim);
-    line-height: 1.9;
-    max-width: 340px;
-  }
-
-  /* HOW IT WORKS */
-  .how {
-    padding: 100px 40px;
-    border-top: 1px solid #ffffff10;
-  }
-
-  .how-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-    margin-top: 60px;
-  }
-
-  .how-step {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-top: 24px;
-    border-top: 1px solid #ffffff15;
-  }
-
-  .how-step-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-  }
-
-  .how-step-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.03em;
-    color: var(--white);
-  }
-
-  .how-step-desc {
-    font-size: 11px;
-    color: var(--dim);
-    line-height: 1.9;
-  }
 
   /* INPUT DEMO */
   .demo {
@@ -520,124 +367,7 @@
 
   .input-row button:hover { opacity: 0.85; }
 
-  /* PRICING */
-  .pricing {
-    padding: 100px 40px;
-    border-top: 1px solid #ffffff10;
-  }
 
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: #ffffff10;
-    margin-top: 60px;
-  }
-
-  .pricing-card {
-    background: var(--bg);
-    padding: 48px 40px;
-    position: relative;
-  }
-
-  .pricing-card.featured {
-    background: #0e0e0e;
-  }
-
-  .pricing-badge {
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--bg);
-    background: var(--gold);
-    padding: 4px 10px;
-    display: inline-block;
-    margin-bottom: 20px;
-  }
-
-  .pricing-plan {
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--dim);
-    margin-bottom: 16px;
-  }
-
-  .pricing-price {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 64px;
-    color: var(--white);
-    letter-spacing: 0.02em;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .pricing-price span {
-    font-size: 20px;
-    color: var(--dim);
-    vertical-align: top;
-    margin-top: 12px;
-    display: inline-block;
-  }
-
-  .pricing-period {
-    font-size: 10px;
-    color: var(--dim);
-    letter-spacing: 0.15em;
-    margin-bottom: 32px;
-  }
-
-  .pricing-features {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 40px;
-  }
-
-  .pricing-features li {
-    font-size: 11px;
-    color: var(--dim);
-    padding-left: 20px;
-    position: relative;
-    line-height: 1.5;
-  }
-
-  .pricing-features li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--gold);
-  }
-
-  .pricing-features li.active { color: var(--white); }
-
-  .btn-plan {
-    display: block;
-    text-align: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 14px;
-    text-decoration: none;
-    transition: all 0.2s;
-    border: 1px solid #ffffff20;
-    color: var(--dim);
-  }
-
-  .btn-plan:hover {
-    border-color: var(--white);
-    color: var(--white);
-  }
-
-  .btn-plan.featured-btn {
-    background: var(--gold);
-    color: var(--bg);
-    border-color: var(--gold);
-  }
-
-  .btn-plan.featured-btn:hover { opacity: 0.85; }
 
   /* FOOTER */
   footer {
@@ -697,14 +427,8 @@
     .hero { grid-template-columns: 1fr; padding: 100px 20px 60px; }
     .hero-right { border-left: none; border-top: 1px solid #ffffff10; padding-left: 0; padding-top: 40px; margin-top: 40px; }
     .hero-stat-block { flex-direction: row; flex-wrap: wrap; gap: 24px; }
-    .features { padding: 60px 20px; }
-    .features-grid { grid-template-columns: 1fr; }
-    .how { padding: 60px 20px; }
-    .how-grid { grid-template-columns: 1fr; }
     .demo { padding: 60px 20px; }
     .input-row { flex-direction: column; }
-    .pricing { padding: 60px 20px; }
-    .pricing-grid { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 24px; text-align: center; padding: 40px 20px; }
     .footer-links { flex-wrap: wrap; justify-content: center; }
   }
@@ -715,11 +439,7 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">XS—CORE</a>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#how">How it works</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-  </ul>
+
   <a href="#demo" class="nav-cta">Analyze Now</a>
 </nav>
 
@@ -789,115 +509,89 @@
 </div>
 
 <!-- FEATURES -->
-<section class="features" id="features">
-  <div class="section-header fade-up">
-    <div>
-      <p class="section-label">What XScore does</p>
-      <h2 class="section-title">FOUR<br>WEAPONS.</h2>
-    </div>
-    <span class="section-count">04 features</span>
-  </div>
 
-  <div class="features-grid">
-    <div class="feature-card fade-up">
-      <div class="feature-num">01</div>
-      <div class="feature-icon">Virality Prediction</div>
-      <h3 class="feature-name">PREDICT<br>VIRALITY</h3>
-      <p class="feature-desc">
-        Paste any tweet draft and get an XScore — a 0–100 virality index. 
-        We analyze hooks, sentiment, timing patterns, and topic momentum 
-        before you even hit post.
-      </p>
-    </div>
 
-    <div class="feature-card fade-up" style="transition-delay:0.1s">
-      <div class="feature-num">02</div>
-      <div class="feature-icon">Account Analysis</div>
-      <h3 class="feature-name">DEEP<br>ACCOUNT<br>AUDIT</h3>
-      <p class="feature-desc">
-        Full breakdown of your account's engagement rate, follower growth velocity, 
-        best-performing content types, and hidden weak spots dragging your reach down.
-      </p>
-    </div>
-
-    <div class="feature-card fade-up" style="transition-delay:0.15s">
-      <div class="feature-num">03</div>
-      <div class="feature-icon">Competitor Intel</div>
-      <h3 class="feature-name">SPY ON<br>COMPETITORS</h3>
-      <p class="feature-desc">
-        Track any public account. See what's working for them, when they post, 
-        what topics spike their engagement — and use it to your advantage.
-      </p>
-    </div>
-
-    <div class="feature-card fade-up" style="transition-delay:0.2s">
-      <div class="feature-num">04</div>
-      <div class="feature-icon">Post Timing</div>
-      <h3 class="feature-name">PERFECT<br>TIMING<br>ENGINE</h3>
-      <p class="feature-desc">
-        XScore maps your audience's activity patterns to find the exact windows 
-        when they're online and most likely to engage. No more posting into the void.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
-  <div class="section-header fade-up">
-    <div>
-      <p class="section-label">Process</p>
-      <h2 class="section-title">THREE<br>STEPS.</h2>
-    </div>
-    <span class="section-count">simple flow</span>
-  </div>
-
-  <div class="how-grid">
-    <div class="how-step fade-up">
-      <div class="how-step-num">— 01</div>
-      <div class="how-step-title">ENTER YOUR HANDLE</div>
-      <p class="how-step-desc">
-        Drop in your @username or paste a tweet draft. 
-        No OAuth required for public analysis.
-      </p>
-    </div>
-    <div class="how-step fade-up" style="transition-delay:0.1s">
-      <div class="how-step-num">— 02</div>
-      <div class="how-step-title">WE RUN THE NUMBERS</div>
-      <p class="how-step-desc">
-        XScore pulls data, runs our prediction model, 
-        and cross-references competitor benchmarks in under 3 seconds.
-      </p>
-    </div>
-    <div class="how-step fade-up" style="transition-delay:0.2s">
-      <div class="how-step-num">— 03</div>
-      <div class="how-step-title">ACT ON INSIGHTS</div>
-      <p class="how-step-desc">
-        Get a full report with actionable steps: what to fix, 
-        what to post, when to post it.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- DEMO INPUT -->
 <!-- MAIN ANALYZE SECTION -->
-<section class="demo" id="demo" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
-  <div class="demo-inner fade-up" style="width:100%;max-width:600px;">
-    <h2 class="demo-title" style="font-size:clamp(48px,8vw,96px);margin-bottom:24px;">ANALYZE.<br>NOW.</h2>
-    <p class="demo-sub" style="margin-bottom:32px;">Enter any Twitter handle to get instant viral analysis</p>
-    <div class="input-row" style="border:2px solid var(--gold);">
-      <span class="input-at" style="font-size:18px;padding:20px;">@</span>
-      <input type="text" placeholder="username" id="handle-input" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
-      <button onclick="handleAnalyze()" style="font-size:14px;padding:20px 32px;">ANALYZE</button>
+<section class="demo" id="demo" style="min-height:70vh;display:flex;align-items:center;justify-content:center;">
+  <div class="demo-inner fade-up" style="width:100%;max-width:800px;">
+    <h2 class="demo-title" style="font-size:clamp(48px,8vw,96px);margin-bottom:24px;">XSCORE.<br>ANALYZE.</h2>
+    <p class="demo-sub" style="margin-bottom:32px;">Three tools to master your Twitter presence</p>
+    
+    <!-- Tabs -->
+    <div style="display:flex;gap:1px;margin-bottom:32px;">
+      <button class="tab-btn active" data-tab="analyze" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:var(--gold);color:var(--bg);border:none;cursor:crosshair;">ANALYZE</button>
+      <button class="tab-btn" data-tab="compare" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">COMPARE</button>
+      <button class="tab-btn" data-tab="predict" style="flex:1;padding:16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;background:#111;color:var(--dim);border:1px solid #ffffff20;cursor:crosshair;">PREDICT</button>
     </div>
-    <div id="result-display" style="display:none;margin-top:32px;text-align:center;">
-      <div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="result-score">0</div>
-      <div style="font-size:11px;color:var(--dim);letter-spacing:0.3em;">VIRAL SCORE</div>
-      <div style="display:flex;gap:24px;justify-content:center;margin-top:24px;">
-        <div><span id="result-followers" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">FOLLOWERS</div></div>
-        <div><span id="result-engagement" style="font-size:24px;color:var(--white);">0%</span><div style="font-size:9px;color:var(--dim);">ENGAGEMENT</div></div>
-        <div><span id="result-quality" style="font-size:24px;color:var(--white);">0%</span><div style="font-size:9px;color:var(--dim);">QUALITY</div></div>
+    
+    <!-- Analyze Tab -->
+    <div id="tab-analyze" class="tab-content" style="display:block;">
+      <p class="demo-sub" style="margin-bottom:24px;">Enter any Twitter handle to get instant viral analysis</p>
+      <div class="input-row" style="border:2px solid var(--gold);">
+        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
+        <input type="text" placeholder="username" id="handle-input" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
+        <button onclick="handleAnalyze()" style="font-size:14px;padding:20px 32px;">ANALYZE</button>
+      </div>
+      <div id="result-display" style="display:none;margin-top:32px;text-align:center;">
+        <div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="result-score">0</div>
+        <div style="font-size:11px;color:var(--dim);letter-spacing:0.3em;">VIRAL SCORE</div>
+        <div style="display:flex;gap:24px;justify-content:center;margin-top:24px;">
+          <div><span id="result-followers" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">FOLLOWERS</div></div>
+          <div><span id="result-engagement" style="font-size:24px;color:var(--white);">0%</span><div style="font-size:9px;color:var(--dim);">ENGAGEMENT</div></div>
+          <div><span id="result-quality" style="font-size:24px;color:var(--white);">0%</span><div style="font-size:9px;color:var(--dim);">QUALITY</div></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Compare Tab -->
+    <div id="tab-compare" class="tab-content" style="display:none;">
+      <p class="demo-sub" style="margin-bottom:24px;">Compare two Twitter accounts side by side</p>
+      <div class="input-row" style="border:2px solid var(--gold);margin-bottom:16px;">
+        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
+        <input type="text" placeholder="first username" id="compare-user1" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
+      </div>
+      <div class="input-row" style="border:2px solid var(--gold);margin-bottom:24px;">
+        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
+        <input type="text" placeholder="second username" id="compare-user2" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
+      </div>
+      <button onclick="handleCompare()" style="width:100%;font-size:14px;padding:20px 32px;background:var(--gold);color:var(--bg);border:none;cursor:crosshair;font-family:'Space Mono',monospace;">COMPARE</button>
+      <div id="compare-result" style="display:none;margin-top:32px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+          <div style="text-align:center;">
+            <div style="font-size:36px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="compare-name1">@user1</div>
+            <div style="font-size:11px;color:var(--dim);margin-bottom:16px;" id="compare-bio1">Bio</div>
+            <div style="font-size:48px;color:var(--white);" id="compare-score1">0</div>
+            <div style="font-size:9px;color:var(--dim);">SCORE</div>
+            <div style="margin-top:16px;font-size:11px;color:var(--dim);">Followers: <span id="compare-followers1" style="color:var(--white);">0</span></div>
+            <div style="font-size:11px;color:var(--dim);">Engagement: <span id="compare-engagement1" style="color:var(--white);">0%</span></div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:36px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="compare-name2">@user2</div>
+            <div style="font-size:11px;color:var(--dim);margin-bottom:16px;" id="compare-bio2">Bio</div>
+            <div style="font-size:48px;color:var(--white);" id="compare-score2">0</div>
+            <div style="font-size:9px;color:var(--dim);">SCORE</div>
+            <div style="margin-top:16px;font-size:11px;color:var(--dim);">Followers: <span id="compare-followers2" style="color:var(--white);">0</span></div>
+            <div style="font-size:11px;color:var(--dim);">Engagement: <span id="compare-engagement2" style="color:var(--white);">0%</span></div>
+          </div>
+        </div>
+        <div style="margin-top:32px;text-align:center;font-size:11px;color:var(--gold);" id="compare-winner"></div>
+      </div>
+    </div>
+    
+    <!-- Predict Tab -->
+    <div id="tab-predict" class="tab-content" style="display:none;">
+      <p class="demo-sub" style="margin-bottom:24px;">Predict virality of a tweet draft</p>
+      <div class="input-row" style="border:2px solid var(--gold);margin-bottom:16px;">
+        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
+        <input type="text" placeholder="your username" id="predict-user" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
+      </div>
+      <textarea id="predict-content" placeholder="Paste your tweet draft here..." style="width:100%;min-height:120px;padding:20px;font-family:'Space Mono',monospace;font-size:13px;background:#111;color:var(--white);border:2px solid var(--gold);margin-bottom:24px;resize:vertical;"></textarea>
+      <button onclick="handlePredict()" style="width:100%;font-size:14px;padding:20px 32px;background:var(--gold);color:var(--bg);border:none;cursor:crosshair;font-family:'Space Mono',monospace;">PREDICT VIRALITY</button>
+      <div id="predict-result" style="display:none;margin-top:32px;text-align:center;">
+        <div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="predict-score">0</div>
+        <div style="font-size:11px;color:var(--dim);letter-spacing:0.3em;">VIRAL POTENTIAL</div>
+        <div style="margin-top:24px;font-size:11px;color:var(--dim);" id="predict-verdict"></div>
+        <div style="margin-top:16px;font-size:11px;color:var(--dim);" id="predict-tips"></div>
       </div>
     </div>
   </div>
@@ -916,8 +610,29 @@
 </footer>
 
 <script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      // Update active button
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.style.background = '#111';
+        b.style.color = 'var(--dim)';
+        b.style.border = '1px solid #ffffff20';
+      });
+      btn.style.background = 'var(--gold)';
+      btn.style.color = 'var(--bg)';
+      btn.style.border = 'none';
+      // Show corresponding tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      document.getElementById(`tab-${tab}`).style.display = 'block';
+    });
+  });
+
   // Wrap button text in spans for letter spin animation
-  document.querySelectorAll('.btn-primary, .nav-cta, .input-row button').forEach(btn => {
+  document.querySelectorAll('.btn-primary, .nav-cta, .input-row button, .tab-btn, .tab-content button').forEach(btn => {
     const text = btn.textContent;
     btn.innerHTML = text.split('').map((char, i) => 
       `<span class="spin-btn" style="transition-delay: ${i * 0.04}s">${char}</span>`
@@ -936,11 +651,11 @@
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  // Demo input
+  // Analyze function
   async function handleAnalyze() {
     const val = document.getElementById('handle-input').value.trim().replace('@', '');
     if (!val) return;
-    const btn = document.querySelector('.input-row button');
+    const btn = document.querySelector('#tab-analyze .input-row button');
     const resultDisplay = document.getElementById('result-display');
     btn.textContent = 'Analyzing...';
     btn.style.opacity = '0.6';
@@ -966,15 +681,134 @@
       document.getElementById('result-quality').textContent = d.quality + '%';
       
       resultDisplay.style.display = 'block';
-      btn.textContent = 'ANALYZED';
+      btn.textContent = 'ANALYZE';
       btn.style.opacity = '1';
     } catch (e) {
       btn.textContent = 'Error';
     }
   }
 
+  // Compare function
+  async function handleCompare() {
+    const user1 = document.getElementById('compare-user1').value.trim().replace('@', '');
+    const user2 = document.getElementById('compare-user2').value.trim().replace('@', '');
+    if (!user1 || !user2) return;
+    const btn = document.querySelector('#tab-compare button');
+    const resultDisplay = document.getElementById('compare-result');
+    btn.textContent = 'Comparing...';
+    btn.style.opacity = '0.6';
+    resultDisplay.style.display = 'none';
+    
+    try {
+      const res = await fetch('/api/compare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user1, user2 })
+      });
+      
+      if (!res.ok) {
+        btn.textContent = 'User(s) not found';
+        return;
+      }
+      
+      const data = await res.json();
+      
+      // User 1 data
+      const u1 = data.user1;
+      document.getElementById('compare-name1').textContent = '@' + u1.username;
+      document.getElementById('compare-bio1').textContent = u1.bio || 'No bio';
+      document.getElementById('compare-score1').textContent = u1.viral_score;
+      document.getElementById('compare-followers1').textContent = u1.followers >= 1000 ? (u1.followers/1000).toFixed(1) + 'K' : u1.followers;
+      document.getElementById('compare-engagement1').textContent = u1.engagement_rate + '%';
+      
+      // User 2 data
+      const u2 = data.user2;
+      document.getElementById('compare-name2').textContent = '@' + u2.username;
+      document.getElementById('compare-bio2').textContent = u2.bio || 'No bio';
+      document.getElementById('compare-score2').textContent = u2.viral_score;
+      document.getElementById('compare-followers2').textContent = u2.followers >= 1000 ? (u2.followers/1000).toFixed(1) + 'K' : u2.followers;
+      document.getElementById('compare-engagement2').textContent = u2.engagement_rate + '%';
+      
+      // Determine winner
+      const winner = data.winner;
+      let winnerText = '';
+      if (winner.followers && winner.engagement && winner.viral && winner.growth && winner.quality) {
+        winnerText = `@${u1.username} dominates across all metrics`;
+      } else if (!winner.followers && !winner.engagement && !winner.viral && !winner.growth && !winner.quality) {
+        winnerText = `@${u2.username} dominates across all metrics`;
+      } else {
+        const u1Wins = Object.values(winner).filter(v => v).length;
+        const u2Wins = 5 - u1Wins;
+        winnerText = `@${u1.username} wins ${u1Wins} categories, @${u2.username} wins ${u2Wins}`;
+      }
+      document.getElementById('compare-winner').textContent = winnerText;
+      
+      resultDisplay.style.display = 'block';
+      btn.textContent = 'COMPARE';
+      btn.style.opacity = '1';
+    } catch (e) {
+      btn.textContent = 'Error';
+    }
+  }
+
+  // Predict function
+  async function handlePredict() {
+    const username = document.getElementById('predict-user').value.trim().replace('@', '');
+    const content = document.getElementById('predict-content').value.trim();
+    if (!username || !content) {
+      alert('Please enter both username and tweet content');
+      return;
+    }
+    const btn = document.querySelector('#tab-predict button');
+    const resultDisplay = document.getElementById('predict-result');
+    btn.textContent = 'Predicting...';
+    btn.style.opacity = '0.6';
+    resultDisplay.style.display = 'none';
+    
+    try {
+      const res = await fetch('/api/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, content })
+      });
+      
+      if (!res.ok) {
+        btn.textContent = 'User not found';
+        return;
+      }
+      
+      const data = await res.json();
+      
+      document.getElementById('predict-score').textContent = data.score;
+      document.getElementById('predict-verdict').textContent = `Verdict: ${data.verdict}`;
+      let tips = '';
+      if (data.tips && data.tips.length > 0) {
+        tips = 'Tips: ' + data.tips.join(', ');
+      }
+      document.getElementById('predict-tips').textContent = tips;
+      
+      resultDisplay.style.display = 'block';
+      btn.textContent = 'PREDICT VIRALITY';
+      btn.style.opacity = '1';
+    } catch (e) {
+      btn.textContent = 'Error';
+    }
+  }
+
+  // Enter key support for analyze input
   document.getElementById('handle-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleAnalyze();
+  });
+  // Enter key support for compare inputs
+  document.getElementById('compare-user1').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleCompare();
+  });
+  document.getElementById('compare-user2').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleCompare();
+  });
+  // Enter key support for predict (Ctrl+Enter)
+  document.getElementById('predict-content').addEventListener('keydown', e => {
+    if (e.ctrlKey && e.key === 'Enter') handlePredict();
   });
 </script>
 </body>
