@@ -133,17 +133,21 @@
   .hero {
     min-height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     padding: 120px 40px 80px;
     gap: 0;
     position: relative;
+    justify-items: center;
+    align-items: center;
   }
 
   .hero-left {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding-bottom: 40px;
+    justify-content: center;
+    padding-bottom: 0;
+    width: 100%;
+    max-width: 800px;
   }
 
   .hero-eyebrow {
@@ -503,124 +507,8 @@
   <a href="#demo" class="nav-cta">Analyze Now</a>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-left fade-up">
-    <p class="hero-eyebrow">Twitter / X Analytics Tool</p>
-    <h1 class="hero-title">
-      KNOW<br>
-      BE<span>—</span><br>
-      FORE<br>
-      YOU<br>
-      POST<span>.</span>
-    </h1>
-    <p class="hero-sub">
-      XScore predicts virality, analyzes your account, compares you to competitors, 
-      and finds the exact moment your audience is watching.
-    </p>
-    <div class="hero-actions">
-      <a href="#demo" class="btn-primary">Analyze My Account</a>
-      <a href="#features" class="btn-ghost">See Features →</a>
-    </div>
-    
-    <!-- Insights Tab -->
-    <div id="tab-insights" class="tab-content" style="display:none;">
-      <p class="demo-sub" style="margin-bottom:24px;">Get personalized recommendations to improve your Twitter presence</p>
-      <div class="input-row" style="border:2px solid var(--gold);margin-bottom:24px;">
-        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
-        <input type="text" placeholder="username" id="insights-user" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
-        <button onclick="handleInsights()" style="font-size:14px;padding:20px 32px;">GET INSIGHTS</button>
-      </div>
-      <div id="insights-result" style="display:none;margin-top:32px;">
-        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:24px;">
-          <img id="insights-avatar" src="" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;">
-          <div style="text-align:left;">
-            <div style="font-size:24px;font-family:'Bebas Neue',sans-serif;color:var(--white);" id="insights-display-name">User</div>
-            <div style="font-size:11px;color:var(--dim);" id="insights-username">@username</div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-          <div style="padding:20px;background:#111;border:1px solid #ffffff10;">
-            <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">STRENGTHS</div>
-            <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-strengths"></div>
-          </div>
-          <div style="padding:20px;background:#111;border:1px solid #ffffff10;">
-            <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">WEAKNESSES</div>
-            <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-weaknesses"></div>
-          </div>
-        </div>
-        <div style="margin-top:24px;padding:20px;background:#111;border:1px solid var(--gold);">
-          <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">RECOMMENDATIONS</div>
-          <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-recommendations"></div>
-        </div>
-        <div style="margin-top:24px;padding:20px;background:#111;border:1px solid #ffffff10;">
-          <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">ACTION PLAN</div>
-          <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-action-plan"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-inner">
-    <span>Virality Score <em>★</em></span>
-    <span>Account Analysis <em>★</em></span>
-    <span>Competitor Intel <em>★</em></span>
-    <span>Best Post Times <em>★</em></span>
-    <span>Engagement Forecast <em>★</em></span>
-    <span>Audience Insights <em>★</em></span>
-    <span>Fake Follower Score <em>★</em></span>
-    <span>Virality Score <em>★</em></span>
-    <span>Account Analysis <em>★</em></span>
-    <span>Competitor Intel <em>★</em></span>
-    <span>Best Post Times <em>★</em></span>
-    <span>Engagement Forecast <em>★</em></span>
-    <span>Audience Insights <em>★</em></span>
-    <span>Fake Follower Score <em>★</em></span>
-    </div>
-    
-    <!-- Fake Score Tab -->
-    <div id="tab-fake" class="tab-content" style="display:none;">
-      <p class="demo-sub" style="margin-bottom:24px;">Detect fake followers and audit audience quality</p>
-      <div class="input-row" style="border:2px solid var(--gold);margin-bottom:24px;">
-        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
-        <input type="text" placeholder="username" id="fake-user" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
-        <button onclick="handleFakeScore()" style="font-size:14px;padding:20px 32px;">AUDIT FOLLOWERS</button>
-      </div>
-      <div id="fake-result" style="display:none;margin-top:32px;">
-        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:24px;">
-          <img id="fake-avatar" src="" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;">
-          <div style="text-align:left;">
-            <div style="font-size:24px;font-family:'Bebas Neue',sans-serif;color:var(--white);" id="fake-display-name">User</div>
-            <div style="font-size:11px;color:var(--dim);" id="fake-username">@username</div>
-          </div>
-        </div>
-        <div style="text-align:center;">
-          <div style="font-size:64px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="fake-percentage">0%</div>
-          <div style="font-size:11px;color:var(--dim);letter-spacing:0.3em;">REAL FOLLOWERS</div>
-          <div style="margin-top:8px;font-size:11px;color:var(--dim);" id="fake-risk">Risk: LOW</div>
-          <div style="margin-top:24px;display:flex;gap:24px;justify-content:center;">
-            <div><span id="fake-total" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">TOTAL</div></div>
-            <div><span id="fake-real" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">REAL</div></div>
-            <div><span id="fake-fake" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">FAKE</div></div>
-          </div>
-        </div>
-        <div style="margin-top:32px;padding:20px;background:#111;border:1px solid var(--gold);">
-          <div style="font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'Bebas Neue',sans-serif;">AUDIT FACTORS</div>
-          <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="fake-factors"></div>
-        </div>
-        <div style="margin-top:16px;font-size:11px;color:var(--dim);text-align:center;" id="fake-description">Analysis based on follower ratios, activity, and profile signals</div>
-      </div>
-    </div>
-  </div>
-
-<!-- FEATURES -->
-
-
 <!-- MAIN ANALYZE SECTION -->
-<section class="demo" id="demo" style="min-height:70vh;display:flex;align-items:center;justify-content:center;">
+<section class="hero" id="demo" style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
   <div class="demo-inner fade-up" style="width:100%;max-width:800px;">
     <h2 class="demo-title" style="font-size:clamp(48px,8vw,96px);margin-bottom:24px;">XSCORE.<br>ANALYZE.</h2>
     <p class="demo-sub" style="margin-bottom:32px;">Five tools to master your Twitter presence</p>
@@ -658,11 +546,11 @@
           <div><span id="result-engagement" style="font-size:24px;color:var(--white);">0%</span><div style="font-size:9px;color:var(--dim);">ENGAGEMENT</div></div>
           <div><span id="result-quality" style="font-size:24px;color:var(--white);">0%</span><div style="font-size:9px;color:var(--dim);">QUALITY</div></div>
         </div>
-        <div style="margin-top:24px;padding:16px;background:#111;border:1px solid #ffffff10;text-align:left;">
-          <div style="font-size:11px;color:var(--gold);margin-bottom:8px;">BIO</div>
-          <div style="font-size:11px;color:var(--dim);" id="result-bio">No bio</div>
+         <div style="margin-top:24px;padding:16px;background:#111;border:1px solid #ffffff10;text-align:left;">
+           <div style="font-size:11px;color:var(--gold);margin-bottom:8px;">BIO</div>
+           <div style="font-size:11px;color:var(--dim);" id="result-bio">No bio</div>
+         </div>
         </div>
-      </div>
     </div>
     
     <!-- Compare Tab -->
@@ -726,8 +614,102 @@
         <div style="margin-top:16px;font-size:11px;color:var(--dim);" id="predict-tips"></div>
       </div>
     </div>
+    
+    <!-- Insights Tab -->
+    <div id="tab-insights" class="tab-content" style="display:none;">
+      <p class="demo-sub" style="margin-bottom:24px;">Get personalized insights and recommendations</p>
+      <div class="input-row" style="border:2px solid var(--gold);">
+        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
+        <input type="text" placeholder="username" id="insights-user" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
+        <button onclick="handleInsights()" style="font-size:14px;padding:20px 32px;">ANALYZE</button>
+      </div>
+      <div id="insights-result" style="display:none;margin-top:32px;text-align:center;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px;">
+          <img id="insights-avatar" src="" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;">
+          <div style="text-align:left;">
+            <div style="font-size:24px;font-family:'Bebas Neue',sans-serif;color:var(--white);" id="insights-display-name">User</div>
+            <div style="font-size:11px;color:var(--dim);" id="insights-username">@username</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px;">
+          <div style="text-align:left;">
+            <div style="font-size:11px;color:var(--gold);margin-bottom:12px;">STRENGTHS</div>
+            <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-strengths"></div>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-size:11px;color:var(--gold);margin-bottom:12px;">WEAKNESSES</div>
+            <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-weaknesses"></div>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-size:11px;color:var(--gold);margin-bottom:12px;">RECOMMENDATIONS</div>
+            <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-recommendations"></div>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-size:11px;color:var(--gold);margin-bottom:12px;">ACTION PLAN</div>
+            <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="insights-action-plan"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Fake Score Tab -->
+    <div id="tab-fake" class="tab-content" style="display:none;">
+      <p class="demo-sub" style="margin-bottom:24px;">Audit an account for fake followers</p>
+      <div class="input-row" style="border:2px solid var(--gold);">
+        <span class="input-at" style="font-size:18px;padding:20px;">@</span>
+        <input type="text" placeholder="username" id="fake-user" autocomplete="off" spellcheck="false" style="font-size:16px;padding:20px;">
+        <button onclick="handleFakeScore()" style="font-size:14px;padding:20px 32px;">AUDIT</button>
+      </div>
+      <div id="fake-result" style="display:none;margin-top:32px;text-align:center;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px;">
+          <img id="fake-avatar" src="" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;">
+          <div style="text-align:left;">
+            <div style="font-size:24px;font-family:'Bebas Neue',sans-serif;color:var(--white);" id="fake-display-name">User</div>
+            <div style="font-size:11px;color:var(--dim);" id="fake-username">@username</div>
+          </div>
+        </div>
+        <div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--gold);" id="fake-percentage">0%</div>
+        <div style="font-size:11px;color:var(--dim);letter-spacing:0.3em;">REAL FOLLOWERS</div>
+        <div style="font-size:11px;color:var(--dim);margin-top:8px;" id="fake-risk"></div>
+        <div style="margin-top:24px;font-size:11px;color:var(--dim);" id="fake-description"></div>
+        <div style="display:flex;gap:24px;justify-content:center;margin-top:24px;">
+          <div><span id="fake-total" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">TOTAL</div></div>
+          <div><span id="fake-real" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">REAL</div></div>
+          <div><span id="fake-fake" style="font-size:24px;color:var(--white);">0</span><div style="font-size:9px;color:var(--dim);">FAKE</div></div>
+        </div>
+        <div style="margin-top:32px;padding:16px;background:#111;border:1px solid #ffffff10;text-align:left;">
+          <div style="font-size:11px;color:var(--gold);margin-bottom:8px;">RISK FACTORS</div>
+          <div style="font-size:11px;color:var(--dim);line-height:1.6;" id="fake-factors"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Virality Score <em>★</em></span>
+    <span>Account Analysis <em>★</em></span>
+    <span>Competitor Intel <em>★</em></span>
+    <span>Best Post Times <em>★</em></span>
+    <span>Engagement Forecast <em>★</em></span>
+    <span>Audience Insights <em>★</em></span>
+    <span>Fake Follower Score <em>★</em></span>
+    <span>Virality Score <em>★</em></span>
+    <span>Account Analysis <em>★</em></span>
+    <span>Competitor Intel <em>★</em></span>
+    <span>Best Post Times <em>★</em></span>
+    <span>Engagement Forecast <em>★</em></span>
+    <span>Audience Insights <em>★</em></span>
+    <span>Fake Follower Score <em>★</em></span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+
+
+
 
 <!-- FOOTER -->
 <footer class="fade-up">
@@ -985,7 +967,7 @@
     resultDisplay.style.display = 'none';
     
     try {
-      const res = await fetch('/api/analyze', {
+      const res = await fetch('/api/insights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username })
@@ -1005,8 +987,11 @@
       document.getElementById('insights-display-name').textContent = data.display_name || data.username;
       document.getElementById('insights-username').textContent = '@' + data.username;
       
-      // Generate insights based on data
-      generateInsights(data);
+      // Update insights from server
+      document.getElementById('insights-strengths').innerHTML = (data.strengths || []).map(s => `• ${s}`).join('<br>');
+      document.getElementById('insights-weaknesses').innerHTML = (data.weaknesses || []).map(w => `• ${w}`).join('<br>');
+      document.getElementById('insights-recommendations').innerHTML = (data.recommendations || []).map(r => `• ${r}`).join('<br>');
+      document.getElementById('insights-action-plan').innerHTML = (data.action_plan || []).map(a => `• ${a}`).join('<br>');
       
       resultDisplay.style.display = 'block';
       btn.innerHTML = btn.dataset.initialHtml || btn.dataset.originalHtml;
@@ -1196,3 +1181,6 @@
 </script>
 </body>
 </html>
+
+
+

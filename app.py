@@ -173,6 +173,88 @@ def calculate_fake_score(profile):
         "estimated_real": int(profile["followers"] * real_percentage / 100)
     }
 
+def generate_insights(profile):
+    """Generate personalized insights from profile data"""
+    strengths = []
+    weaknesses = []
+    recommendations = []
+    action_plan = []
+    
+    # Analyze followers
+    if profile["followers"] > 10000:
+        followers_str = f"{profile['followers']/1000:.1f}K" if profile['followers'] >= 1000 else str(profile['followers'])
+        strengths.append(f"Strong follower base ({followers_str})")
+    elif profile["followers"] < 1000:
+        weaknesses.append(f"Small audience ({profile['followers']} followers)")
+        recommendations.append("Focus on growing your follower base through consistent posting")
+        action_plan.append("Post daily for 30 days to increase visibility")
+    
+    # Analyze engagement rate
+    if profile["engagement_rate"] > 5:
+        strengths.append(f"High engagement rate ({profile['engagement_rate']}%)")
+    elif profile["engagement_rate"] < 1:
+        weaknesses.append(f"Low engagement rate ({profile['engagement_rate']}%)")
+        recommendations.append("Improve engagement by asking questions and using polls")
+        action_plan.append("Add 1-2 questions per tweet to boost replies")
+    
+    # Analyze tweet frequency
+    if profile["tweets"] > 1000:
+        strengths.append(f"Active account ({profile['tweets']} tweets)")
+    elif profile["tweets"] < 100:
+        weaknesses.append(f"Low tweet volume ({profile['tweets']} tweets)")
+        recommendations.append("Increase posting frequency to stay relevant")
+        action_plan.append("Aim for 3-5 tweets per week minimum")
+    
+    # Analyze follower/following ratio
+    if profile["followers"] > profile["following"] * 2:
+        strengths.append("Healthy follower/following ratio")
+    elif profile["following"] > profile["followers"] * 2:
+        weaknesses.append("Following more than being followed")
+        recommendations.append("Focus on creating follow-worthy content")
+        action_plan.append("Audit who you follow and unfollow inactive accounts")
+    
+    # Analyze bio
+    bio = profile.get("bio", "")
+    if not bio or len(bio) < 10:
+        weaknesses.append("Weak or missing bio")
+        recommendations.append("Create a compelling bio with keywords")
+        action_plan.append("Update bio with 3 key topics you tweet about")
+    elif len(bio) > 50:
+        strengths.append("Detailed bio with clear messaging")
+    
+    # Analyze viral score
+    if profile["viral_score"] > 70:
+        strengths.append(f"High viral potential ({profile['viral_score']}/100)")
+    elif profile["viral_score"] < 30:
+        weaknesses.append(f"Low viral score ({profile['viral_score']}/100)")
+        recommendations.append("Work on creating more shareable content")
+        action_plan.append("Study viral tweets in your niche and adapt their patterns")
+    
+    # Analyze quality score
+    if profile["quality"] > 70:
+        strengths.append(f"High quality content ({profile['quality']}%)")
+    elif profile["quality"] < 30:
+        weaknesses.append(f"Content quality needs improvement ({profile['quality']}%)")
+        recommendations.append("Focus on value-driven content over quantity")
+        action_plan.append("Plan 3 high-value threads per month")
+    
+    # Default messages if no insights
+    if len(strengths) == 0:
+        strengths.append("Solid foundation to build upon")
+    if len(weaknesses) == 0:
+        weaknesses.append("Minor optimizations needed")
+    if len(recommendations) == 0:
+        recommendations.append("Continue current strategy with minor tweaks")
+    if len(action_plan) == 0:
+        action_plan.append("Review metrics weekly and adjust based on performance")
+    
+    return {
+        "strengths": strengths,
+        "weaknesses": weaknesses,
+        "recommendations": recommendations,
+        "action_plan": action_plan
+    }
+
 def compare_profiles(username1, username2):
     data1 = get_twitter_data(username1)
     data2 = get_twitter_data(username2)
@@ -283,6 +365,37 @@ def predict():
         prediction["tips"] = ["Good start! Add more engagement", "Try shorter format"]
     
     return jsonify(prediction)
+
+@app.route('/api/insights', methods=['POST'])
+def insights():
+    """Generate personalized insights for a user"""
+    data = request.get_json()
+    username = data.get('username', '').strip().replace('@', '')
+    if not username:
+        return jsonify({"error": "Username required"}), 400
+    
+    profile = get_twitter_data(username)
+    if not profile:
+        return jsonify({"error": "User not found"}), 404
+    
+    # Generate insights
+    insights_data = generate_insights(profile)
+    
+    # Add profile info for display
+    result = {
+        "avatar_url": profile.get("avatar_url", ""),
+        "display_name": profile.get("display_name", profile.get("username", "")),
+        "username": profile.get("username", username),
+        "followers": profile.get("followers", 0),
+        "engagement_rate": profile.get("engagement_rate", 0),
+        "tweets": profile.get("tweets", 0),
+        "following": profile.get("following", 0),
+        "bio": profile.get("bio", ""),
+        "viral_score": profile.get("viral_score", 0),
+        "quality": profile.get("quality", 0)
+    }
+    result.update(insights_data)
+    return jsonify(result)
 
 @app.route('/api/fake-score', methods=['POST'])
 def fake_score():
