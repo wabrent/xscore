@@ -133,7 +133,7 @@
   .hero {
     min-height: 100vh;
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr 1fr;
     padding: 120px 40px 80px;
     gap: 0;
     position: relative;
@@ -142,10 +142,8 @@
   .hero-left {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-right: 60px;
-    border-right: 1px solid #ffffff10;
+    justify-content: flex-end;
+    padding-bottom: 40px;
   }
 
   .hero-eyebrow {
@@ -158,14 +156,10 @@
 
   .hero-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 8vw, 100px);
-    transform: rotate(-90deg);
-    transform-origin: center;
+    font-size: clamp(80px, 11vw, 150px);
+    line-height: 0.92;
     color: var(--white);
     letter-spacing: 0.02em;
-    margin: 0;
-    line-height: 1;
-    white-space: nowrap;
   }
 
   .hero-title span { color: var(--gold); }
@@ -235,6 +229,7 @@
     flex-direction: column;
     justify-content: center;
     padding-left: 60px;
+    border-left: 1px solid #ffffff10;
   }
 
   .hero-stat-block {
@@ -454,8 +449,6 @@
     nav { padding: 16px 20px; }
     .nav-links { display: none; }
     .hero { grid-template-columns: 1fr; padding: 100px 20px 60px; }
-    .hero-left { padding-right: 0; align-items: flex-start; }
-    .hero-title { transform: none; white-space: normal; font-size: clamp(64px, 12vw, 120px); }
     .hero-right { border-left: none; border-top: 1px solid #ffffff10; padding-left: 0; padding-top: 40px; margin-top: 40px; }
     .hero-stat-block { flex-direction: row; flex-wrap: wrap; gap: 24px; }
     .demo { padding: 60px 20px; }
@@ -515,7 +508,11 @@
   <div class="hero-left fade-up">
     <p class="hero-eyebrow">Twitter / X Analytics Tool</p>
     <h1 class="hero-title">
-      KNOW BE<span>—</span> FORE YOU POST<span>.</span>
+      KNOW<br>
+      BE<span>—</span><br>
+      FORE<br>
+      YOU<br>
+      POST<span>.</span>
     </h1>
     <p class="hero-sub">
       XScore predicts virality, analyzes your account, compares you to competitors, 
